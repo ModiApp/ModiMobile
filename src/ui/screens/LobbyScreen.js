@@ -35,17 +35,17 @@ const LobbyScreen = ({
             bgColor="red"
             onPress={onBackBtnPressed}
             paddingHorrizontal={16}>
-            <BackIcon size={24} />
+            <BackIcon size={28} />
           </Button>
         </Container>
 
         <Container flex={5}>
           {lobbyCreator.id === currentPlayer.id ? (
             <Button bgColor="blue" onPress={onStartGameBtnPressed}>
-              <Text fontSize={24}>Start Game</Text>
+              <Text fontSize={28}>Start Game</Text>
             </Button>
           ) : (
-            <Text fontSize={24}>
+            <Text fontSize={28}>
               Waiting for {lobbyCreator.username} to start the game...
             </Text>
           )}
@@ -61,7 +61,7 @@ const PlayerSchema = PropTypes.shape({
 });
 
 LobbyScreen.propTypes = {
-  gamePin: PropTypes.number.isRequired,
+  gamePin: PropTypes.string.isRequired,
   lobbyCreator: PlayerSchema,
   connectedPlayers: PropTypes.arrayOf(PlayerSchema),
   onInviteFriendsBtnPressed: PropTypes.func.isRequired,
