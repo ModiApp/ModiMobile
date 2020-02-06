@@ -11,7 +11,7 @@ const LobbyScreen = ({
   connectedPlayers,
   onInviteFriendsBtnPressed,
   onStartGameBtnPressed,
-  goBack,
+  onBackBtnPressed,
 }) => (
   <ScreenContainer>
     <Container flex={1} padding={16}>
@@ -31,7 +31,10 @@ const LobbyScreen = ({
 
       <Container flex={1} flexDirection="row" alignItems="center">
         <Container flex={1} marginRight={8}>
-          <Button bgColor="red" onPress={goBack} paddingHorrizontal={16}>
+          <Button
+            bgColor="red"
+            onPress={onBackBtnPressed}
+            paddingHorrizontal={16}>
             <BackIcon size={24} />
           </Button>
         </Container>

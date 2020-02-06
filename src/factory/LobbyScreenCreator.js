@@ -21,7 +21,7 @@ const LobbyScreenCreator = ({ navigation }) => {
       connectedPlayers={connectedPlayers}
       onInviteFriendsBtnPressed={openShareTab}
       onStartGameBtnPressed={goToGame}
-      goBack={navigation.goBack}
+      onBackBtnPressed={navigation.goBack}
     />
   );
 };
