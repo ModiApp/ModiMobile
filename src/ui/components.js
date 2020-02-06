@@ -1,5 +1,10 @@
 import React from 'react';
-import { SafeAreaView, View, Text as RNText } from 'react-native';
+import {
+  SafeAreaView,
+  View,
+  Text as RNText,
+  TextInput as RNTextInput,
+} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { colors, sizing, fontFamilies } from './styles';
@@ -60,6 +65,14 @@ export const Container = withStylesFromProps(View);
 export const Text = withStylesFromProps(RNText, {
   fontFamily: fontFamilies.primary,
   color: 'white',
+});
+
+export const TextInput = withStylesFromProps(RNTextInput, {
+  backgroundColor: 'white',
+  borderRadius: 50,
+  padding: 8,
+  textAlign: 'center',
+  fontFamily: fontFamilies.primary,
 });
 
 export const ScreenContainer = withStylesFromProps(SafeAreaView, {
