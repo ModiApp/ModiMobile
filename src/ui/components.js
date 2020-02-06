@@ -2,7 +2,7 @@ import React from 'react';
 import { SafeAreaView, View, Text as RNText } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import { colors, sizing } from './styles';
+import { colors, sizing, fontFamilies } from './styles';
 
 /** Useful for grabbing style attributes from a component's props */
 const stylesFromProps = props => {
@@ -48,16 +48,17 @@ const withStylesFromProps = (Component, css) => ({ children, ...props }) => {
 };
 
 export const Button = withStylesFromProps(TouchableOpacity, {
-  borderRadius: 20,
+  borderRadius: 50,
   padding: 8,
   flexDirection: 'row',
   justifyContent: 'center',
+  alignItems: 'center',
 });
 
 export const Container = withStylesFromProps(View);
 
 export const Text = withStylesFromProps(RNText, {
-  fontFamily: 'Chalkduster',
+  fontFamily: fontFamilies.primary,
   color: 'white',
 });
 
