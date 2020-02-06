@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { ScreenContainer, Container, Button, Text } from '../components';
+import { BackIcon } from '../icons';
 
 const LobbyScreen = ({
   gamePin,
@@ -10,9 +11,10 @@ const LobbyScreen = ({
   connectedPlayers,
   onInviteFriendsBtnPressed,
   onStartGameBtnPressed,
+  goBack,
 }) => (
   <ScreenContainer>
-    <Container flex={1} paddingHorrizonal={16}>
+    <Container flex={1} padding={16}>
       <Container flex={2} justifyContent="center">
         <Container alignItems="center">
           <Text fontSize={24}>Game PIN:</Text>
@@ -27,16 +29,24 @@ const LobbyScreen = ({
         <PlayerList players={connectedPlayers} />
       </Container>
 
-      <Container flex={1} justifyContent="center">
-        {lobbyCreator.id === currentPlayer.id ? (
-          <Button bgColor="blue" onPress={onStartGameBtnPressed}>
-            <Text fontSize={24}>Start Game</Text>
+      <Container flex={1} flexDirection="row" alignItems="center">
+        <Container flex={1} marginRight={8}>
+          <Button bgColor="red" onPress={goBack} paddingHorrizontal={16}>
+            <BackIcon size={24} />
           </Button>
-        ) : (
-          <Text fontSize={24}>
-            Waiting for {lobbyCreator.username} to start the game...
-          </Text>
-        )}
+        </Container>
+
+        <Container flex={5}>
+          {lobbyCreator.id === currentPlayer.id ? (
+            <Button bgColor="blue" onPress={onStartGameBtnPressed}>
+              <Text fontSize={24}>Start Game</Text>
+            </Button>
+          ) : (
+            <Text fontSize={24}>
+              Waiting for {lobbyCreator.username} to start the game...
+            </Text>
+          )}
+        </Container>
       </Container>
     </Container>
   </ScreenContainer>

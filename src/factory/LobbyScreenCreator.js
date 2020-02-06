@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { LobbyScreen } from '../ui';
-import { Button, Text } from '../ui/components';
 
 const LobbyScreenCreator = ({ navigation }) => {
   const gamePin = navigation.getParam('id') || 123456;
@@ -22,17 +21,9 @@ const LobbyScreenCreator = ({ navigation }) => {
       connectedPlayers={connectedPlayers}
       onInviteFriendsBtnPressed={openShareTab}
       onStartGameBtnPressed={goToGame}
+      goBack={navigation.goBack}
     />
   );
 };
-
-LobbyScreenCreator.navigationOptions = ({ navigation: { goBack } }) => ({
-  headerShown: true,
-  headerLeft: () => (
-    <Button onPress={goBack} padding={8}>
-      <Text fontSize={32}>&larr;</Text>
-    </Button>
-  ),
-});
 
 export default LobbyScreenCreator;

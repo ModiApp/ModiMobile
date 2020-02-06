@@ -10,7 +10,7 @@ export const colors = {
   white: 'white',
 };
 export const fontFamilies = {
-  coffeeInitials: 'Chalkduster',
+  primary: 'Chalkduster',
 };
 export const fontSizes = {
   sm: 14,
