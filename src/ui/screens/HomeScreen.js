@@ -1,7 +1,15 @@
 import React from 'react';
 import { ActivityIndicator } from 'react-native';
 
-import { ScreenContainer, Container, Button, Text } from '../components';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
+
+import {
+  ScreenContainer,
+  Container,
+  Button,
+  Text,
+  TextInput,
+} from '../components';
 
 const HomeScreen = ({
   onJoinGameBtnPressed,
@@ -14,6 +22,7 @@ const HomeScreen = ({
     </Container>
 
     <Container flex={1} justifyContent="flex-end" padding={16}>
+      <TextInput placeholder="Username" margin={8} fontSize={28} />
       <Button onPress={onJoinGameBtnPressed} bgColor="blue" margin={8}>
         <Text fontSize={28}>Join Game</Text>
       </Button>
@@ -32,6 +41,7 @@ const HomeScreen = ({
         )}
       </Button>
     </Container>
+    <KeyboardSpacer topSpacing={-180} />
   </ScreenContainer>
 );
 
