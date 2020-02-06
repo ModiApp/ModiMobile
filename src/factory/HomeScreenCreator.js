@@ -4,7 +4,9 @@ import { HomeScreen } from '../ui';
 
 const createGame = () =>
   new Promise(resolve => {
-    setTimeout(() => resolve(1234), 5000);
+    const randInt = () => Math.floor(Math.random() * 10);
+    const randInts = n => n - 1 && randInts(n - 1) + `${randInt()}`;
+    setTimeout(() => resolve(randInts(5)), 5000);
   });
 
 const HomeScreenCreator = ({ navigation: { navigate } }) => {
