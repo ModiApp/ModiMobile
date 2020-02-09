@@ -351,7 +351,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = ARN3AVXAYA;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -706,9 +706,9 @@
 			baseConfigurationReference = E0B430DCAA010D084E452F3A /* Pods-ModiMobile.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 4;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = ARN3AVXAYA;
 				INFOPLIST_FILE = ModiMobile/Info.plist;
@@ -720,7 +720,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ikeybenz.modii;
 				PRODUCT_NAME = ModiMobile;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "Ikey's Modi Dist Profile";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -730,9 +730,9 @@
 			baseConfigurationReference = 21C787E38316963B10490E70 /* Pods-ModiMobile.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = ARN3AVXAYA;
 				INFOPLIST_FILE = ModiMobile/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -743,7 +743,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ikeybenz.modii;
 				PRODUCT_NAME = ModiMobile;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "Ikey's Modi Dist Profile";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
