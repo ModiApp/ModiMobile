@@ -14,6 +14,8 @@ import {
 const HomeScreen = ({
   onJoinGameBtnPressed,
   onCreateGameBtnPressed,
+  onUsernameUpdated,
+  username,
   isCreatingGame,
 }) => (
   <ScreenContainer>
@@ -22,7 +24,13 @@ const HomeScreen = ({
     </Container>
 
     <Container flex={1} justifyContent="flex-end" padding={16}>
-      <TextInput placeholder="Username" margin={8} fontSize={28} />
+      <TextInput
+        placeholder="Username"
+        margin={8}
+        fontSize={28}
+        value={username}
+        onChangeText={onUsernameUpdated}
+      />
       <Button onPress={onJoinGameBtnPressed} bgColor="blue" margin={8}>
         <Text fontSize={28}>Join Game</Text>
       </Button>
@@ -30,12 +38,9 @@ const HomeScreen = ({
         onPress={onCreateGameBtnPressed}
         bgColor="red"
         margin={8}
-        disabled={isCreatingGame}>
+        disabled={isCreatingGame || username === ''}>
         {isCreatingGame ? (
-          <>
-            <ActivityIndicator size="large" color="white" />
-            <Text fontSize={28}> Creating Game...</Text>
-          </>
+          <ActivityIndicator size="large" color="white" />
         ) : (
           <Text fontSize={28}>Create Game</Text>
         )}

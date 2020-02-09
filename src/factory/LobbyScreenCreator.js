@@ -1,19 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Share from 'react-native-share';
+
+import useLobbyConnection from '../hooks/useLobbyConnection';
 import { LobbyScreen } from '../ui';
+import AppContext from '../StateManager';
 
 const LobbyScreenCreator = ({ navigation }) => {
-  // Use lobbyId from url as 'Game Pin'
-  const gamePin = navigation.getParam('id') || 123456;
+  const [appState, _] = useContext(AppContext);
+  const lobbyId = navigation.getParam('id'),
+    gamePin = lobbyId;
+  const [username, setUsername] = useState(appState.username);
 
-  // Connect to LobbyService
-  const lobbyCreator = { username: 'ikey', id: 2 };
-  const currentPlayer = { username: 'ikey', id: 2 };
-  const connectedPlayers = [
-    { username: 'ikey', id: 1 },
-    { username: 'jshapoopa 42', id: 2 },
-    { username: 'louie', id: 3 },
-  ];
+  // If came from url, manually set username here
+  useEffect(() => {
+    if (!username) {
+      setUsername(prompt('Enter username:'));
+    }
+  }, [username]);
+
+  const { connectedPlayers, currentPlayer, lobbyLeader } = useLobbyConnection(
+    lobbyId,
+    username,
+  );
 
   // When lobby creator presses 'start game' button
   const goToGame = () => console.log('Navigating to game!');
@@ -21,15 +29,13 @@ const LobbyScreenCreator = ({ navigation }) => {
   // When user presses 'Invite Friends' button
   const openShareTab = () =>
     Share.open({
-      message: `Ikey invited you to join their Modi Game! com.ikeybenz.modi:lobbies/${gamePin}`,
-    })
-      .then(res => console.log('Res:', res))
-      .catch(err => console.log('Err', err));
+      message: `Join My Modi Game! modi://lobbies/${lobbyId}`,
+    });
 
   return (
     <LobbyScreen
       gamePin={gamePin}
-      lobbyCreator={lobbyCreator}
+      lobbyCreator={lobbyLeader}
       currentPlayer={currentPlayer}
       connectedPlayers={connectedPlayers}
       onInviteFriendsBtnPressed={openShareTab}

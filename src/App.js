@@ -1,7 +1,12 @@
 import React from 'react';
 
-import AppContainer from './AppNavigator';
+import AppNavigator from './AppNavigator';
+import { AppStateProvider } from './StateManager';
 
-const App = () => <AppContainer />;
+const App = () => (
+  <AppStateProvider>
+    <AppNavigator />
+  </AppStateProvider>
+);
 
 export default App;

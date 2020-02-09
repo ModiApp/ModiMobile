@@ -67,13 +67,17 @@ export const Text = withStylesFromProps(RNText, {
   color: 'white',
 });
 
-export const TextInput = withStylesFromProps(RNTextInput, {
-  backgroundColor: 'white',
-  borderRadius: 50,
-  padding: 8,
-  textAlign: 'center',
-  fontFamily: fontFamilies.primary,
-});
+export const TextInput = withStylesFromProps(
+  props => <RNTextInput {...props} placeholderTextColor="lightgray" />,
+  {
+    backgroundColor: 'white',
+    color: 'black',
+    borderRadius: 50,
+    padding: 8,
+    textAlign: 'center',
+    fontFamily: fontFamilies.primary,
+  },
+);
 
 export const ScreenContainer = withStylesFromProps(SafeAreaView, {
   backgroundColor: colors.feltGreen,

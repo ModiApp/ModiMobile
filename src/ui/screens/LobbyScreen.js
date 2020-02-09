@@ -57,21 +57,27 @@ const LobbyScreen = ({
 
 const PlayerSchema = PropTypes.shape({
   username: PropTypes.string.isRequired,
-  id: PropTypes.number.isRequired,
+  id: PropTypes.string.isRequired,
 });
 
 LobbyScreen.propTypes = {
   gamePin: PropTypes.string.isRequired,
   lobbyCreator: PlayerSchema,
+  currentPlayer: PlayerSchema,
   connectedPlayers: PropTypes.arrayOf(PlayerSchema),
   onInviteFriendsBtnPressed: PropTypes.func.isRequired,
   onStartGameBtnPressed: PropTypes.func.isRequired,
 };
 
+LobbyScreen.defaultProps = {
+  lobbyCreator: {},
+  currentPlayer: {},
+};
+
 const PlayerList = ({ players }) => (
   <Container height="100%" padding={16} borderRadius={20} bgColor="lightGreen">
     {players.map(({ username, id }, i) => (
-      <Container padding={16}>
+      <Container padding={16} key={id}>
         <Text fontSize={24}>
           {i + 1}) {username}
         </Text>
