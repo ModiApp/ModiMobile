@@ -4,8 +4,8 @@ import axios from 'axios';
 import AppContext from '../StateManager';
 import { HomeScreen } from '../ui';
 
-// const API_URL = 'https://modi-server.herokuapp.com';
-const API_URL = 'http://localhost:5000';
+const API_URL = 'https://modi-server.herokuapp.com';
+//const API_URL = 'http://localhost:5000';
 
 const createLobby = () =>
   axios.get(`${API_URL}/lobbies/new`).then(r => r.data.lobbyId);
