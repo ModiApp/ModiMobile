@@ -20,7 +20,7 @@ const HomeScreen = ({
 }) => (
   <ScreenContainer>
     <Container flex={1} alignItems="center" justifyContent="center">
-      <Text fontSize={48}>Modi</Text>
+      <Text fontSize={64}>Modi</Text>
     </Container>
 
     <Container flex={1} justifyContent="flex-end" padding={16}>
