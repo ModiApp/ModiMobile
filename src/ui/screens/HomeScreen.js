@@ -17,6 +17,8 @@ const HomeScreen = ({
   onUsernameUpdated,
   username,
   isCreatingGame,
+  isJoiningGame,
+  shouldAskForUsername,
 }) => (
   <ScreenContainer>
     <Container flex={1} alignItems="center" justifyContent="center">
@@ -24,21 +26,36 @@ const HomeScreen = ({
     </Container>
 
     <Container flex={1} justifyContent="flex-end" padding={16}>
-      <TextInput
-        placeholder="Username"
+      <Container>
+        {shouldAskForUsername && (
+          <Text color="red" fontSize={14}>
+            Enter a username
+          </Text>
+        )}
+        <TextInput
+          placeholder="Username"
+          margin={8}
+          fontSize={28}
+          value={username}
+          onChangeText={onUsernameUpdated}
+        />
+      </Container>
+      <Button
+        onPress={onJoinGameBtnPressed}
+        bgColor="blue"
         margin={8}
-        fontSize={28}
-        value={username}
-        onChangeText={onUsernameUpdated}
-      />
-      <Button onPress={onJoinGameBtnPressed} bgColor="blue" margin={8}>
-        <Text fontSize={28}>Join Game</Text>
+        disabled={isJoiningGame}>
+        {isJoiningGame ? (
+          <ActivityIndicator size="large" color="white" />
+        ) : (
+          <Text fontSize={28}>Join Game</Text>
+        )}
       </Button>
       <Button
         onPress={onCreateGameBtnPressed}
         bgColor="red"
         margin={8}
-        disabled={isCreatingGame || username === ''}>
+        disabled={isCreatingGame}>
         {isCreatingGame ? (
           <ActivityIndicator size="large" color="white" />
         ) : (

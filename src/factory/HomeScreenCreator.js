@@ -13,17 +13,31 @@ const createLobby = () =>
 const HomeScreenCreator = ({ navigation }) => {
   const [state, updateState] = useContext(AppContext);
   const [isCreatingGame, setIsCreatingGame] = useState(false);
+  const [isJoiningGame, setIsJoiningGame] = useState(false);
+  const [shouldAskForUsername, setShouldAskForUsername] = useState(false);
   const onCreateGameButtonPressed = async () => {
-    setIsCreatingGame(true);
-    return createLobby()
-      .then(id => {
-        if (state.username !== '') {
+    if (requireUsername()) {
+      setIsCreatingGame(true);
+      createLobby()
+        .then(id => {
           navigation.navigate('Lobby', { id });
-        }
-      })
-      .finally(() => setIsCreatingGame(false));
+        })
+        .finally(() => setIsCreatingGame(false));
+    }
   };
-  const onJoinGameButtonPressed = () => navigation.navigate('JoinGame');
+  const onJoinGameButtonPressed = () => {
+    if (requireUsername()) {
+      setIsJoiningGame(true);
+      // Modal with prompt to set lobbyId
+      navigation.navigate('JoinGame');
+    }
+  };
+
+  const requireUsername = () => {
+    const hasUsername = state.username !== '';
+    return hasUsername || (setShouldAskForUsername(true) && false);
+  };
+
   return (
     <HomeScreen
       onCreateGameBtnPressed={onCreateGameButtonPressed}
@@ -31,6 +45,8 @@ const HomeScreenCreator = ({ navigation }) => {
       onUsernameUpdated={u => updateState({ username: u })}
       username={state.username}
       isCreatingGame={isCreatingGame}
+      isJoiningGame={isJoiningGame}
+      shouldAskForUsername={shouldAskForUsername && state.username === ''}
     />
   );
 };
