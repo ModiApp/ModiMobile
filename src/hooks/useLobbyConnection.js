@@ -2,16 +2,14 @@ import { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 
 const API_URL = 'https://modi-server.herokuapp.com';
-// const API_URL = 'http://localhost:5000';
-
-const initialLobbyState = {
-  connectedPlayers: [],
-  currentPlayer: {},
-  lobbyLeader: {},
-};
+//const API_URL = 'http://localhost:5000';
 
 const useLobbyConnection = (lobbyId, username) => {
-  const [lobbyInfo, setLobbyInfo] = useState(initialLobbyState);
+  const [lobbyInfo, setLobbyInfo] = useState({
+    connectedPlayers: [],
+    currentPlayer: {},
+    lobbyLeader: {},
+  });
   const sendMessage = useRef();
   useEffect(() => {
     const socket = io(`${API_URL}/lobbies/${lobbyId}?username=${username}`);
