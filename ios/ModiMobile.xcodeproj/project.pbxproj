@@ -721,6 +721,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.ikeybenz.modii;
 				PRODUCT_NAME = ModiMobile;
 				PROVISIONING_PROFILE_SPECIFIER = "Ikey's Modi Dist Profile";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -744,6 +745,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.ikeybenz.modii;
 				PRODUCT_NAME = ModiMobile;
 				PROVISIONING_PROFILE_SPECIFIER = "Ikey's Modi Dist Profile";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
