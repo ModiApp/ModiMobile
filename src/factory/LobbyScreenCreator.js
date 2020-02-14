@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import Share from 'react-native-share';
 
-import useLobbyConnection from '../hooks/useLobbyConnection';
 import { LobbyScreen } from '../ui';
 import AppContext from '../StateManager';
 
@@ -13,7 +12,7 @@ const LobbyScreenCreator = ({ navigation }) => {
     currentPlayer,
     lobbyLeader,
     sendMessage,
-  } = useLobbyConnection(lobbyId, username);
+  } = LobbyService.useLobbyConnection(lobbyId, username);
 
   // When lobby creator presses 'start game' button
   const goToGame = () => {
