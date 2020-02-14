@@ -40,6 +40,7 @@ const HomeScreen = ({
           onChangeText={onUsernameUpdated}
         />
       </Container>
+      <KeyboardSpacer topSpacing={-150} />
       <Button
         onPress={onJoinGameBtnPressed}
         bgColor="blue"
@@ -63,7 +64,6 @@ const HomeScreen = ({
         )}
       </Button>
     </Container>
-    <KeyboardSpacer topSpacing={-180} />
   </ScreenContainer>
 );
 
