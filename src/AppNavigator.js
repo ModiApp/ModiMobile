@@ -1,7 +1,11 @@
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
-import { HomeScreenCreator, LobbyScreenCreator } from './factory';
+import {
+  HomeScreenCreator,
+  JoinLobbyScreenCreator,
+  LobbyScreenCreator,
+} from './factory';
 
 const AppStack = createStackNavigator(
   {
@@ -21,5 +25,25 @@ const AppStack = createStackNavigator(
   },
 );
 
-const AppNavigator = createAppContainer(AppStack);
+const RootStack = createStackNavigator(
+  {
+    App: {
+      path: 'app',
+      screen: AppStack,
+    },
+    JoinLobby: {
+      screen: JoinLobbyScreenCreator,
+      navigationOptions: {
+        cardStyle: { backgroundColor: '#000000', opacity: 0.75 },
+        cardOverlayEnabled: true,
+      },
+    },
+  },
+  {
+    mode: 'modal',
+    headerMode: 'none',
+  },
+);
+
+const AppNavigator = createAppContainer(RootStack);
 export default AppNavigator;
