@@ -4,6 +4,7 @@ import {
   View,
   Text as RNText,
   TextInput as RNTextInput,
+  ActivityIndicator,
 } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
@@ -13,6 +14,7 @@ import { colors, sizing, fontFamilies } from './styles';
 const stylesFromProps = props => {
   const styleProps = new Set([
     'alignItems',
+    'aspectRatio',
     'borderRadius',
     'flex',
     'flexdDirection',
@@ -23,6 +25,7 @@ const stylesFromProps = props => {
     'margin',
     'marginHorrizontal',
     'marginVertical',
+    'minHeight',
     'padding',
     'paddingVertical',
     'paddingHorrizontal',
@@ -44,7 +47,9 @@ const stylesFromProps = props => {
 
 const withStylesFromProps = (Component, css) => ({ children, ...props }) => {
   const { styles: s, propsWithoutStyles } = stylesFromProps(props);
-  props.bgColor && s.push({ backgroundColor: colors[props.bgColor] });
+  props.bgColor &&
+    s.push({ backgroundColor: colors[props.bgColor] || props.bgColor });
+  props.color && s.push({ color: props.color });
   return (
     <Component style={[css, ...s]} {...propsWithoutStyles}>
       {children}
@@ -83,3 +88,5 @@ export const ScreenContainer = withStylesFromProps(SafeAreaView, {
   backgroundColor: colors.feltGreen,
   ...sizing.fullScreen,
 });
+
+export const LoadingSpinner = ActivityIndicator;
