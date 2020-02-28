@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 
 import AppContext from '../StateManager';
 import { LobbyService } from '../service';
@@ -7,7 +7,7 @@ import { HomeScreen } from '../ui';
 const HomeScreenCreator = ({ navigation }) => {
   const [state, updateState] = useContext(AppContext);
   const [isCreatingGame, setIsCreatingGame] = useState(false);
-  const [isJoiningGame, setIsJoiningGame] = useState(false);
+  // const [isJoiningGame, setIsJoiningGame] = useState(false);
   const [shouldAskForUsername, setShouldAskForUsername] = useState(false);
 
   const onCreateGameButtonPressed = async () => {
@@ -30,13 +30,13 @@ const HomeScreenCreator = ({ navigation }) => {
       onJoinGameBtnPressed={() => {
         if (requireUsername()) {
           navigation.navigate('JoinLobby');
-          setIsJoiningGame(true);
+          // setIsJoiningGame(true);
         }
       }}
       onUsernameUpdated={u => updateState({ username: u })}
       username={state.username}
       isCreatingGame={isCreatingGame}
-      isJoiningGame={isJoiningGame}
+      // isJoiningGame={isJoiningGame}
       shouldAskForUsername={shouldAskForUsername && !!state.username}
     />
   );

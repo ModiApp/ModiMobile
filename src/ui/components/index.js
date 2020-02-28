@@ -5,10 +5,13 @@ import {
   Text as RNText,
   TextInput as RNTextInput,
   ActivityIndicator,
+  ImageBackground,
 } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import { colors, sizing, fontFamilies } from './styles';
+import { colors, sizing, fontFamilies } from '../styles';
+
+import PlayingCard from './PlayingCard';
 
 /** Useful for grabbing style attributes from a component's props */
 const stylesFromProps = props => {
@@ -49,7 +52,7 @@ const withStylesFromProps = (Component, css) => ({ children, ...props }) => {
   const { styles: s, propsWithoutStyles } = stylesFromProps(props);
   props.bgColor &&
     s.push({ backgroundColor: colors[props.bgColor] || props.bgColor });
-  props.color && s.push({ color: props.color });
+  props.color && s.push({ color: colors[props.color] || props.color });
   return (
     <Component style={[css, ...s]} {...propsWithoutStyles}>
       {children}
@@ -57,7 +60,7 @@ const withStylesFromProps = (Component, css) => ({ children, ...props }) => {
   );
 };
 
-export const Button = withStylesFromProps(TouchableOpacity, {
+const Button = withStylesFromProps(TouchableOpacity, {
   borderRadius: 50,
   padding: 8,
   flexDirection: 'row',
@@ -65,14 +68,14 @@ export const Button = withStylesFromProps(TouchableOpacity, {
   alignItems: 'center',
 });
 
-export const Container = withStylesFromProps(View);
+const Container = withStylesFromProps(View);
 
-export const Text = withStylesFromProps(RNText, {
+const Text = withStylesFromProps(RNText, {
   fontFamily: fontFamilies.primary,
   color: 'white',
 });
 
-export const TextInput = withStylesFromProps(
+const TextInput = withStylesFromProps(
   props => <RNTextInput {...props} placeholderTextColor="lightgray" />,
   {
     backgroundColor: 'white',
@@ -84,9 +87,19 @@ export const TextInput = withStylesFromProps(
   },
 );
 
-export const ScreenContainer = withStylesFromProps(SafeAreaView, {
+const ScreenContainer = withStylesFromProps(SafeAreaView, {
   backgroundColor: colors.feltGreen,
   ...sizing.fullScreen,
 });
 
-export const LoadingSpinner = ActivityIndicator;
+const LoadingSpinner = ActivityIndicator;
+
+export {
+  ScreenContainer,
+  Container,
+  Button,
+  Text,
+  TextInput,
+  LoadingSpinner,
+  PlayingCard,
+};

@@ -2,8 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import io from 'socket.io-client';
 
-// const API_URL = 'https://modi-server.herokuapp.com';
-const API_URL = 'http://localhost:5000';
+const API_URL = 'https://modi-server.herokuapp.com';
+// const API_URL = 'http://localhost:5000';
+
 class LobbyService {
   async createLobby() {
     const lobbyId = await axios

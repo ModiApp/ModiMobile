@@ -3,6 +3,7 @@ import Share from 'react-native-share';
 
 import { LobbyScreen } from '../ui';
 import AppContext from '../StateManager';
+import { LobbyService } from '../service';
 
 const LobbyScreenCreator = ({ navigation }) => {
   const lobbyId = navigation.getParam('id');
@@ -23,7 +24,7 @@ const LobbyScreenCreator = ({ navigation }) => {
   // When user presses 'Invite Friends' button
   const openShareTab = () =>
     Share.open({
-      message: `Join My Modi Game! modi://lobbies/${lobbyId}`,
+      message: `Join My Modi Game! modi:/app/lobbies/${lobbyId}`,
     });
 
   return (
