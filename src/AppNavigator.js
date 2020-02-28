@@ -5,6 +5,7 @@ import {
   HomeScreenCreator,
   JoinLobbyScreenCreator,
   LobbyScreenCreator,
+  GameScreenCreator,
 } from './factory';
 
 const AppStack = createStackNavigator(
@@ -16,9 +17,13 @@ const AppStack = createStackNavigator(
       path: 'lobbies/:id',
       screen: LobbyScreenCreator,
     },
+    Game: {
+      path: 'games/:id',
+      screen: GameScreenCreator,
+    },
   },
   {
-    initialRouteName: 'Home',
+    initialRouteName: 'Game',
     defaultNavigationOptions: {
       headerShown: false,
     },

@@ -5,11 +5,18 @@ import { LobbyService } from '../service';
 const JoinLobbyScreenCreator = ({ navigation }) => {
   const [isValidatingLobbyId, setIsValidatingLobbyId] = useState(false);
   const [isLobbyIdInvalid, setIsLobbyIdInvalid] = useState(false);
+  const [validationError, setValidationError] = useState(undefined);
+
   const onLobbyIdSet = async id => {
     setIsValidatingLobbyId(true);
-    const isValid = !!id && (await LobbyService.isLobbyIdValid(id));
-    setIsValidatingLobbyId(false);
-    isValid ? navigation.navigate('Lobby', { id }) : setIsLobbyIdInvalid(true);
+    LobbyService.isLobbyIdValid(id)
+      .then(isValid =>
+        isValid
+          ? navigation.navigate('Lobby', { id })
+          : setIsLobbyIdInvalid(true),
+      )
+      .catch(e => setValidationError(e.message))
+      .finally(() => setIsValidatingLobbyId(false));
   };
 
   return (
@@ -17,6 +24,7 @@ const JoinLobbyScreenCreator = ({ navigation }) => {
       onLobbyIdSet={onLobbyIdSet}
       isValidatingLobbyId={isValidatingLobbyId}
       isLobbyIdInvalid={isLobbyIdInvalid}
+      validationError={validationError}
       onCancel={() => navigation.navigate('Home')}
     />
   );
