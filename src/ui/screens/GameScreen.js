@@ -1,17 +1,13 @@
 import React from 'react';
 
-import { ScreenContainer, Container, PlayingCard } from '../components';
+import { ScreenContainer, Text } from '../components';
 
-const GameScreen = ({ currentPlayer }) => {
+const GameScreen = ({ connectedPlayers, currentPlayerId }) => {
   return (
     <ScreenContainer>
-      <Container flex={1} />
-      <Container alignItems="center">
-        <PlayingCard
-          rank={currentPlayer.card.rank}
-          suit={currentPlayer.card.suit}
-        />
-      </Container>
+      {connectedPlayers.map(({ id, player }) => (
+        <Text>{player.username}</Text>
+      ))}
     </ScreenContainer>
   );
 };

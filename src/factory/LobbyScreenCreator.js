@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useCallback } from 'react';
 import Share from 'react-native-share';
 
 import { LobbyScreen } from '../ui';
@@ -8,24 +8,39 @@ import { LobbyService } from '../service';
 const LobbyScreenCreator = ({ navigation }) => {
   const lobbyId = navigation.getParam('id');
   const [{ username }, updateState] = useContext(AppContext);
-  const {
-    connectedPlayers,
-    currentPlayer,
-    lobbyLeader,
-    sendMessage,
-  } = LobbyService.useLobbyConnection(lobbyId, username);
 
-  // When lobby creator presses 'start game' button
-  const goToGame = () => {
-    console.log('(not implemented yet) leader started game!');
-    // sendMessage('start game');
-  };
+  useEffect(() => {
+    (async () => {
+      const lobbyExists = await LobbyService.isLobbyIdValid(lobbyId);
+      updateState({ currentLobbyId: lobbyExists ? lobbyId : undefined });
+      !lobbyExists && navigation.goBack();
+    })();
+  }, [lobbyId]);
 
   // When user presses 'Invite Friends' button
   const openShareTab = () =>
     Share.open({
       message: `Join My Modi Game! modi:/app/lobbies/${lobbyId}`,
     });
+
+  const onEventStarted = useCallback(({ eventId: id, authorizedPlayerId }) => {
+    updateState({
+      currentGameId: id,
+      authorizedPlayerId,
+      currentLobbyId: undefined,
+    });
+    navigation.navigate('Game', { param: { id } });
+  }, []);
+
+  const {
+    connectedPlayers,
+    currentPlayer,
+    lobbyLeader,
+    sendMessageToLobbyNsp,
+  } = LobbyService.useLobbyConnection(lobbyId, username, onEventStarted);
+
+  // When lobby creator presses 'start game' button
+  const triggerStartEvent = () => sendMessageToLobbyNsp('start');
 
   return (
     <LobbyScreen
@@ -36,7 +51,7 @@ const LobbyScreenCreator = ({ navigation }) => {
       askForUsername={!username || username === ''}
       onUsernameSet={u => updateState({ username: u })}
       onInviteFriendsBtnPressed={openShareTab}
-      onStartGameBtnPressed={goToGame}
+      onStartGameBtnPressed={triggerStartEvent}
       onBackBtnPressed={navigation.goBack}
     />
   );

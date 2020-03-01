@@ -3,7 +3,9 @@ import { usePersistStorage } from 'react-native-use-persist-storage';
 
 const createInitialState = () => ({
   username: '',
-  game: undefined,
+  currentLobbyId: undefined,
+  currentGameId: undefined,
+  authorizedPlayerId: undefined,
 });
 
 const AppContext = createContext();

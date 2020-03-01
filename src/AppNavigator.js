@@ -23,7 +23,7 @@ const AppStack = createStackNavigator(
     },
   },
   {
-    initialRouteName: 'Game',
+    initialRouteName: 'Home',
     defaultNavigationOptions: {
       headerShown: false,
     },
