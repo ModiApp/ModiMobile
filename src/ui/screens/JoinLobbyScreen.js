@@ -22,7 +22,7 @@ const JoinLobbyScreen = ({
     <Button width={56} margin={16} onPress={onCancel}>
       <BackIcon size={28} />
     </Button>
-    <KeyboardAvoidingView flex={1} justifyContent="flex-end" behavior="padding">
+    <KeyboardAvoidingView flex={1} justifyContent="center" behavior="padding">
       <Container margin={16}>
         <Container flexDirection="row" alignItems="center">
           {isValidatingLobbyId && <LoadingSpinner size="small" color="white" />}

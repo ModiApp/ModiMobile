@@ -1,14 +1,39 @@
 import React, { useState, useContext, useEffect } from 'react';
 
 import AppContext from '../StateManager';
-import { LobbyService } from '../service';
+import { LobbyService, GameService } from '../service';
 import { HomeScreen } from '../ui';
 
 const HomeScreenCreator = ({ navigation }) => {
-  const [state, updateState] = useContext(AppContext);
+  const [globalState, updateState] = useContext(AppContext);
   const [isCreatingGame, setIsCreatingGame] = useState(false);
-  // const [isJoiningGame, setIsJoiningGame] = useState(false);
   const [shouldAskForUsername, setShouldAskForUsername] = useState(false);
+
+  const { username, currentLobbyId, currentGameId } = globalState;
+
+  // Try to move this to a point before the homescreen is even rendered
+  useEffect(() => {
+    (async () => {
+      if (currentLobbyId) {
+        const stillExists = await LobbyService.isLobbyIdValid(currentLobbyId);
+        if (!stillExists) {
+          updateState({ currentLobbyId: undefined });
+        } else {
+          navigation.navigate('Lobby', { id: currentLobbyId });
+        }
+      } else if (currentGameId) {
+        const stillExists = await GameService.isGameIdValid(currentGameId);
+        if (!stillExists) {
+          updateState({
+            currentGameId: undefined,
+            authorizedPlayerId: undefined,
+          });
+        } else {
+          navigation.navigate('Game', { id: currentGameId });
+        }
+      }
+    })();
+  }, [currentLobbyId, currentGameId, navigation]);
 
   const onCreateGameButtonPressed = async () => {
     if (requireUsername()) {
@@ -20,7 +45,7 @@ const HomeScreenCreator = ({ navigation }) => {
   };
 
   const requireUsername = () => {
-    const hasUsername = state.username !== '';
+    const hasUsername = username !== '';
     return hasUsername || (setShouldAskForUsername(true) && false);
   };
 
@@ -28,16 +53,12 @@ const HomeScreenCreator = ({ navigation }) => {
     <HomeScreen
       onCreateGameBtnPressed={onCreateGameButtonPressed}
       onJoinGameBtnPressed={() => {
-        if (requireUsername()) {
-          navigation.navigate('JoinLobby');
-          // setIsJoiningGame(true);
-        }
+        requireUsername() && navigation.navigate('JoinLobby');
       }}
       onUsernameUpdated={u => updateState({ username: u })}
-      username={state.username}
+      username={username}
       isCreatingGame={isCreatingGame}
-      // isJoiningGame={isJoiningGame}
-      shouldAskForUsername={shouldAskForUsername && !!state.username}
+      shouldAskForUsername={shouldAskForUsername && !!username}
     />
   );
 };
