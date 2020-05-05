@@ -2,7 +2,11 @@ import React from 'react';
 
 import { ScreenContainer, Text } from '../components';
 
-const GameScreen = ({ connectedPlayers, currentPlayerId }) => {
+const GameScreen = ({
+  connectedPlayers,
+  currentPlayerId,
+  isWaitingForPlayers,
+}) => {
   return (
     <ScreenContainer>
       {connectedPlayers.map(({ id, player }) => (
