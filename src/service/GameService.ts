@@ -13,7 +13,8 @@ class GameService {
   }
 
   useGameConnection(gameId, authorizedPlayerId, username) {
-    const [gameInfo, setGameInfo] = useState({
+    const [gameState, setGameState] = useState({
+      waitingForPlayers: true,
       connectedPlayers: [],
     });
     const sendMessage = useRef(null);
@@ -23,12 +24,20 @@ class GameService {
       });
       socket.on('connect', () => {
         !sendMessage.current && (sendMessage.current = socket.send);
-        socket.on('game info', setGameInfo);
+        socket.on('updated game state', setGameState);
+        socket.on('game on', () => {});
       });
       return () => socket.disconnect();
     }, [authorizedPlayerId, gameId, username]);
-    return { ...gameInfo, sendMessage: sendMessage.current };
+    return { ...gameState, sendMessage: sendMessage.current };
   }
 }
+
+interface Card {
+  suit: 'spades' | 'clubs' | 'hearts' | 'diamonds';
+  rank: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
+  value: () => Number;
+}
+function createGameService(onRecievedCard: (card: Card) => void) {}
 
 export default new GameService();
