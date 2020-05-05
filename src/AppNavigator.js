@@ -8,6 +8,7 @@ import {
   GameScreenCreator,
 } from './factory';
 
+/** @todo upgrade to react-navigation v5 */
 const AppStack = createStackNavigator(
   {
     Home: {
