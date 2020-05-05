@@ -22,7 +22,7 @@ const GameScreenCreator = ({ navigation }) => {
     })();
   }, [gameId]);
 
-  const { connectedPlayers } = GameService.useGameConnection(
+  const { waitingForPlayers, connectedPlayers } = GameService.useGameConnection(
     gameId,
     authorizedPlayerId,
     username,
@@ -32,6 +32,7 @@ const GameScreenCreator = ({ navigation }) => {
     <GameScreen
       connectedPlayers={connectedPlayers}
       currentPlayerId={authorizedPlayerId}
+      isWaitingForPlayers={waitingForPlayers}
     />
   );
 };

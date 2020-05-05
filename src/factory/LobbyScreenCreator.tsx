@@ -23,13 +23,13 @@ const LobbyScreenCreator = ({ navigation }) => {
       message: `Join My Modi Game! modi:/app/lobbies/${lobbyId}`,
     });
 
-  const onEventStarted = useCallback(({ eventId: id, authorizedPlayerId }) => {
+  const onEventStarted = useCallback(({ eventId, authorizedPlayerId }) => {
     updateState({
-      currentGameId: id,
+      currentGameId: eventId,
       authorizedPlayerId,
       currentLobbyId: undefined,
     });
-    navigation.navigate('Game', { param: { id } });
+    navigation.navigate('Game', { param: { id: eventId } });
   }, []);
 
   const {
