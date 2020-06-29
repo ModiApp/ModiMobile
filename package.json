@@ -12,6 +12,8 @@
   "dependencies": {
     "@react-native-community/async-storage": "^1.7.1",
     "@react-native-community/masked-view": "^0.1.6",
+    "@types/react-native": "^0.62.7",
+    "@types/socket.io-client": "^1.4.32",
     "axios": "^0.19.2",
     "prop-types": "^15.7.2",
     "react": "16.9.0",

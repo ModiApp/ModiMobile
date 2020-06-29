@@ -9,10 +9,10 @@ const FlipableCard = ({ upFaceImg, downFaceImg }) => {
   return (
     <CardFlip ref={card} perspective={5000} duration={325} style={styles.card}>
       <TouchableOpacity onPress={() => card.current.flip()}>
-        <Image source={frontImg} resizeMode="contain" style={styles.card} />
+        <Image source={upFaceImg} resizeMode="contain" style={styles.card} />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => card.current.flip()}>
-        <Image source={backImg} resizeMode="contain" style={styles.card} />
+        <Image source={downFaceImg} resizeMode="contain" style={styles.card} />
       </TouchableOpacity>
     </CardFlip>
   );
@@ -32,4 +32,13 @@ const PlayingCard = ({ suit, rank, faceup }) => {
   return <FlipableCard upFaceImg={upImg} downFaceImg={downImg} />;
 };
 
+const CardBack = props => (
+  <Image
+    source={CardImgs.back}
+    resizeMode="contain"
+    style={{ width: '', aspectRatio: 1.528 }}
+  />
+);
+
+export { CardBack };
 export default PlayingCard;
