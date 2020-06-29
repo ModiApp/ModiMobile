@@ -5,8 +5,10 @@ import {
   HomeScreenCreator,
   JoinLobbyScreenCreator,
   LobbyScreenCreator,
-  GameScreenCreator,
+  // GameScreenCreator,
 } from './factory';
+
+import { GameScreen } from './ui';
 
 /** @todo upgrade to react-navigation v5 */
 const AppStack = createStackNavigator(
@@ -20,11 +22,11 @@ const AppStack = createStackNavigator(
     },
     Game: {
       path: 'games/:id',
-      screen: GameScreenCreator,
+      screen: GameScreen,
     },
   },
   {
-    initialRouteName: 'Home',
+    initialRouteName: 'Game',
     defaultNavigationOptions: {
       headerShown: false,
     },

@@ -1,43 +1,62 @@
-import { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
-import axios from 'axios';
 
-// const API_URL = 'https://d0773c55.ngrok.io';
 const API_URL = 'http://localhost:5000';
 
-class GameService {
-  async isGameIdValid(id) {
-    return axios
-      .get(`${API_URL}/games/${id}/check-existence`)
-      .then(res => res.data.exists);
-  }
+class ModiGameService {
+  private connection: SocketIOClient.Socket;
 
-  useGameConnection(gameId, authorizedPlayerId, username) {
-    const [gameState, setGameState] = useState({
-      waitingForPlayers: true,
-      connectedPlayers: [],
+  constructor(config: GameServiceConfig) {
+    this.connection = io(`${API_URL}/games/${config.gameId}`, {
+      query: {
+        username: config.username,
+        authorizedPlayerId: config.authorizedPlayerId,
+      },
     });
-    const sendMessage = useRef(null);
-    useEffect(() => {
-      const socket = io(`${API_URL}/games/${gameId}`, {
-        query: { username, authorizedPlayerId },
-      });
-      socket.on('connect', () => {
-        !sendMessage.current && (sendMessage.current = socket.send);
-        socket.on('updated game state', setGameState);
-        socket.on('game on', () => {});
-      });
-      return () => socket.disconnect();
-    }, [authorizedPlayerId, gameId, username]);
-    return { ...gameState, sendMessage: sendMessage.current };
+
+    this.connection.on(
+      'game state changed',
+      (action: GameStateChangeAction) => {
+        config.onGameStateChanged(action);
+      },
+    );
+  }
+
+  disconnect() {
+    this.connection.disconnect();
   }
 }
-
-interface Card {
-  suit: 'spades' | 'clubs' | 'hearts' | 'diamonds';
-  rank: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
-  value: () => Number;
+function createGameService(config: GameServiceConfig) {
+  return new ModiGameService(config);
 }
-function createGameService(onRecievedCard: (card: Card) => void) {}
 
-export default new GameService();
+function createMockGameService(config: GameServiceConfig) {
+  const { gameId, authorizedPlayerId, username } = config;
+  console.log('connecting to mock game:', gameId, authorizedPlayerId, username);
+  const mockPlayerIds = ['123', '456', authorizedPlayerId, '789'];
+  const gameState: ModiGameState = {
+    round: 1,
+    dealerId: mockPlayerIds[mockPlayerIds.length - 1],
+    activePlayerIdx: 0,
+    playersCards: new Map([
+      ['123', true],
+      ['456', true],
+      [authorizedPlayerId, true],
+      ['789', true],
+    ]),
+    moves: [],
+    liveCounts: mockPlayerIds.map(id => [id, 3]),
+    cardOrder: [0, 1, 2, 3],
+    playerOrder: mockPlayerIds,
+  };
+  config.onGameStateChanged({
+    type: 'set entire state',
+    payload: gameState,
+  });
+
+  return {
+    disconnect: () => console.log('disconnecting from mock game service'),
+  };
+}
+
+export { createGameService, createMockGameService };
+// export default new GameService();

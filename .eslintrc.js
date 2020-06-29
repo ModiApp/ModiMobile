@@ -6,6 +6,7 @@ module.exports = {
   rules: {
     "no-undef": "off",
     "no-alert": "off",
-    "react-hooks/exhaustive-deps": "off"
+    "react-hooks/exhaustive-deps": "off",
+    "react-native/no-inline-styles": "off"
   }
 };

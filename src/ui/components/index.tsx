@@ -5,13 +5,13 @@ import {
   Text as RNText,
   TextInput as RNTextInput,
   ActivityIndicator,
-  ImageBackground,
 } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { colors, sizing, fontFamilies } from '../styles';
 
-import PlayingCard from './PlayingCard';
+import PlayingCard, { CardBack } from './PlayingCard';
+import CardMiniMap from './CardMiniMap';
 
 /** Useful for grabbing style attributes from a component's props */
 const stylesFromProps = props => {
@@ -33,6 +33,7 @@ const stylesFromProps = props => {
     'paddingVertical',
     'paddingHorrizontal',
     'width',
+    'transform',
   ]);
 
   const styles = Object.keys(props)
@@ -41,26 +42,32 @@ const stylesFromProps = props => {
 
   const propsWithoutStyles = Object.fromEntries(
     Object.keys(props)
-      .filter(prop => !styleProps.has(prop))
+      .filter(prop => !(styleProps.has(prop) || prop === 'style'))
       .map(key => [key, props[key]]),
   );
 
-  return { styles, propsWithoutStyles };
+  const overridenStyles = props.style;
+
+  return { styles, overridenStyles, propsWithoutStyles };
 };
 
-const withStylesFromProps = (Component, css) => ({ children, ...props }) => {
-  const { styles: s, propsWithoutStyles } = stylesFromProps(props);
+const withStylesFromProps = (Component: React.ComponentType, css?) => props => {
+  const { styles, overridenStyles, propsWithoutStyles } = stylesFromProps(
+    props,
+  );
   props.bgColor &&
-    s.push({ backgroundColor: colors[props.bgColor] || props.bgColor });
-  props.color && s.push({ color: colors[props.color] || props.color });
+    styles.push({ backgroundColor: colors[props.bgColor] || props.bgColor });
+  props.color && styles.push({ color: colors[props.color] || props.color });
   return (
-    <Component style={[css, ...s]} {...propsWithoutStyles}>
-      {children}
+    <Component
+      style={[css, ...styles, overridenStyles]}
+      {...propsWithoutStyles}>
+      {props.children}
     </Component>
   );
 };
 
-const Button = withStylesFromProps(TouchableOpacity, {
+export const Button = withStylesFromProps(TouchableOpacity, {
   borderRadius: 50,
   padding: 8,
   flexDirection: 'row',
@@ -68,14 +75,14 @@ const Button = withStylesFromProps(TouchableOpacity, {
   alignItems: 'center',
 });
 
-const Container = withStylesFromProps(View);
+export const Container = withStylesFromProps(View);
 
-const Text = withStylesFromProps(RNText, {
+export const Text = withStylesFromProps(RNText, {
   fontFamily: fontFamilies.primary,
   color: 'white',
 });
 
-const TextInput = withStylesFromProps(
+export const TextInput = withStylesFromProps(
   props => <RNTextInput {...props} placeholderTextColor="lightgray" />,
   {
     backgroundColor: 'white',
@@ -87,19 +94,11 @@ const TextInput = withStylesFromProps(
   },
 );
 
-const ScreenContainer = withStylesFromProps(SafeAreaView, {
+export const ScreenContainer = withStylesFromProps(SafeAreaView, {
   backgroundColor: colors.feltGreen,
   ...sizing.fullScreen,
 });
 
-const LoadingSpinner = ActivityIndicator;
+export const LoadingSpinner = ActivityIndicator;
 
-export {
-  ScreenContainer,
-  Container,
-  Button,
-  Text,
-  TextInput,
-  LoadingSpinner,
-  PlayingCard,
-};
+export { PlayingCard, CardBack, CardMiniMap };
