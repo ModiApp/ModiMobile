@@ -11,7 +11,10 @@ type CardPlacement = {
   rotation: string;
 };
 
-const CardMiniMap: React.FC<{ cards: number[] }> = ({ cards }) => {
+const CardMiniMap: React.FC<{
+  cards: number[];
+  onRadius: (r: number) => void;
+}> = ({ cards, onRadius }) => {
   const numCards = cards.length;
   const [mapWidth, setMapWidth] = useState(0);
   const cardHeight = range(3, 15, 130, 50, numCards);
@@ -29,7 +32,8 @@ const CardMiniMap: React.FC<{ cards: number[] }> = ({ cards }) => {
     const rotationFacotor = (2 * Math.PI) / cards.length;
     const circleRadius = mapWidth / 2 - cardHeight / 2;
     const circleRotationOffset = Math.PI / 2;
-    console.log(circleRadius);
+    onRadius(circleRadius);
+    console.log('sending radius:', circleRadius);
     return cards.map((_, i) => ({
       position: {
         x: Math.cos(i * rotationFacotor + circleRotationOffset) * circleRadius,
