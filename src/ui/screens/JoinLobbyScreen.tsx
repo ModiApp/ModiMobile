@@ -11,7 +11,14 @@ import {
 
 import { BackIcon } from '../icons';
 
-const JoinLobbyScreen = ({
+interface JoinLobbyScreenProps {
+  isValidatingLobbyId: boolean;
+  validationError?: string;
+  isLobbyIdInvalid: boolean;
+  onLobbyIdSet: (lobbyId: string) => void;
+  onCancel: () => void;
+}
+const JoinLobbyScreen: React.FC<JoinLobbyScreenProps> = ({
   onLobbyIdSet,
   isValidatingLobbyId,
   isLobbyIdInvalid,
