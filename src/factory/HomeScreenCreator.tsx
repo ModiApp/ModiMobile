@@ -58,7 +58,7 @@ const HomeScreenCreator: NavigationStackScreenComponent = ({ navigation }) => {
       onUsernameUpdated={u => updateState({ username: u })}
       username={username}
       isCreatingGame={isCreatingGame}
-      shouldAskForUsername={shouldAskForUsername && !!username}
+      shouldAskForUsername={shouldAskForUsername && !username}
     />
   );
 };
