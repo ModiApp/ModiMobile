@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 
 import {
@@ -11,7 +10,19 @@ import {
 } from '../components';
 import { BackIcon } from '../icons';
 
-const LobbyScreen = ({
+type ConnectedUser = { id: string; username: string };
+interface LobbyScreenProps {
+  gamePin: string;
+  lobbyCreator: ConnectedUser;
+  currentPlayer: ConnectedUser;
+  connectedPlayers: ConnectedUser[];
+  askForUsername: boolean;
+  onUsernameSet: (username: string) => void;
+  onInviteFriendsBtnPressed: () => void;
+  onStartGameBtnPressed: () => void;
+  onBackBtnPressed: () => void;
+}
+const LobbyScreen: React.FC<LobbyScreenProps> = ({
   gamePin,
   lobbyCreator,
   currentPlayer,
@@ -77,26 +88,15 @@ const LobbyScreen = ({
   </ScreenContainer>
 );
 
-const PlayerSchema = PropTypes.shape({
-  username: PropTypes.string.isRequired,
-  id: PropTypes.string.isRequired,
-});
-
-LobbyScreen.propTypes = {
-  gamePin: PropTypes.string.isRequired,
-  lobbyCreator: PlayerSchema,
-  currentPlayer: PlayerSchema,
-  connectedPlayers: PropTypes.arrayOf(PlayerSchema),
-  onInviteFriendsBtnPressed: PropTypes.func.isRequired,
-  onStartGameBtnPressed: PropTypes.func.isRequired,
-};
-
 LobbyScreen.defaultProps = {
-  lobbyCreator: {},
-  currentPlayer: {},
+  lobbyCreator: { id: '', username: '' },
+  currentPlayer: { id: '', username: '' },
 };
 
-const PlayerList = ({ players }) => (
+interface PlayerListProps {
+  players: ConnectedUser[];
+}
+const PlayerList: React.FC<PlayerListProps> = ({ players }) => (
   <Container height="100%" padding={16} borderRadius={20} bgColor="lightGreen">
     {players.map(({ username, id }, i) => (
       <Container padding={16} key={id}>
