@@ -31,15 +31,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
     </Container>
 
     <Container flex={1} justifyContent="flex-end" padding={16}>
-      <Container>
-        {shouldAskForUsername && (
-          <Text color="red" size={14}>
-            Enter a username
-          </Text>
-        )}
+      <Container margin={8}>
+        {shouldAskForUsername && <Text color="red">Enter a username:</Text>}
         <TextInput
           placeholder="Username"
-          margin={8}
+          marginTop={8}
           padding={18}
           fontSize={28}
           value={username}
