@@ -3,8 +3,9 @@ import React, { useState, useContext, useEffect } from 'react';
 import AppContext from '../StateManager';
 import { LobbyService, GameService } from '../service';
 import { HomeScreen } from '../ui';
+import { NavigationStackScreenComponent } from 'react-navigation-stack';
 
-const HomeScreenCreator = ({ navigation }) => {
+const HomeScreenCreator: NavigationStackScreenComponent = ({ navigation }) => {
   const [globalState, updateState] = useContext(AppContext);
   const [isCreatingGame, setIsCreatingGame] = useState(false);
   const [shouldAskForUsername, setShouldAskForUsername] = useState(false);
@@ -45,8 +46,7 @@ const HomeScreenCreator = ({ navigation }) => {
   };
 
   const requireUsername = () => {
-    const hasUsername = username !== '';
-    return hasUsername || (setShouldAskForUsername(true) && false);
+    return !!username || setShouldAskForUsername(true);
   };
 
   return (
