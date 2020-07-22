@@ -3,38 +3,44 @@ import { ActivityIndicator } from 'react-native';
 
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 
-import {
-  ScreenContainer,
-  Container,
-  Button,
-  Text,
-  TextInput,
-} from '../components';
+import { ScreenContainer, Container, TextInput } from '../components';
 
-const HomeScreen = ({
+import Button from '../components/Button';
+import Text from '../components/Text';
+
+interface HomeScreenProps {
+  isCreatingGame: boolean;
+  shouldAskForUsername: boolean;
+  username: string | undefined;
+  onUsernameUpdated: (newUsername: string) => void;
+  onCreateGameBtnPressed: () => void;
+  onJoinGameBtnPressed: () => void;
+}
+
+const HomeScreen: React.FC<HomeScreenProps> = ({
   onJoinGameBtnPressed,
   onCreateGameBtnPressed,
   onUsernameUpdated,
   username,
   isCreatingGame,
-  isJoiningGame,
   shouldAskForUsername,
 }) => (
   <ScreenContainer>
     <Container flex={1} alignItems="center" justifyContent="center">
-      <Text fontSize={64}>Modi</Text>
+      <Text size={64}>Modi</Text>
     </Container>
 
     <Container flex={1} justifyContent="flex-end" padding={16}>
       <Container>
         {shouldAskForUsername && (
-          <Text color="red" fontSize={14}>
+          <Text color="red" size={14}>
             Enter a username
           </Text>
         )}
         <TextInput
           placeholder="Username"
           margin={8}
+          padding={18}
           fontSize={28}
           value={username}
           onChangeText={onUsernameUpdated}
@@ -43,24 +49,20 @@ const HomeScreen = ({
       <KeyboardSpacer topSpacing={-150} />
       <Button
         onPress={onJoinGameBtnPressed}
-        bgColor="blue"
-        margin={8}
-        disabled={isJoiningGame}>
-        {isJoiningGame ? (
-          <ActivityIndicator size="large" color="white" />
-        ) : (
-          <Text fontSize={28}>Join Game</Text>
-        )}
-      </Button>
+        color="blue"
+        title="Join Game"
+        titleStyle={{ fontSize: 28 }}
+        style={{ borderRadius: 50 }}
+      />
       <Button
         onPress={onCreateGameBtnPressed}
-        bgColor="red"
-        margin={8}
-        disabled={isCreatingGame}>
+        color="red"
+        disabled={isCreatingGame}
+        style={{ borderRadius: 50 }}>
         {isCreatingGame ? (
           <ActivityIndicator size="large" color="white" />
         ) : (
-          <Text fontSize={28}>Create Game</Text>
+          <Text size={28}>Create Game</Text>
         )}
       </Button>
     </Container>
