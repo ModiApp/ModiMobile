@@ -18,3 +18,9 @@ export async function validateGameId(gameId: string): Promise<boolean> {
     return false;
   }
 }
+
+export function createLobby(): Promise<string> {
+  return axios
+    .get(`${Config.API_URL}/lobbies/new`)
+    .then((res) => res.data.lobbyId);
+}
