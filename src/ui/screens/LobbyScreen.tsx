@@ -10,24 +10,21 @@ import {
 } from '../components';
 import { BackIcon } from '../icons';
 
-type ConnectedUser = { id: string; username: string };
 interface LobbyScreenProps {
-  gamePin: string;
-  lobbyCreator: ConnectedUser;
-  currentPlayer: ConnectedUser;
-  connectedPlayers: ConnectedUser[];
-  askForUsername: boolean;
+  lobbyId: string;
+  currUserId: string;
+  attendees: LobbyAttendee[];
+  showUsernameInput: boolean;
   onUsernameSet: (username: string) => void;
   onInviteFriendsBtnPressed: () => void;
   onStartGameBtnPressed: () => void;
   onBackBtnPressed: () => void;
 }
 const LobbyScreen: React.FC<LobbyScreenProps> = ({
-  gamePin,
-  lobbyCreator,
-  currentPlayer,
-  connectedPlayers,
-  askForUsername,
+  lobbyId,
+  currUserId,
+  attendees,
+  showUsernameInput,
   onUsernameSet,
   onInviteFriendsBtnPressed,
   onStartGameBtnPressed,
@@ -38,7 +35,7 @@ const LobbyScreen: React.FC<LobbyScreenProps> = ({
       <Container flex={2} justifyContent="center" minHeight={52}>
         <Container alignItems="center">
           <Text fontSize={24}>Game PIN:</Text>
-          <Text fontSize={42}>{gamePin}</Text>
+          <Text fontSize={42}>{lobbyId}</Text>
           <Button bgColor="red" onPress={onInviteFriendsBtnPressed}>
             <Text fontSize={14}>Invite Friends</Text>
           </Button>
@@ -46,7 +43,7 @@ const LobbyScreen: React.FC<LobbyScreenProps> = ({
       </Container>
 
       <Container flex={7} paddingVertical={8}>
-        <PlayerList players={connectedPlayers} />
+        <PlayerList players={attendees} />
       </Container>
 
       <Container
@@ -61,19 +58,19 @@ const LobbyScreen: React.FC<LobbyScreenProps> = ({
         </Container>
 
         <Container flex={5}>
-          {lobbyCreator.id === currentPlayer.id ? (
+          {(attendees[0] || {}).id === currUserId ? (
             <Button bgColor="blue" onPress={onStartGameBtnPressed}>
               <Text fontSize={28}>Start Game</Text>
             </Button>
           ) : (
             <Text fontSize={28}>
-              Waiting for {lobbyCreator.username} to start the game...
+              Waiting for {(attendees[0] || {}).username} to start the game...
             </Text>
           )}
         </Container>
       </Container>
     </Container>
-    {askForUsername && (
+    {showUsernameInput && (
       <Container>
         <TextInput
           placeholder="Username"
@@ -88,13 +85,8 @@ const LobbyScreen: React.FC<LobbyScreenProps> = ({
   </ScreenContainer>
 );
 
-LobbyScreen.defaultProps = {
-  lobbyCreator: { id: '', username: '' },
-  currentPlayer: { id: '', username: '' },
-};
-
 interface PlayerListProps {
-  players: ConnectedUser[];
+  players: LobbyAttendee[];
 }
 const PlayerList: React.FC<PlayerListProps> = ({ players }) => (
   <Container height="100%" padding={16} borderRadius={20} bgColor="lightGreen">
