@@ -5,24 +5,24 @@ import {
   HomeScreenCreator,
   JoinLobbyScreenCreator,
   LobbyScreenCreator,
-  // GameScreenCreator,
+  GameScreenCreator,
 } from './factory';
-
-import { GameScreen } from './ui';
 
 /** @todo upgrade to react-navigation v5 */
 const AppStack = createStackNavigator(
   {
     Home: {
+      path: '',
       screen: HomeScreenCreator,
     },
     Lobby: {
-      path: 'lobbies/:id',
+      path: 'lobbies/:lobbyId',
       screen: LobbyScreenCreator,
+      params: { lobbyId: undefined },
     },
     Game: {
-      path: 'games/:id',
-      screen: GameScreen,
+      path: 'games/:gameId',
+      screen: GameScreenCreator,
     },
   },
   {
