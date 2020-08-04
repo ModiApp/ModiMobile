@@ -1,64 +1,72 @@
-import React, { useState, useContext, useEffect } from 'react';
-
-import AppContext from '../StateManager';
-import { LobbyService, GameService } from '../service';
-import { HomeScreen } from '../ui';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { NavigationStackScreenComponent } from 'react-navigation-stack';
 
+import AppContext from '../StateManager';
+import { HomeScreen } from '../ui';
+import { validateGameId, validateLobbyId, createLobby } from '../util';
+
 const HomeScreenCreator: NavigationStackScreenComponent = ({ navigation }) => {
-  const [globalState, updateState] = useContext(AppContext);
+  const [globalState, updateGlobalState] = useContext(AppContext);
   const [isCreatingGame, setIsCreatingGame] = useState(false);
   const [shouldAskForUsername, setShouldAskForUsername] = useState(false);
 
-  const { username, currentLobbyId, currentGameId } = globalState;
-
-  // Try to move this to a point before the homescreen is even rendered
+  const { username, currLobbyId, currGameId } = globalState;
   useEffect(() => {
-    (async () => {
-      if (currentLobbyId) {
-        const stillExists = await LobbyService.isLobbyIdValid(currentLobbyId);
-        if (!stillExists) {
-          updateState({ currentLobbyId: undefined });
+    if (currLobbyId) {
+      validateLobbyId(currLobbyId).then((isValid) => {
+        if (isValid) {
+          navigation.navigate('Lobby', { lobbyId: currLobbyId });
         } else {
-          navigation.navigate('Lobby', { id: currentLobbyId });
+          updateGlobalState({ currLobbyId: undefined });
         }
-      } else if (currentGameId) {
-        const stillExists = await GameService.isGameIdValid(currentGameId);
-        if (!stillExists) {
-          updateState({
-            currentGameId: undefined,
-            authorizedPlayerId: undefined,
+      });
+    }
+    if (currGameId) {
+      validateGameId(currGameId).then((isValid) => {
+        if (isValid) {
+          navigation.navigate('Game', { gameId: currGameId });
+        } else {
+          updateGlobalState({
+            currGameId: undefined,
+            gameAccessToken: undefined,
           });
-        } else {
-          navigation.navigate('Game', { id: currentGameId });
         }
-      }
-    })();
-  }, [currentLobbyId, currentGameId, navigation]);
+      });
+    }
+  }, [currLobbyId, currGameId]);
 
-  const onCreateGameButtonPressed = async () => {
+  const onCreateGameButtonPressed = useCallback(() => {
     if (requireUsername()) {
       setIsCreatingGame(true);
-      LobbyService.createLobby()
-        .then(id => navigation.navigate('Lobby', { id }))
+      createLobby()
+        .then((lobbyId) => updateGlobalState({ currLobbyId: lobbyId }))
+        .catch((error) => console.error(error.message))
         .finally(() => setIsCreatingGame(false));
     }
-  };
+  }, [username]);
 
-  const requireUsername = () => {
+  const onJoinGameBtnPressed = useCallback(() => {
+    if (requireUsername()) {
+      navigation.navigate('JoinLobby');
+    }
+  }, [username]);
+
+  const requireUsername = useCallback(() => {
     return !!username || setShouldAskForUsername(true);
-  };
+  }, [username]);
+
+  const saveNewUsername = useCallback((newUsername: string) => {
+    updateGlobalState({ username: newUsername });
+  }, []);
 
   return (
     <HomeScreen
-      onCreateGameBtnPressed={onCreateGameButtonPressed}
-      onJoinGameBtnPressed={() => {
-        requireUsername() && navigation.navigate('JoinLobby');
-      }}
-      onUsernameUpdated={u => updateState({ username: u })}
       username={username}
       isCreatingGame={isCreatingGame}
       shouldAskForUsername={shouldAskForUsername && !username}
+      onCreateGameBtnPressed={onCreateGameButtonPressed}
+      onJoinGameBtnPressed={onJoinGameBtnPressed}
+      onUsernameUpdated={saveNewUsername}
     />
   );
 };
