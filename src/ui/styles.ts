@@ -2,7 +2,7 @@ import { Dimensions } from 'react-native';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
-export const colors = {
+export const colors: { [key in ColorName]: string } = {
   feltGreen: '#35654D',
   lightGreen: '#428161',
   blue: '#177E89',
