@@ -1,40 +1,42 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useCallback } from 'react';
 import { NavigationStackScreenComponent } from 'react-navigation-stack';
 
+import { validateGameId } from '../util';
 import { GameScreen } from '../ui';
-import GameStateProvider from '../service/GameStateProvider';
+import { GameStateProvider } from '../providers';
 import AppContext from '../StateManager';
 
-// Not yet sure if i want to make a regular http request or use socket
-// to determine if game exists
-const mockGameService = () => ({
-  isGameIdValid: (id: string) => !!id,
-});
-
-const GameService = mockGameService();
-
-const GameScreenCreator: NavigationStackScreenComponent = ({ navigation }) => {
+type NavParams = { gameId: string };
+const GameScreenCreator: NavigationStackScreenComponent<NavParams, {}> = ({
+  navigation,
+}) => {
   const [globalState, updateGlobalState] = useContext(AppContext);
-  const { username, authorizedPlayerId } = globalState;
-  const gameId = navigation.getParam('id');
+  const { username, gameAccessToken } = globalState;
+  const gameId = navigation.getParam('gameId');
   useEffect(() => {
-    (async () => {
-      const isValid = await GameService.isGameIdValid(gameId);
+    validateGameId(gameId).then((isValid) => {
       if (!isValid) {
         updateGlobalState({
-          authorizedPlayerId: undefined,
-          currentGameId: undefined,
+          gameAccessToken: undefined,
+          currGameId: undefined,
         });
         navigation.navigate('Home');
       }
-    })();
+    });
   }, [gameId]);
+
+  const goToNewGame = useCallback((lobbyId: string) => {
+    updateGlobalState({ currGameId: undefined, gameAccessToken: undefined });
+    navigation.navigate('Lobby', { lobbyId });
+  }, []);
 
   return (
     <GameStateProvider
       username={username!}
-      authorizedPlayerId={authorizedPlayerId!}
-      gameId={gameId}>
+      accessToken={gameAccessToken!}
+      gameId={gameId}
+      onPlayAgainLobbyIdRecieved={goToNewGame}
+    >
       <GameScreen />
     </GameStateProvider>
   );
