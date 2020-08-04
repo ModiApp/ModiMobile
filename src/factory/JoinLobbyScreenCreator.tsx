@@ -1,23 +1,33 @@
-import React, { useState } from 'react';
-import { JoinLobbyScreen } from '../ui';
-import { LobbyService } from '../service';
+import React, { useState, useCallback } from 'react';
+import { NavigationStackScreenComponent } from 'react-navigation-stack';
 
-const JoinLobbyScreenCreator = ({ navigation }) => {
+import { JoinLobbyScreen } from '../ui';
+import { validateLobbyId } from '../util';
+
+const JoinLobbyScreenCreator: NavigationStackScreenComponent = ({
+  navigation,
+}) => {
   const [isValidatingLobbyId, setIsValidatingLobbyId] = useState(false);
   const [isLobbyIdInvalid, setIsLobbyIdInvalid] = useState(false);
   const [validationError, setValidationError] = useState(undefined);
 
-  const onLobbyIdSet = async id => {
+  const onLobbyIdSet = useCallback((lobbyId) => {
     setIsValidatingLobbyId(true);
-    LobbyService.isLobbyIdValid(id)
-      .then(isValid =>
-        isValid
-          ? navigation.navigate('Lobby', { id })
-          : setIsLobbyIdInvalid(true),
-      )
-      .catch(e => setValidationError(e.message))
+    validateLobbyId(lobbyId)
+      .then((isValid) => {
+        if (isValid) {
+          navigation.navigate('Lobby', { lobbyId });
+        } else {
+          setIsLobbyIdInvalid(true);
+        }
+      })
+      .catch((e) => setValidationError(e.message))
       .finally(() => setIsValidatingLobbyId(false));
-  };
+  }, []);
+
+  const goBack = useCallback(() => {
+    navigation.navigate('Home');
+  }, []);
 
   return (
     <JoinLobbyScreen
@@ -25,7 +35,7 @@ const JoinLobbyScreenCreator = ({ navigation }) => {
       isValidatingLobbyId={isValidatingLobbyId}
       isLobbyIdInvalid={isLobbyIdInvalid}
       validationError={validationError}
-      onCancel={() => navigation.navigate('Home')}
+      onCancel={goBack}
     />
   );
 };
