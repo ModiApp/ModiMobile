@@ -3,14 +3,14 @@ import { usePersistStorage } from 'react-native-use-persist-storage';
 
 const createInitialState = (): ModiAppState => ({
   username: '',
-  currentLobbyId: undefined,
-  currentGameId: undefined,
-  authorizedPlayerId: undefined,
+  currLobbyId: undefined,
+  currGameId: undefined,
+  gameAccessToken: undefined,
 });
 
 const AppContext = createContext<AppContextType>([
   createInitialState(),
-  () => new Promise(r => r()),
+  () => new Promise((r) => r()),
 ]);
 
 export const AppStateProvider: React.FC = ({ children, ...props }) => {
