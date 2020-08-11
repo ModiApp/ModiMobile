@@ -17,6 +17,7 @@ const HomeScreenCreator: NavigationStackScreenComponent = ({ navigation }) => {
         if (isValid) {
           navigation.navigate('Lobby', { lobbyId: currLobbyId });
         } else {
+          navigation.setParams({ lobbyId: undefined });
           updateGlobalState({ currLobbyId: undefined });
         }
       });
@@ -26,6 +27,7 @@ const HomeScreenCreator: NavigationStackScreenComponent = ({ navigation }) => {
         if (isValid) {
           navigation.navigate('Game', { gameId: currGameId });
         } else {
+          navigation.setParams({ gameId: undefined });
           updateGlobalState({
             currGameId: undefined,
             gameAccessToken: undefined,

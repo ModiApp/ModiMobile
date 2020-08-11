@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useMemo } from 'react';
 import {
   TouchableOpacity,
   StyleProp,
@@ -35,20 +35,25 @@ const Button: React.FC<ButtonProps & TouchableOpacityProps> = ({
   style,
   ...props
 }) => {
-  const defaultStyles = useRef<StyleProp<ViewStyle>>({
-    flex: fullWidth ? 1 : undefined,
-    backgroundColor: colors[color],
-    margin: 8,
-    padding: thin ? 8 : 16,
-    borderRadius: 16,
-    alignItems: 'center',
-  }).current;
+  const defaultStyles = useMemo<StyleProp<ViewStyle>>(
+    () => ({
+      flex: fullWidth ? 1 : undefined,
+      backgroundColor: colors[color],
+      margin: 8,
+      padding: thin ? 6 : 16,
+      borderRadius: 16,
+      alignItems: 'center',
+      justifyContent: 'center',
+    }),
+    [color, thin, fullWidth],
+  );
 
   return (
     <TouchableOpacity
       onPress={onPress}
       style={[defaultStyles, style]}
-      {...props}>
+      {...props}
+    >
       {title ? <Text style={titleStyle}>{title}</Text> : children}
     </TouchableOpacity>
   );

@@ -3,12 +3,13 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
+    "android-prod": "export ENVFILE=.env.prod && react-native run-android",
+    "android-dev": "export ENVFILE=.env.dev && react-native run-android",
     "ios-prod": "export ENVFILE=.env.prod && react-native run-ios",
-    "ios-dev": "export ENVFILE=.env.dev && react-native run-android",
+    "ios-dev": "export ENVFILE=.env.dev && react-native run-ios",
+    "ios-beta-deploy": "export ENVFILE=.env.prod && cd ios && fastlane beta",
     "serve-prod": "export ENVFILE=.env.prod && react-native start",
     "serve-dev": "export ENVFILE=.env.dev && react-native start",
-    "ios-beta-deploy": "export ENVFILE=.env.prod && cd ios && fastlane beta",
     "test": "jest",
     "lint": "eslint ."
   },

@@ -7,12 +7,14 @@ import React, {
 } from 'react';
 import { Animated, View, LayoutChangeEvent, Easing } from 'react-native';
 
-import { GameStateContext } from '../../providers';
+import { GameStateContext, AppStateContext } from '../../providers';
 import useCardAnimation from '../../hooks/useCardAnimation';
 import { ScreenContainer, Container } from '../components';
 import PlayingCard from '../components/PlayingCard';
 import Text from '../components/Text';
 import Button from '../components/Button';
+import { HomeIcon } from '../icons';
+import { NavigationContext, StackActions } from 'react-navigation';
 
 const GameScreen: React.FC<{
   // gameState: ModiGameState;
@@ -76,6 +78,13 @@ const BottomControls: React.FC<{}> = () => {
     dispatch('PLAY_AGAIN');
   }, [dispatch]);
 
+  const navigation = useContext(NavigationContext);
+  const [_, updateGlobalState] = useContext(AppStateContext);
+  const onHomeBtnPressed = useCallback(() => {
+    updateGlobalState({ currGameId: undefined, gameAccessToken: undefined });
+    navigation.dispatch(StackActions.popToTop());
+  }, [navigation]);
+
   const [height, setHeight] = useState(0);
   const [isShowingControls, setIsShowingControls] = useState(true);
   const translateY = useMemo(() => new Animated.Value(height), [height]);
@@ -108,11 +117,21 @@ const BottomControls: React.FC<{}> = () => {
     <View onLayout={onLayout}>
       <Animated.View style={{ transform: [{ translateY }] }}>
         {isEndOfGame ? (
-          <Button
-            title="Play Again"
-            color="blue"
-            onPress={onPlayAgainBtnPressed}
-          />
+          <View style={{ flexDirection: 'row' }}>
+            <Button
+              color="red"
+              onPress={onHomeBtnPressed}
+              style={{ paddingHorizontal: 12, paddingVertical: 8 }}
+            >
+              <HomeIcon size={28} />
+            </Button>
+            <Button
+              title="Play Again"
+              color="blue"
+              onPress={onPlayAgainBtnPressed}
+              style={{ flex: 1 }}
+            />
+          </View>
         ) : (
           <View>
             <Button title="Swap" color="red" onPress={onSwapBtnPressed} />
