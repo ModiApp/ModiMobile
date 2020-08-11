@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useCallback } from 'react';
 import { NavigationStackScreenComponent } from 'react-navigation-stack';
 import Share from 'react-native-share';
 
-import AppContext from '../StateManager';
+import AppContext from '../providers/AppStateProvider';
 import { LobbyScreen } from '../ui';
 import { LobbyStateProvider, LobbyStateContext } from '../providers';
 import { validateLobbyId } from '../util';
@@ -15,14 +15,16 @@ const LobbyScreenCreator: NavigationStackScreenComponent<NavParams> = ({
   const [{ username }, updateState] = useContext(AppContext);
 
   useEffect(() => {
-    validateLobbyId(lobbyId).then((isValid) => {
-      if (isValid) {
-        updateState({ currLobbyId: lobbyId });
-      } else {
-        updateState({ currLobbyId: undefined });
-        navigation.navigate('Home');
-      }
-    });
+    lobbyId &&
+      validateLobbyId(lobbyId).then((isValid) => {
+        if (isValid) {
+          updateState({ currLobbyId: lobbyId });
+        } else {
+          updateState({ currLobbyId: undefined }).then(() =>
+            navigation.navigate('Home'),
+          );
+        }
+      });
   }, [lobbyId]);
 
   const onInviteFriendsBtnPressed = useCallback(() => {

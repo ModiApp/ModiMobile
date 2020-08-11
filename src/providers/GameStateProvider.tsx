@@ -1,20 +1,30 @@
 import React, {
   useEffect,
-  useRef,
   useState,
   createContext,
   useCallback,
+  useMemo,
 } from 'react';
 import io from 'socket.io-client';
 import config from 'react-native-config';
 
-type GameStateContextType = ModiGameState & {
-  dispatch: (...action: GameStateDispatchAction) => void;
-};
 type GameStateDispatchAction =
   | ['MADE_MOVE', PlayerMove]
   | ['CHOOSE_DEALER', PlayerId]
   | ['PLAY_AGAIN'];
+
+interface TailoredState {
+  /** The player whose id matches the accessToken on this device */
+  me: ModiPlayer | undefined;
+
+  /** Whether or not it is the authenticated players turn */
+  isMyTurn: boolean;
+
+  isEndOfGame: boolean;
+}
+type GameStateContextType = ModiGameState & {
+  dispatch: (...action: GameStateDispatchAction) => void;
+} & TailoredState;
 
 const createInitialGameState = (): ModiGameState => ({
   round: -1,
@@ -25,6 +35,9 @@ const createInitialGameState = (): ModiGameState => ({
 const GameStateContext = createContext<GameStateContextType>({
   ...createInitialGameState(),
   dispatch: () => {},
+  me: undefined,
+  isMyTurn: false,
+  isEndOfGame: false,
 });
 
 interface GameStateProviderProps {
@@ -41,12 +54,14 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
   onPlayAgainLobbyIdRecieved,
 }) => {
   const [gameState, setGameState] = useState(createInitialGameState());
-  const socket = useRef(
-    io(`${config.API_URL}/games/${gameId}`, {
-      query: { username, playerId: accessToken },
-      autoConnect: false,
-    }),
-  ).current;
+  const socket = useMemo(
+    () =>
+      io(`${config.API_URL}/games/${gameId}`, {
+        query: { username, playerId: accessToken },
+        autoConnect: false,
+      }),
+    [gameId, username, accessToken],
+  );
 
   useEffect(() => {
     socket.disconnected && socket.open();
@@ -58,20 +73,30 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
   socket.on('GAME_STATE_UPDATED', setGameState);
   socket.on('PLAY_AGAIN_LOBBY_ID', onPlayAgainLobbyIdRecieved);
 
-  useEffect(() => {
-    console.log(
-      'updated game state:',
-      JSON.stringify(gameState, undefined, '  '),
-    );
-  }, [gameState]);
-
   const dispatch = useCallback((...action: GameStateDispatchAction) => {
     const [event, ...args] = action;
     socket.emit(event, ...args);
   }, []);
 
+  const tailoredState = useMemo(() => {
+    const { players, moves } = gameState;
+    const alivePlayers = players.filter((player) => player.lives > 0);
+    const idxOfMe = players.findIndex((player) => player.id === accessToken);
+    const activeMeIdx = alivePlayers.findIndex(
+      (player) => player.id === accessToken,
+    );
+    const me = idxOfMe !== -1 ? players[idxOfMe] : undefined;
+    const isMyTurn = activeMeIdx !== -1 && moves.length === activeMeIdx;
+    const isEndOfGame =
+      players.filter((player) => player.lives > 0).length === 1;
+
+    return { me, isMyTurn, isEndOfGame };
+  }, [gameState, accessToken]);
+
   return (
-    <GameStateContext.Provider value={{ ...gameState, dispatch }}>
+    <GameStateContext.Provider
+      value={{ ...gameState, ...tailoredState, dispatch }}
+    >
       {children}
     </GameStateContext.Provider>
   );

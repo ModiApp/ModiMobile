@@ -1,6 +1,6 @@
 import React, {
   useEffect,
-  useRef,
+  useMemo,
   useState,
   useContext,
   createContext,
@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import io from 'socket.io-client';
 import config from 'react-native-config';
-import AppContext from '../StateManager';
+import AppContext from './AppStateProvider';
 
 interface LobbyState {
   attendees: LobbyAttendee[];
@@ -42,16 +42,18 @@ export const LobbyStateProvider: React.FC<LobbyStateProviderProps> = ({
   const [{ username }] = useContext(AppContext);
   const [lobbyState, setLobbyState] = useState(createInitialLobbyState());
 
-  const socket = useRef(
-    io(`${config.API_URL}/lobbies/${lobbyId}`, {
-      query: { username },
-      autoConnect: false,
-    }),
-  ).current;
+  const socket = useMemo(
+    () =>
+      io(`${config.API_URL}/lobbies/${lobbyId}`, {
+        query: { username },
+        autoConnect: false,
+      }),
+    [lobbyId, username],
+  );
 
   useEffect(() => {
-    if (username) {
-      socket.disconnected && socket.open();
+    if (username && socket.disconnected) {
+      socket.open();
     }
     return () => {
       socket.connected && socket.disconnect();
@@ -64,10 +66,7 @@ export const LobbyStateProvider: React.FC<LobbyStateProviderProps> = ({
   });
 
   const dispatch = useCallback(
-    (action: LobbySocketAction) => {
-      console.log('sending', action, 'to server');
-      socket.emit(action);
-    },
+    (action: LobbySocketAction) => socket.emit(action),
     [socket],
   );
 

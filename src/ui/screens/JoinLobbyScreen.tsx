@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, KeyboardAvoidingView } from 'react-native';
+import { SafeAreaView, KeyboardAvoidingView, Keyboard } from 'react-native';
 
 import {
   Container,
@@ -29,14 +29,20 @@ const JoinLobbyScreen: React.FC<JoinLobbyScreenProps> = ({
     <Button width={56} margin={16} onPress={onCancel}>
       <BackIcon size={28} />
     </Button>
-    <KeyboardAvoidingView flex={1} justifyContent="center" behavior="padding">
+    <KeyboardAvoidingView
+      flex={1}
+      justifyContent="center"
+      behavior="padding"
+      onTouchEnd={() => Keyboard.dismiss}
+    >
       <Container margin={16}>
         <Container flexDirection="row" alignItems="center">
           {isValidatingLobbyId && <LoadingSpinner size="small" color="white" />}
           <Text
             color={isLobbyIdInvalid || validationError ? 'red' : 'white'}
             margin={8}
-            fontSize={16}>
+            fontSize={16}
+          >
             {isLobbyIdInvalid
               ? 'Invalid Game PIN'
               : validationError
@@ -50,9 +56,8 @@ const JoinLobbyScreen: React.FC<JoinLobbyScreenProps> = ({
         <TextInput
           fontSize={24}
           placeholder="Game PIN"
-          onSubmitEditing={e => onLobbyIdSet(e.nativeEvent.text)}
+          onSubmitEditing={(e) => onLobbyIdSet(e.nativeEvent.text)}
           autoFocus
-          keyboardType="numeric"
         />
       </Container>
     </KeyboardAvoidingView>

@@ -14,9 +14,11 @@ const AppContext = createContext<AppContextType>([
 ]);
 
 export const AppStateProvider: React.FC = ({ children, ...props }) => {
-  const [state, setState] = usePersistStorage('@modi', createInitialState);
+  const [state, setState] = usePersistStorage('@modi', createInitialState, {
+    debug: true,
+  });
 
-  const updateState = (updates: ModiAppState) =>
+  const updateState = (updates: Partial<ModiAppState>) =>
     setState({ ...state, ...updates });
 
   return (

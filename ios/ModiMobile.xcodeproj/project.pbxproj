@@ -20,22 +20,6 @@
 		6809146B2F896C32A390B2E1 /* libPods-ModiMobile-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AE2E4BABF1D0238A34879040 /* libPods-ModiMobile-tvOSTests.a */; };
 		8E30F8D2730E87A8C9375056 /* libPods-ModiMobileTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F9F805574D0368F7CE50A7B /* libPods-ModiMobileTests.a */; };
 		9F33B33ACCBDBF0D40E33DDF /* libPods-ModiMobile-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AC7C1711B0B9219636255971 /* libPods-ModiMobile-tvOS.a */; };
-		C6A4455723EFE62D00EF1C25 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C6A4454723EFE62D00EF1C25 /* Fontisto.ttf */; };
-		C6A4455823EFE62D00EF1C25 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C6A4454823EFE62D00EF1C25 /* Octicons.ttf */; };
-		C6A4455923EFE62D00EF1C25 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C6A4454923EFE62D00EF1C25 /* Feather.ttf */; };
-		C6A4455A23EFE62D00EF1C25 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C6A4454A23EFE62D00EF1C25 /* Entypo.ttf */; };
-		C6A4455B23EFE62D00EF1C25 /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C6A4454B23EFE62D00EF1C25 /* FontAwesome5_Brands.ttf */; };
-		C6A4455C23EFE62D00EF1C25 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C6A4454C23EFE62D00EF1C25 /* MaterialCommunityIcons.ttf */; };
-		C6A4455D23EFE62D00EF1C25 /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C6A4454D23EFE62D00EF1C25 /* AntDesign.ttf */; };
-		C6A4455E23EFE62D00EF1C25 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C6A4454E23EFE62D00EF1C25 /* Foundation.ttf */; };
-		C6A4455F23EFE62D00EF1C25 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C6A4454F23EFE62D00EF1C25 /* Ionicons.ttf */; };
-		C6A4456023EFE62D00EF1C25 /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C6A4455023EFE62D00EF1C25 /* FontAwesome5_Solid.ttf */; };
-		C6A4456123EFE62D00EF1C25 /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C6A4455123EFE62D00EF1C25 /* FontAwesome5_Regular.ttf */; };
-		C6A4456223EFE62D00EF1C25 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C6A4455223EFE62D00EF1C25 /* FontAwesome.ttf */; };
-		C6A4456323EFE62D00EF1C25 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C6A4455323EFE62D00EF1C25 /* Zocial.ttf */; };
-		C6A4456423EFE62D00EF1C25 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C6A4455423EFE62D00EF1C25 /* EvilIcons.ttf */; };
-		C6A4456523EFE62D00EF1C25 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C6A4455523EFE62D00EF1C25 /* SimpleLineIcons.ttf */; };
-		C6A4456623EFE62D00EF1C25 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C6A4455623EFE62D00EF1C25 /* MaterialIcons.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,22 +61,6 @@
 		956C1CAC9EEF9C82A3583FEC /* Pods-ModiMobile-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModiMobile-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-ModiMobile-tvOSTests/Pods-ModiMobile-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		AC7C1711B0B9219636255971 /* libPods-ModiMobile-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ModiMobile-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE2E4BABF1D0238A34879040 /* libPods-ModiMobile-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ModiMobile-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		C6A4454723EFE62D00EF1C25 /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
-		C6A4454823EFE62D00EF1C25 /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
-		C6A4454923EFE62D00EF1C25 /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Feather.ttf; sourceTree = "<group>"; };
-		C6A4454A23EFE62D00EF1C25 /* Entypo.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Entypo.ttf; sourceTree = "<group>"; };
-		C6A4454B23EFE62D00EF1C25 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Brands.ttf; sourceTree = "<group>"; };
-		C6A4454C23EFE62D00EF1C25 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialCommunityIcons.ttf; sourceTree = "<group>"; };
-		C6A4454D23EFE62D00EF1C25 /* AntDesign.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AntDesign.ttf; sourceTree = "<group>"; };
-		C6A4454E23EFE62D00EF1C25 /* Foundation.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Foundation.ttf; sourceTree = "<group>"; };
-		C6A4454F23EFE62D00EF1C25 /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Ionicons.ttf; sourceTree = "<group>"; };
-		C6A4455023EFE62D00EF1C25 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Solid.ttf; sourceTree = "<group>"; };
-		C6A4455123EFE62D00EF1C25 /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Regular.ttf; sourceTree = "<group>"; };
-		C6A4455223EFE62D00EF1C25 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.ttf; sourceTree = "<group>"; };
-		C6A4455323EFE62D00EF1C25 /* Zocial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Zocial.ttf; sourceTree = "<group>"; };
-		C6A4455423EFE62D00EF1C25 /* EvilIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = EvilIcons.ttf; sourceTree = "<group>"; };
-		C6A4455523EFE62D00EF1C25 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SimpleLineIcons.ttf; sourceTree = "<group>"; };
-		C6A4455623EFE62D00EF1C25 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialIcons.ttf; sourceTree = "<group>"; };
 		CE105EA5605B21D600B151F3 /* Pods-ModiMobile-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModiMobile-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-ModiMobile-tvOSTests/Pods-ModiMobile-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		DA2BCED91EBBFD59A228A4F8 /* Pods-ModiMobileTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModiMobileTests.release.xcconfig"; path = "Target Support Files/Pods-ModiMobileTests/Pods-ModiMobileTests.release.xcconfig"; sourceTree = "<group>"; };
 		E0B430DCAA010D084E452F3A /* Pods-ModiMobile.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModiMobile.debug.xcconfig"; path = "Target Support Files/Pods-ModiMobile/Pods-ModiMobile.debug.xcconfig"; sourceTree = "<group>"; };
@@ -157,7 +125,6 @@
 		13B07FAE1A68108700A75B9A /* ModiMobile */ = {
 			isa = PBXGroup;
 			children = (
-				C6A4454623EFE62D00EF1C25 /* Fonts */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -230,30 +197,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		C6A4454623EFE62D00EF1C25 /* Fonts */ = {
-			isa = PBXGroup;
-			children = (
-				C6A4454723EFE62D00EF1C25 /* Fontisto.ttf */,
-				C6A4454823EFE62D00EF1C25 /* Octicons.ttf */,
-				C6A4454923EFE62D00EF1C25 /* Feather.ttf */,
-				C6A4454A23EFE62D00EF1C25 /* Entypo.ttf */,
-				C6A4454B23EFE62D00EF1C25 /* FontAwesome5_Brands.ttf */,
-				C6A4454C23EFE62D00EF1C25 /* MaterialCommunityIcons.ttf */,
-				C6A4454D23EFE62D00EF1C25 /* AntDesign.ttf */,
-				C6A4454E23EFE62D00EF1C25 /* Foundation.ttf */,
-				C6A4454F23EFE62D00EF1C25 /* Ionicons.ttf */,
-				C6A4455023EFE62D00EF1C25 /* FontAwesome5_Solid.ttf */,
-				C6A4455123EFE62D00EF1C25 /* FontAwesome5_Regular.ttf */,
-				C6A4455223EFE62D00EF1C25 /* FontAwesome.ttf */,
-				C6A4455323EFE62D00EF1C25 /* Zocial.ttf */,
-				C6A4455423EFE62D00EF1C25 /* EvilIcons.ttf */,
-				C6A4455523EFE62D00EF1C25 /* SimpleLineIcons.ttf */,
-				C6A4455623EFE62D00EF1C25 /* MaterialIcons.ttf */,
-			);
-			name = Fonts;
-			path = "../node_modules/react-native-vector-icons/Fonts";
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -286,6 +229,7 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
+				80C9049E37DF6F97548DF1A6 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -351,7 +295,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = ARN3AVXAYA;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -398,23 +342,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C6A4455723EFE62D00EF1C25 /* Fontisto.ttf in Resources */,
-				C6A4456223EFE62D00EF1C25 /* FontAwesome.ttf in Resources */,
-				C6A4455E23EFE62D00EF1C25 /* Foundation.ttf in Resources */,
-				C6A4456123EFE62D00EF1C25 /* FontAwesome5_Regular.ttf in Resources */,
-				C6A4455F23EFE62D00EF1C25 /* Ionicons.ttf in Resources */,
-				C6A4456423EFE62D00EF1C25 /* EvilIcons.ttf in Resources */,
-				C6A4455A23EFE62D00EF1C25 /* Entypo.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				C6A4456323EFE62D00EF1C25 /* Zocial.ttf in Resources */,
-				C6A4456523EFE62D00EF1C25 /* SimpleLineIcons.ttf in Resources */,
-				C6A4455923EFE62D00EF1C25 /* Feather.ttf in Resources */,
-				C6A4455823EFE62D00EF1C25 /* Octicons.ttf in Resources */,
-				C6A4455B23EFE62D00EF1C25 /* FontAwesome5_Brands.ttf in Resources */,
-				C6A4455D23EFE62D00EF1C25 /* AntDesign.ttf in Resources */,
-				C6A4456623EFE62D00EF1C25 /* MaterialIcons.ttf in Resources */,
-				C6A4456023EFE62D00EF1C25 /* FontAwesome5_Solid.ttf in Resources */,
-				C6A4455C23EFE62D00EF1C25 /* MaterialCommunityIcons.ttf in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -449,7 +377,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		2702F7F879BEDCF8952B392F /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -529,6 +457,54 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		80C9049E37DF6F97548DF1A6 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ModiMobile/Pods-ModiMobile-resources.sh",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Feather.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Foundation.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Zocial.ttf",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EvilIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Feather.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Brands.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Regular.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Solid.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Fontisto.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Foundation.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Ionicons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialCommunityIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Octicons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SimpleLineIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Zocial.ttf",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ModiMobile/Pods-ModiMobile-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		8D1A164B813213D0ED2EC840 /* [CP] Check Pods Manifest.lock */ = {
@@ -706,11 +682,11 @@
 			baseConfigurationReference = E0B430DCAA010D084E452F3A /* Pods-ModiMobile.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = ARN3AVXAYA;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = ModiMobile/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -720,7 +696,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ikeybenz.modii;
 				PRODUCT_NAME = ModiMobile;
-				PROVISIONING_PROFILE_SPECIFIER = "Ikey's Modi Dist Profile";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -731,10 +707,10 @@
 			baseConfigurationReference = 21C787E38316963B10490E70 /* Pods-ModiMobile.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
-				DEVELOPMENT_TEAM = ARN3AVXAYA;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = ModiMobile/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -744,7 +720,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ikeybenz.modii;
 				PRODUCT_NAME = ModiMobile;
-				PROVISIONING_PROFILE_SPECIFIER = "Ikey's Modi Dist Profile";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};

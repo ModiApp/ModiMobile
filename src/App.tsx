@@ -1,15 +1,16 @@
 import React from 'react';
 
 import AppNavigator from './AppNavigator';
-import { AppStateProvider } from './StateManager';
+import { AppStateProvider } from './providers';
+import Config from 'react-native-config';
 
-// import { GameScreen } from './ui';
-// import { GameScreenCreator } from './factory';
-
-const App = () => (
-  <AppStateProvider>
-    <AppNavigator />
-  </AppStateProvider>
-);
+const App = () => {
+  console.log('API_URL=', Config.API_URL);
+  return (
+    <AppStateProvider>
+      <AppNavigator />
+    </AppStateProvider>
+  );
+};
 
 export default App;

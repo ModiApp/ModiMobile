@@ -30,10 +30,10 @@ declare type ModiPlayer = {
   card?: Card;
 };
 declare type ModiAppState = {
-  username?: string;
-  currLobbyId?: string;
-  currGameId?: string;
-  gameAccessToken?: string;
+  username: string | undefined;
+  currLobbyId: string | undefined;
+  currGameId: string | undefined;
+  gameAccessToken: string | undefined;
 };
 
 declare type AppContextType = [

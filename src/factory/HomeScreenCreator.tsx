@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { NavigationStackScreenComponent } from 'react-navigation-stack';
 
-import AppContext from '../StateManager';
+import AppContext from '../providers/AppStateProvider';
 import { HomeScreen } from '../ui';
 import { validateGameId, validateLobbyId, createLobby } from '../util';
 

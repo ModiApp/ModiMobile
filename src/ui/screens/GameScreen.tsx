@@ -1,92 +1,126 @@
-import React, { useState, useCallback } from 'react';
-import { View, Animated, PanResponder } from 'react-native';
+import React, {
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+  useMemo,
+} from 'react';
+import { Animated, View, LayoutChangeEvent, Easing } from 'react-native';
 
-import { ScreenContainer, CardMiniMap } from '../components';
+import { GameStateContext } from '../../providers';
+import useCardAnimation from '../../hooks/useCardAnimation';
+import { ScreenContainer, Container } from '../components';
+import PlayingCard from '../components/PlayingCard';
+import Text from '../components/Text';
+import Button from '../components/Button';
 
 const GameScreen: React.FC<{
   // gameState: ModiGameState;
 }> = () => {
-  const [boardRadius, setBoardRadius] = useState(0);
-  const [cardControlViewLayout, setCardControlViewLayout] = useState({
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-  });
+  const { me } = useContext(GameStateContext);
 
-  const initialCardPos = {
-    x: cardControlViewLayout.width / 2,
-    y: boardRadius,
-  };
-
-  const cardPosOffeset = useCallback(
-    () => new Animated.ValueXY(initialCardPos),
-    [boardRadius, cardControlViewLayout],
-  )();
-
-  const panResponder = useCallback(
-    () =>
-      PanResponder.create({
-        onStartShouldSetPanResponder: () => true,
-        onMoveShouldSetPanResponder: () => true,
-        onPanResponderMove: (_, gestureState) => {
-          let x, y: number;
-          if (Math.abs(gestureState.dx) > Math.abs(gestureState.dy)) {
-            y = Math.sqrt(
-              Math.pow(boardRadius, 2) - Math.pow(gestureState.dx, 2),
-            );
-            x = initialCardPos.x + gestureState.dx;
-          } else {
-            y = Math.sqrt(
-              Math.pow(boardRadius, 2) - Math.pow(gestureState.dy, 2),
-            );
-            x = initialCardPos.y + gestureState.dy;
-          }
-          cardPosOffeset.setValue({ x, y });
-        },
-        onPanResponderEnd: () => {
-          Animated.spring(cardPosOffeset, {
-            toValue: initialCardPos,
-            useNativeDriver: true,
-          }).start();
-        },
-      }),
-    [boardRadius],
-  )();
-
+  // const [card, cardPosAnim] = useCardAnimation(gameState, gameAccessToken);
+  const card = me?.card;
   return (
     <ScreenContainer>
-      <View style={{ width: '90%', marginLeft: '5%' }}>
-        <CardMiniMap
-          cards={[1, 2, 3, 4, 5, 6, 7, 8]}
-          onRadius={r => setBoardRadius(r * 1.5)}
-        />
-      </View>
-
+      <Container>
+        <Text size={24}>{me?.username}</Text>
+        <Text size={16}>Lives: {me?.lives}</Text>
+      </Container>
       <View
-        {...panResponder.panHandlers}
-        onLayout={e => setCardControlViewLayout(e.nativeEvent.layout)}
         style={{
           flex: 1,
-          backgroundColor: 'green',
-        }}>
+          position: 'relative',
+        }}
+      >
         <Animated.View
           style={{
-            position: 'absolute',
-            height: '50%',
-            aspectRatio: 25 / 35,
-            backgroundColor: 'red',
-            borderRadius: 8,
-            transform: [
-              { translateX: cardPosOffeset.x },
-              { translateY: cardPosOffeset.y },
-              { translateX: -((25 / 35) * cardControlViewLayout.height) / 4 },
-              { translateY: -cardControlViewLayout.height / 4 },
-            ],
+            // position: 'absolute',
+            width: '100%',
+            height: '100%',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            // transform: [
+            //   {
+            //     translateX: cardPosAnim.x.interpolate({
+            //       inputRange: [-1, 1],
+            //       outputRange: ['-100%', '100%'],
+            //     }),
+            //   },
+            //   {
+            //     translateY: cardPosAnim.y.interpolate({
+            //       inputRange: [0, 1],
+            //       outputRange: ['0%', '-150%'],
+            //     }),
+            //   },
+            // ],
           }}
-        />
+        >
+          {!!card && <PlayingCard suit={card.suit} rank={card.rank} />}
+        </Animated.View>
       </View>
+      <BottomControls />
     </ScreenContainer>
+  );
+};
+
+const BottomControls: React.FC<{}> = () => {
+  const { dispatch, isMyTurn, isEndOfGame, me } = useContext(GameStateContext);
+  const onSwapBtnPressed = useCallback(() => {
+    dispatch('MADE_MOVE', 'swap');
+  }, [dispatch]);
+  const onStickBtnPressed = useCallback(() => {
+    dispatch('MADE_MOVE', 'stick');
+  }, [dispatch]);
+  const onPlayAgainBtnPressed = useCallback(() => {
+    dispatch('PLAY_AGAIN');
+  }, [dispatch]);
+
+  const [height, setHeight] = useState(0);
+  const [isShowingControls, setIsShowingControls] = useState(true);
+  const translateY = useMemo(() => new Animated.Value(height), [height]);
+  const shouldShow = isMyTurn || isEndOfGame;
+
+  useEffect(() => {
+    if (shouldShow && !isShowingControls) {
+      Animated.timing(translateY, {
+        toValue: 0,
+        duration: 300,
+        easing: Easing.ease,
+        useNativeDriver: true,
+      }).start(() => setIsShowingControls(true));
+    }
+    if (!shouldShow && isShowingControls) {
+      Animated.timing(translateY, {
+        toValue: height + 100,
+        duration: 300,
+        easing: Easing.ease,
+        useNativeDriver: true,
+      }).start(() => setIsShowingControls(false));
+    }
+  }, [shouldShow, isShowingControls, height, translateY, me]);
+
+  const onLayout = useCallback(
+    (e: LayoutChangeEvent) => setHeight(e.nativeEvent.layout.height),
+    [],
+  );
+  return (
+    <View onLayout={onLayout}>
+      <Animated.View style={{ transform: [{ translateY }] }}>
+        {isEndOfGame ? (
+          <Button
+            title="Play Again"
+            color="blue"
+            onPress={onPlayAgainBtnPressed}
+          />
+        ) : (
+          <View>
+            <Button title="Swap" color="red" onPress={onSwapBtnPressed} />
+            <Button title="Stick" color="blue" onPress={onStickBtnPressed} />
+          </View>
+        )}
+      </Animated.View>
+    </View>
   );
 };
 
