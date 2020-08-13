@@ -7,7 +7,7 @@
     "android-dev": "export ENVFILE=.env.dev && react-native run-android",
     "ios-prod": "export ENVFILE=.env.prod && react-native run-ios",
     "ios-dev": "export ENVFILE=.env.dev && react-native run-ios",
-    "ios-beta-deploy": "export ENVFILE=.env.prod && cd ios && fastlane beta",
+    "ios-beta-deploy": "cd ios && fastlane beta --env prod",
     "serve-prod": "export ENVFILE=.env.prod && react-native start",
     "serve-dev": "export ENVFILE=.env.dev && react-native start",
     "test": "jest",
