@@ -7,6 +7,7 @@ import {
   LobbyScreenCreator,
   GameScreenCreator,
   TestGameScreenLoading,
+  SandboxScreen,
 } from './factory';
 
 function devRoutes() {
@@ -16,6 +17,7 @@ function devRoutes() {
         path: 'test-game/:gameId',
         screen: TestGameScreenLoading,
       },
+      Sandbox: SandboxScreen,
     };
   }
   return {};
