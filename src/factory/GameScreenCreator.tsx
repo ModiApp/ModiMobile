@@ -1,9 +1,9 @@
 import React, { useEffect, useContext, useCallback } from 'react';
 import { NavigationStackScreenComponent } from 'react-navigation-stack';
 
-import { validateGameId } from '../util';
-import { GameScreen } from '../ui';
-import { AppStateContext, GameStateProvider } from '../providers';
+import { validateGameId } from '@modi/util';
+import { GameScreen } from '@modi/ui';
+import { AppStateContext, GameStateProvider } from '@modi/providers';
 
 type NavParams = { gameId: string };
 const GameScreenCreator: NavigationStackScreenComponent<NavParams, {}> = ({

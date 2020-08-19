@@ -3,13 +3,12 @@ import { SafeAreaView, KeyboardAvoidingView, Keyboard } from 'react-native';
 
 import {
   Container,
-  Button,
   Text,
   TextInput,
   LoadingSpinner,
-} from '../components';
-
-import { BackIcon } from '../icons';
+  Icon,
+  Button,
+} from '@modi/ui/components';
 
 interface JoinLobbyScreenProps {
   isValidatingLobbyId: boolean;
@@ -25,15 +24,14 @@ const JoinLobbyScreen: React.FC<JoinLobbyScreenProps> = ({
   validationError,
   onCancel,
 }) => (
-  <SafeAreaView flex={1}>
-    <Button width={56} margin={16} onPress={onCancel}>
-      <BackIcon size={28} />
+  <SafeAreaView style={{ flex: 1 }}>
+    <Button onPress={onCancel} style={{ alignSelf: 'flex-start' }}>
+      <Icon name="back" size={28} color="white" />
     </Button>
     <KeyboardAvoidingView
-      flex={1}
-      justifyContent="center"
+      style={{ flex: 1, justifyContent: 'center' }}
       behavior="padding"
-      onTouchEnd={() => Keyboard.dismiss}
+      onTouchEnd={Keyboard.dismiss}
     >
       <Container margin={16}>
         <Container flexDirection="row" alignItems="center">

@@ -1,12 +1,14 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { NavigationStackScreenComponent } from 'react-navigation-stack';
 
-import AppContext from '../providers/AppStateProvider';
-import { HomeScreen } from '../ui';
-import { validateGameId, validateLobbyId, createLobby } from '../util';
+import { validateGameId, validateLobbyId, createLobby } from '@modi/util';
+import { useAppState } from '@modi/hooks';
+
+import { HomeScreen } from '@modi/ui';
 
 const HomeScreenCreator: NavigationStackScreenComponent = ({ navigation }) => {
-  const [globalState, updateGlobalState] = useContext(AppContext);
+  const [globalState, updateGlobalState] = useAppState();
+
   const [isCreatingGame, setIsCreatingGame] = useState(false);
   const [shouldAskForUsername, setShouldAskForUsername] = useState(false);
 

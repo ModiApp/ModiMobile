@@ -11,7 +11,7 @@ import Text from './Text';
 import { colors } from '../styles';
 
 interface ButtonProps {
-  color: ColorName;
+  color?: ColorName;
   title?: string;
 
   /** Defaults to true */
@@ -37,8 +37,8 @@ const Button: React.FC<ButtonProps & TouchableOpacityProps> = ({
 }) => {
   const defaultStyles = useMemo<StyleProp<ViewStyle>>(
     () => ({
-      flex: fullWidth ? 1 : undefined,
-      backgroundColor: colors[color],
+      flex: fullWidth ? 1 : 0,
+      backgroundColor: color ? colors[color] : undefined,
       margin: 8,
       padding: thin ? 6 : 16,
       borderRadius: 16,

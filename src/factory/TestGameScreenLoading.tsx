@@ -1,9 +1,8 @@
 import React from 'react';
-import { useContext } from 'react';
 import { NavigationStackScreenComponent } from 'react-navigation-stack';
 
-import { AppStateContext } from '../providers';
-import { ScreenContainer } from '../ui/components';
+import { useAppState } from '@modi/hooks';
+import { ScreenContainer } from '@modi/ui/components';
 
 const TestGameScreenLoadingScreen: NavigationStackScreenComponent<{
   gameId: string;
@@ -12,7 +11,7 @@ const TestGameScreenLoadingScreen: NavigationStackScreenComponent<{
   const gameId = navigation.getParam('gameId');
   const accessToken = navigation.getParam('accessToken');
 
-  const [_, updateGlobalState] = useContext(AppStateContext);
+  const [_, updateGlobalState] = useAppState();
 
   if (gameId && accessToken) {
     updateGlobalState({
@@ -21,7 +20,7 @@ const TestGameScreenLoadingScreen: NavigationStackScreenComponent<{
       gameAccessToken: accessToken,
     });
   } else {
-    console.log('couldnt setup test-game because params were undefined');
+    console.warn('couldnt setup test-game because params were undefined');
   }
 
   navigation.navigate('Home');

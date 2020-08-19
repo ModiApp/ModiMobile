@@ -1,18 +1,19 @@
-import React, { useContext, useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { NavigationStackScreenComponent } from 'react-navigation-stack';
 import Share from 'react-native-share';
 
-import AppContext from '../providers/AppStateProvider';
-import { LobbyScreen } from '../ui';
-import { LobbyStateProvider, LobbyStateContext } from '../providers';
-import { validateLobbyId } from '../util';
+import { validateLobbyId } from '@modi/util';
+import { useAppState, useLobbyState } from '@modi/hooks';
+
+import { LobbyStateProvider } from '@modi/providers';
+import { LobbyScreen } from '@modi/ui';
 
 type NavParams = { lobbyId: string };
 const LobbyScreenCreator: NavigationStackScreenComponent<NavParams> = ({
   navigation,
 }) => {
   const lobbyId = navigation.getParam('lobbyId');
-  const [{ username }, updateState] = useContext(AppContext);
+  const [{ username }, updateState] = useAppState();
 
   useEffect(() => {
     lobbyId &&
@@ -78,7 +79,7 @@ const ConnectedLobbyScreen: React.FC<ConnectedLobbyScreenProps> = ({
   onInviteFriendsBtnPressed,
   onBackBtnPressed,
 }) => {
-  const { attendees, currUserId, dispatch } = useContext(LobbyStateContext);
+  const { attendees, currUserId, dispatch } = useLobbyState();
 
   const dispatchStartGame = useCallback(() => {
     dispatch('START_GAME');

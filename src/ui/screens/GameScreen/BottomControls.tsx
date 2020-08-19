@@ -1,85 +1,28 @@
-import React, {
-  useContext,
-  useState,
-  useCallback,
-  useEffect,
-  useMemo,
-} from 'react';
-import { Animated, View, LayoutChangeEvent, Easing } from 'react-native';
+import React, { useCallback, useState, useMemo, useEffect } from 'react';
+import { StackActions } from 'react-navigation';
+import { Animated, Easing, View, LayoutChangeEvent } from 'react-native';
 
-import { GameStateContext, AppStateContext } from '../../providers';
-import useCardAnimation from '../../hooks/useCardAnimation';
-import { ScreenContainer, Container } from '../components';
-import PlayingCard from '../components/PlayingCard';
-import Text from '../components/Text';
-import Button from '../components/Button';
-import { HomeIcon } from '../icons';
-import { NavigationContext, StackActions } from 'react-navigation';
-
-const GameScreen: React.FC<{
-  // gameState: ModiGameState;
-}> = () => {
-  const { me } = useContext(GameStateContext);
-
-  // const [card, cardPosAnim] = useCardAnimation(gameState, gameAccessToken);
-  const card = me?.card;
-  return (
-    <ScreenContainer>
-      <Container>
-        <Text size={24}>{me?.username}</Text>
-        <Text size={16}>Lives: {me?.lives}</Text>
-      </Container>
-      <View
-        style={{
-          flex: 1,
-          position: 'relative',
-        }}
-      >
-        <Animated.View
-          style={{
-            // position: 'absolute',
-            width: '100%',
-            height: '100%',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            // transform: [
-            //   {
-            //     translateX: cardPosAnim.x.interpolate({
-            //       inputRange: [-1, 1],
-            //       outputRange: ['-100%', '100%'],
-            //     }),
-            //   },
-            //   {
-            //     translateY: cardPosAnim.y.interpolate({
-            //       inputRange: [0, 1],
-            //       outputRange: ['0%', '-150%'],
-            //     }),
-            //   },
-            // ],
-          }}
-        >
-          {!!card && <PlayingCard suit={card.suit} rank={card.rank} />}
-        </Animated.View>
-      </View>
-      <BottomControls />
-    </ScreenContainer>
-  );
-};
+import { useGameState, useAppState, useNavigation } from '@modi/hooks';
+import { Button, Icon } from '@modi/ui/components';
 
 const BottomControls: React.FC<{}> = () => {
-  const { dispatch, isMyTurn, isEndOfGame, me } = useContext(GameStateContext);
+  const { dispatch, isMyTurn, isEndOfGame, me } = useGameState();
+  const [_, updateGlobalState] = useAppState();
+
   const onSwapBtnPressed = useCallback(() => {
     dispatch('MADE_MOVE', 'swap');
   }, [dispatch]);
+
   const onStickBtnPressed = useCallback(() => {
     dispatch('MADE_MOVE', 'stick');
   }, [dispatch]);
+
   const onPlayAgainBtnPressed = useCallback(() => {
     dispatch('PLAY_AGAIN');
   }, [dispatch]);
 
-  const navigation = useContext(NavigationContext);
-  const [_, updateGlobalState] = useContext(AppStateContext);
+  const navigation = useNavigation();
+
   const onHomeBtnPressed = useCallback(() => {
     updateGlobalState({ currGameId: undefined, gameAccessToken: undefined });
     navigation.dispatch(StackActions.popToTop());
@@ -113,6 +56,7 @@ const BottomControls: React.FC<{}> = () => {
     (e: LayoutChangeEvent) => setHeight(e.nativeEvent.layout.height),
     [],
   );
+
   return (
     <View onLayout={onLayout}>
       <Animated.View style={{ transform: [{ translateY }] }}>
@@ -123,7 +67,7 @@ const BottomControls: React.FC<{}> = () => {
               onPress={onHomeBtnPressed}
               style={{ paddingHorizontal: 12, paddingVertical: 8 }}
             >
-              <HomeIcon size={28} />
+              <Icon name="home" size={28} />
             </Button>
             <Button
               title="Play Again"
@@ -143,4 +87,4 @@ const BottomControls: React.FC<{}> = () => {
   );
 };
 
-export default GameScreen;
+export default BottomControls;

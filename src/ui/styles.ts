@@ -8,6 +8,7 @@ export const colors: { [key in ColorName]: string } = {
   blue: '#177E89',
   red: '#DB3A34',
   white: 'white',
+  transparent: 'transparent',
 };
 export const fontFamilies = {
   primary: 'Chalkduster',

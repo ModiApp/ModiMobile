@@ -2,13 +2,13 @@ import React, {
   useEffect,
   useMemo,
   useState,
-  useContext,
   createContext,
   useCallback,
 } from 'react';
 import io from 'socket.io-client';
 import config from 'react-native-config';
-import AppContext from './AppStateProvider';
+
+import { useAppState } from '@modi/hooks';
 
 interface LobbyState {
   attendees: LobbyAttendee[];
@@ -39,7 +39,7 @@ export const LobbyStateProvider: React.FC<LobbyStateProviderProps> = ({
   children,
   onEventStarted,
 }) => {
-  const [{ username }] = useContext(AppContext);
+  const [{ username }] = useAppState();
   const [lobbyState, setLobbyState] = useState(createInitialLobbyState());
 
   const socket = useMemo(
