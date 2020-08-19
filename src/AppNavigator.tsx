@@ -6,7 +6,20 @@ import {
   JoinLobbyScreenCreator,
   LobbyScreenCreator,
   GameScreenCreator,
+  TestGameScreenLoading,
 } from './factory';
+
+function devRoutes() {
+  if (__DEV__) {
+    return {
+      TestGame: {
+        path: 'test-game/:gameId',
+        screen: TestGameScreenLoading,
+      },
+    };
+  }
+  return {};
+}
 
 /** @todo upgrade to react-navigation v5 */
 const AppStack = createStackNavigator(
@@ -24,6 +37,7 @@ const AppStack = createStackNavigator(
       path: 'games/:gameId',
       screen: GameScreenCreator,
     },
+    ...devRoutes(),
   },
   {
     initialRouteName: 'Home',
@@ -36,10 +50,11 @@ const AppStack = createStackNavigator(
 const RootStack = createStackNavigator(
   {
     App: {
-      path: 'app',
+      path: '',
       screen: AppStack,
     },
     JoinLobby: {
+      path: 'lobbies/join',
       screen: JoinLobbyScreenCreator,
       navigationOptions: {
         cardStyle: { backgroundColor: '#000000', opacity: 0.75 },
