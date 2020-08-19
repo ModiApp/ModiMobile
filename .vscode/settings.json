@@ -3,5 +3,6 @@
   "eslint.format.enable": true,
   "editor.codeActionsOnSave": {
     "source.fixAll": true
-  }
+  },
+  "typescript.preferences.importModuleSpecifier": "non-relative"
 }

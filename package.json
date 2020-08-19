@@ -25,6 +25,7 @@
     "@types/react-native-vector-icons": "^6.4.5",
     "@types/socket.io-client": "^1.4.32",
     "axios": "^0.19.2",
+    "babel-plugin-root-import": "^6.5.0",
     "lodash": "^4.17.19",
     "prop-types": "^15.7.2",
     "react": "16.9.0",
@@ -91,6 +92,11 @@
         2
       ],
       "operator-linebreak": "off"
+    },
+    "settings": {
+      "import/resolver": {
+        "babel-module": {}
+      }
     }
   },
   "prettier": {

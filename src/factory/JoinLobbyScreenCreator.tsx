@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import { NavigationStackScreenComponent } from 'react-navigation-stack';
 
-import { JoinLobbyScreen } from '../ui';
-import { validateLobbyId } from '../util';
+import { validateLobbyId } from '@modi/util';
+
+import { JoinLobbyScreen } from '@modi/ui';
 
 const JoinLobbyScreenCreator: NavigationStackScreenComponent = ({
   navigation,

@@ -1,12 +1,14 @@
 import React from 'react';
-import { ActivityIndicator } from 'react-native';
-
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 
-import { ScreenContainer, Container, TextInput } from '../components';
-
-import Button from '../components/Button';
-import Text from '../components/Text';
+import {
+  Button,
+  Container,
+  LoadingSpinner,
+  ScreenContainer,
+  Text,
+  TextInput,
+} from '@modi/ui/components';
 
 interface HomeScreenProps {
   isCreatingGame: boolean;
@@ -54,9 +56,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
         onPress={onCreateGameBtnPressed}
         color="red"
         disabled={isCreatingGame}
-        style={{ borderRadius: 50 }}>
+        style={{ borderRadius: 50 }}
+      >
         {isCreatingGame ? (
-          <ActivityIndicator size="large" color="white" />
+          <LoadingSpinner size="large" color="white" />
         ) : (
           <Text size={28}>Create Game</Text>
         )}

@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Text as RNText, StyleProp, TextStyle, ViewStyle } from 'react-native';
+import { Text as RNText, StyleProp, TextStyle } from 'react-native';
 
 import { colors } from '../styles';
 

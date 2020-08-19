@@ -2,13 +2,13 @@ import React from 'react';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 
 import {
-  ScreenContainer,
-  Container,
   Button,
+  Container,
+  Icon,
+  ScreenContainer,
   Text,
   TextInput,
 } from '../components';
-import { BackIcon } from '../icons';
 
 interface LobbyScreenProps {
   lobbyId: string;
@@ -36,7 +36,7 @@ const LobbyScreen: React.FC<LobbyScreenProps> = ({
         <Container alignItems="center">
           <Text fontSize={24}>Game PIN:</Text>
           <Text fontSize={42}>{lobbyId}</Text>
-          <Button bgColor="red" onPress={onInviteFriendsBtnPressed}>
+          <Button color="red" onPress={onInviteFriendsBtnPressed}>
             <Text fontSize={14}>Invite Friends</Text>
           </Button>
         </Container>
@@ -50,16 +50,17 @@ const LobbyScreen: React.FC<LobbyScreenProps> = ({
         flex={1}
         flexDirection="row"
         alignItems="center"
-        minHeight={24}>
+        minHeight={24}
+      >
         <Container flex={1} marginRight={8}>
-          <Button bgColor="red" onPress={onBackBtnPressed}>
-            <BackIcon size={28} />
+          <Button color="red" fullWidth onPress={onBackBtnPressed}>
+            <Icon name="back" size={28} />
           </Button>
         </Container>
 
         <Container flex={5}>
           {(attendees[0] || {}).id === currUserId ? (
-            <Button bgColor="blue" onPress={onStartGameBtnPressed}>
+            <Button color="blue" onPress={onStartGameBtnPressed} fullWidth>
               <Text fontSize={28}>Start Game</Text>
             </Button>
           ) : (
@@ -77,7 +78,7 @@ const LobbyScreen: React.FC<LobbyScreenProps> = ({
           padding={8}
           fontSize={28}
           marginHorizontal={16}
-          onSubmitEditing={e => onUsernameSet(e.nativeEvent.text)}
+          onSubmitEditing={(e) => onUsernameSet(e.nativeEvent.text)}
         />
         <KeyboardSpacer />
       </Container>
