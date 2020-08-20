@@ -6,9 +6,9 @@ import React, {
   useCallback,
 } from 'react';
 import io from 'socket.io-client';
-import config from 'react-native-config';
 
 import { useAppState } from '@modi/hooks';
+import { API_URL } from '@modi/env.json';
 
 interface LobbyState {
   attendees: LobbyAttendee[];
@@ -44,7 +44,7 @@ export const LobbyStateProvider: React.FC<LobbyStateProviderProps> = ({
 
   const socket = useMemo(
     () =>
-      io(`${config.API_URL}/lobbies/${lobbyId}`, {
+      io(`${API_URL}/lobbies/${lobbyId}`, {
         query: { username },
         autoConnect: false,
       }),

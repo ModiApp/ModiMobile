@@ -1,6 +1,8 @@
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
+import env from '@modi/env.json';
+
 import {
   HomeScreenCreator,
   JoinLobbyScreenCreator,
@@ -42,7 +44,7 @@ const AppStack = createStackNavigator(
     ...devRoutes(),
   },
   {
-    initialRouteName: 'Home',
+    initialRouteName: env.SANDBOX ? 'Sandbox' : 'Home',
     defaultNavigationOptions: {
       headerShown: false,
     },
