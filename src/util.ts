@@ -1,9 +1,9 @@
 import axios from 'axios';
-import Config from 'react-native-config';
+import { API_URL } from '@modi/env.json';
 
 export async function validateLobbyId(lobbyId: string): Promise<boolean> {
   try {
-    await axios.head(`${Config.API_URL}/lobbies/${lobbyId}`);
+    await axios.head(`${API_URL}/lobbies/${lobbyId}`);
     return true;
   } catch (e) {
     return false;
@@ -12,7 +12,7 @@ export async function validateLobbyId(lobbyId: string): Promise<boolean> {
 
 export async function validateGameId(gameId: string): Promise<boolean> {
   try {
-    await axios.head(`${Config.API_URL}/games/${gameId}`);
+    await axios.head(`${API_URL}/games/${gameId}`);
     return true;
   } catch (e) {
     return false;
@@ -20,9 +20,7 @@ export async function validateGameId(gameId: string): Promise<boolean> {
 }
 
 export function createLobby(): Promise<string> {
-  return axios
-    .get(`${Config.API_URL}/lobbies/new`)
-    .then((res) => res.data.lobbyId);
+  return axios.get(`${API_URL}/lobbies/new`).then((res) => res.data.lobbyId);
 }
 
 export function cardsAreEqual(

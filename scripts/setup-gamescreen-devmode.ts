@@ -3,8 +3,7 @@ import io from 'socket.io-client';
 import axios from 'axios';
 import _ from 'lodash';
 
-const LOCAL_SERVER_PATH = process.env.LOCAL_SERVER_PATH!;
-const API_URL = process.env.API_URL!;
+import { API_URL, LOCAL_SERVER_PATH } from '../env/develop.json';
 
 async function setupGameScreenDevMode() {
   // Install app to sims

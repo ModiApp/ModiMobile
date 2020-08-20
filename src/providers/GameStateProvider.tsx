@@ -6,7 +6,7 @@ import React, {
   useMemo,
 } from 'react';
 import io from 'socket.io-client';
-import config from 'react-native-config';
+import env from '@modi/env.json';
 
 type GameStateDispatchAction =
   | ['MADE_MOVE', PlayerMove]
@@ -56,7 +56,7 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
   const [gameState, setGameState] = useState(createInitialGameState());
   const socket = useMemo(
     () =>
-      io(`${config.API_URL}/games/${gameId}`, {
+      io(`${env.API_URL}/games/${gameId}`, {
         query: { username, playerId: accessToken },
         autoConnect: false,
       }),
