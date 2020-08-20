@@ -1,0 +1,32 @@
+version: 2.1
+
+jobs:
+  setup:
+    docker:
+      - image: circleci/node:13.8
+    steps:
+      - run: yarn run env:prod
+      - run: yarn install
+
+  deploy_ios_beta:
+    macos:
+      xcode: 11.6.0
+    steps:
+      - checkout
+      - run: cd ios
+      - run: pod install
+      - run: bundle install
+      - run: bundle exec fastlane beta
+
+workflows:
+  version: 2.1
+  deploy_all_beta:
+    jobs:
+      - setup
+      - deploy_ios_beta:
+        requires:
+          - setup
+    filters:
+      branches:
+        only: master
+      
