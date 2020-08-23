@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy-ios-beta:
+    runs-on: macOS-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install and run xcodegen
+        run: |
+          brew install xcodegen
+          xcodegen generate
+
+      - name: Deploy to TestFlight
+        env:
+          MATCH_REPO: ${{ secrets.MATCH_REPO }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASS }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          DEV_TEAM_ID: ${{ secrets.DEV_TEAM_ID }}
+          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
+        run: |
+          faselane beta --verbose
+
