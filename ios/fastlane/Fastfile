@@ -1,0 +1,25 @@
+default_platform(:ios)
+
+platform :ios do
+  
+  desc "Push a new beta build to TestFlight"
+  lane :beta do
+    create_keychain(
+      name: "keychain",
+      password: "tempKeychainPass",
+      default_keychain: true,
+      unlock: true,
+      timeout: 3600,
+      lock_when_sleeps: false
+    )
+    match(
+      type: "appstore",
+      readonly: is_ci,
+      keychain_name: "keychain",
+      keychain_password: "tempKeychainPass"
+    )
+    increment_build_number(xcodeproj: "ModiMobile.xcodeproj")
+    build_app(workspace: "ModiMobile.xcworkspace", scheme: "ModiMobile")
+    upload_to_testflight
+  end
+end
