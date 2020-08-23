@@ -17,9 +17,8 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - uses: bahmutov/npm-install@v1
-      - name: Install Dependencies
+      - name: Install Pods
         run: |
-          yarn install
           cd ios && pod install
 
       - name: Set env
