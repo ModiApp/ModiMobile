@@ -40,7 +40,8 @@ jobs:
           SIGNING_ID: ${{ secrets.SIGNING_ID }}
           DEV_TEAM_ID: ${{ secrets.DEV_TEAM_ID }}
           ITC_TEAM_ID: ${{ secrets.ITC_TEAM_ID }}
-          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
+          FASTLANE_USER: ${{ secrets.APPLE_ID }}
+          FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
         run: |
           cd ios && fastlane beta --verbose
 
