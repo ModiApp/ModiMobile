@@ -11,10 +11,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install and run xcodegen
-        run: |
-          brew install xcodegen
-          xcodegen generate
+      # - name: Install and run xcodegen
+      #   run: |
+      #     brew install xcodegen
+      #     xcodegen generate
 
       - name: Deploy to TestFlight
         env:
