@@ -51,5 +51,6 @@ jobs:
           FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
         run: |
           export FASTLANE_PASSWORD=${{ secrets.FASTLANE_PASSWORD }}
+          export FASTLANE_USER=${{ secrets.FASTLANE_USER }}
           cd ios && fastlane beta --verbose
 
