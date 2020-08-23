@@ -17,14 +17,24 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       # Allows GH actions to cache node_modules
-      - uses: actions/cache@v2
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
 
-      - name: Install Dependencies
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+           ${{ runner.os }}-yarn-
+      
+      - name: Install node_modules
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn install
+
+      - name: Install ios/Pods
         run: |
-          yarn install
           cd ios && pod install
 
       - name: Set env
@@ -40,8 +50,8 @@ jobs:
           SIGNING_ID: ${{ secrets.SIGNING_ID }}
           DEV_TEAM_ID: ${{ secrets.DEV_TEAM_ID }}
           ITC_TEAM_ID: ${{ secrets.ITC_TEAM_ID }}
-          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
-          FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
         run: |
+          export FASTLANE_USER=${{ secrets.FASTLANE_USER }}
+          export FASTLANE_PASSWORD=${{ secrets.FASTLANE_PASSWORD }}
           cd ios && fastlane beta --verbose
 
