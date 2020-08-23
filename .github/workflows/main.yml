@@ -16,9 +16,15 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - uses: bahmutov/npm-install@v1
-      - name: Install Pods
+      # Allows GH actions to cache node_modules
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install Dependencies
         run: |
+          yarn install
           cd ios && pod install
 
       - name: Set env
