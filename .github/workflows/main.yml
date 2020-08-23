@@ -19,7 +19,9 @@ jobs:
           MATCH_REPO: ${{ secrets.MATCH_REPO }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASS }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
+          APP_ID: ${{ secrets.APP_ID }}
           DEV_TEAM_ID: ${{ secrets.DEV_TEAM_ID }}
+          ITC_TEAM_ID: ${{ secrets.ITC_TEAM_ID }}
           FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
         run: |
           yarn install
