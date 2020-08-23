@@ -11,8 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Get access to match repo
-        - uses: webfactory/ssh-agent@0.4.0
+      - uses: webfactory/ssh-agent@0.4.0
           with:
             ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
