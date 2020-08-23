@@ -10,9 +10,20 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
+      # Allows fastlane match to pull provisioning profiles from other git repo
       - uses: webfactory/ssh-agent@v0.4.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Install Dependencies
+        run: |
+          yarn install
+          cd ios && pod install
+      
+      - name: Set env
+        run: |
+          echo {\"API_URL\":\"${{ secrets.API_URL }}\"} > src/env.json
 
       - name: Deploy to TestFlight
         env:
@@ -24,7 +35,5 @@ jobs:
           ITC_TEAM_ID: ${{ secrets.ITC_TEAM_ID }}
           FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
         run: |
-          yarn install
-          cd ios && pod install
           fastlane beta --verbose
 
