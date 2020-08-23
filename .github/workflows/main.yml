@@ -49,7 +49,6 @@ jobs:
           DEV_TEAM_ID: ${{ secrets.DEV_TEAM_ID }}
           ITC_TEAM_ID: ${{ secrets.ITC_TEAM_ID }}
         run: |
-          export FASTLANE_USER=${{ secrets.FASTLANE_USER }}
           export FASTLANE_PASSWORD=${{ secrets.FASTLANE_PASSWORD }}
           cd ios && fastlane beta --verbose
 
