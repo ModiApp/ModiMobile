@@ -18,6 +18,13 @@ platform :ios do
       keychain_name: "keychain",
       keychain_password: "tempKeychainPass"
     )
+    update_project_provisioning(
+      xcodeproj: "ModiMobile.xcodeproj",
+      profile: ENV["sign_com.ikeybenz.modii_appstore_profile-path"],
+      target_filter: "ModiMobile"
+      build_configuration: "Release",
+      code_signing_identity: ENV["SIGNING_ID"]
+    )
     increment_build_number(xcodeproj: "ModiMobile.xcodeproj")
     build_app(workspace: "ModiMobile.xcworkspace", scheme: "ModiMobile")
     upload_to_testflight
