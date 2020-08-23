@@ -20,7 +20,7 @@ jobs:
         run: |
           yarn install
           cd ios && pod install
-      
+
       - name: Set env
         run: |
           echo {\"API_URL\":\"${{ secrets.API_URL }}\"} > src/env.json
@@ -35,5 +35,5 @@ jobs:
           ITC_TEAM_ID: ${{ secrets.ITC_TEAM_ID }}
           FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
         run: |
-          fastlane beta --verbose
+          cd ios && fastlane beta --verbose
 
