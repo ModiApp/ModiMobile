@@ -14,7 +14,7 @@ async function setupGameScreenDevMode() {
   };
 
   Object.keys(simulators).forEach((simName) => {
-    const command = `yarn run ios-dev --simulator="${simName}"`;
+    const command = `yarn run ios:dev --simulator="${simName}"`;
     console.log('>', command);
     cp.execSync(command);
   });
