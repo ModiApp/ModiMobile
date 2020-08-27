@@ -5,6 +5,7 @@ import BaseLayout, { BaseLayoutRenderItem } from './BaseLayout';
 import { CardBack, Text } from '@modi/ui/components';
 import { useGameState } from '@modi/hooks';
 import { colors } from '@modi/ui/styles';
+import { indexOf } from 'lodash';
 
 const CardMap: React.FC = () => {
   const gameState = useGameState();
@@ -16,41 +17,76 @@ const CardMap: React.FC = () => {
   );
 
   const renderCard = useCallback<BaseLayoutRenderItem>(
-    () => <View style={{ flex: 1, backgroundColor: 'red' }} />,
-    [],
+    (idx: number, radius: number) => {
+      const rotationFactor = (2 * Math.PI) / numPlayers;
+      const rotate = new Animated.Value(0);
+      const translateX = new Animated.Value(0);
+      const translateY = new Animated.Value(0);
+
+      const idxOfTrader = 7;
+      if (idx === idxOfTrader) {
+        Animated.parallel([
+          Animated.timing(rotate, {
+            toValue: rotationFactor,
+            duration: 400,
+            useNativeDriver: true,
+          }),
+          Animated.timing(translateX, {
+            toValue: -(Math.cos(rotationFactor) * radius),
+            duration: 400,
+            useNativeDriver: true,
+          }),
+          Animated.timing(translateY, {
+            toValue: -Math.sin(rotationFactor) * radius * 0.42,
+            duration: 400,
+            useNativeDriver: true,
+          }),
+        ]).start(() => {
+          rotate.setValue(0);
+          translateX.setValue(0);
+          translateY.setValue(0);
+        });
+      }
+      if (idx === (idxOfTrader + 1) % numPlayers) {
+        Animated.parallel([
+          Animated.timing(rotate, {
+            toValue: -rotationFactor,
+            duration: 400,
+            useNativeDriver: true,
+          }),
+          Animated.timing(translateX, {
+            toValue: Math.cos(rotationFactor) * radius,
+            duration: 400,
+            useNativeDriver: true,
+          }),
+          Animated.timing(translateY, {
+            toValue: -Math.sin(rotationFactor) * radius * 0.42,
+            duration: 400,
+            useNativeDriver: true,
+          }),
+        ]).start(() => {
+          rotate.setValue(0);
+          translateX.setValue(0);
+          translateY.setValue(0);
+        });
+      }
+      return (
+        <Animated.View
+          style={{ flex: 1, transform: [{ translateX }, { translateY }] }}
+        >
+          <Animated.View style={[styles.card, { transform: [{ rotate }] }]} />
+        </Animated.View>
+      );
+    },
+    [numPlayers],
   );
-
-  const cardRotation = useRef(new Animated.Value(0)).current;
-  const didStartRotating = useRef(false);
-  // useEffect(() => {
-  //   if (!didStartRotating.current) {
-  //     spinCards();
-  //     didStartRotating.current = true;
-  //   }
-  // }, []);
-
-  // const spinCards = useCallback(() => {
-  //   cardRotation.setValue(0);
-  //   Animated.timing(cardRotation, {
-  //     toValue: 2 * Math.PI,
-  //     duration: 4000,
-  //     useNativeDriver: true,
-  //   }).start(spinCards);
-  // }, []);
 
   return (
     <View style={styles.container}>
       <View style={styles.layer}>
         <BaseLayout numPlaces={numPlayers} renderItem={renderPlaceholder} />
       </View>
-      <Animated.View
-        style={[
-          styles.layer,
-          {
-            transform: [{ rotate: cardRotation }],
-          },
-        ]}
-      >
+      <Animated.View style={styles.layer}>
         <BaseLayout numPlaces={numPlayers} renderItem={renderCard} />
       </Animated.View>
     </View>
@@ -62,21 +98,26 @@ const styles = StyleSheet.create({
     maxWidth: '100%',
     maxHeight: '100%',
     aspectRatio: 1,
-    backgroundColor: 'blue',
+    backgroundColor: colors.lightGreen,
   },
   layer: {
     position: 'absolute',
     width: '100%',
     height: '100%',
   },
-  cardPlaceholder: {
-    backgroundColor: colors.lightGreen,
-    shadowColor: '#000',
+  card: {
     flex: 1,
+    backgroundColor: 'red',
+    // borderRadius: 10,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
     elevation: 1,
+  },
+  cardPlaceholder: {
+    backgroundColor: colors.feltGreen,
+    flex: 1,
   },
 });
 

@@ -4,17 +4,14 @@ import {
   StyleSheet,
   LayoutRectangle,
   LayoutChangeEvent,
+  PixelRatio,
 } from 'react-native';
-
-import { CardBack, Text } from '@modi/ui/components';
-import { useGameState } from '@modi/hooks';
-import { colors } from '@modi/ui/styles';
 
 export type BaseLayoutRenderItem = (
   /** zero is the card closes to current player, then goes clockwise */
   idx: number,
   /** in case the item needs to rotate to offset the cards rotation */
-  rotation?: number,
+  radius: number,
 ) => JSX.Element;
 
 interface BaseLayoutProps {
@@ -32,6 +29,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({ numPlaces, renderItem }) => {
   const rotation = (2 * Math.PI) / numPlaces;
   const itemWidth = (layout?.width || 0) * 0.15;
   const itemAspectRatio = 1 / 1.528;
+  const radius = 140;
 
   return (
     <View style={styles.container} onLayout={onLayout}>
@@ -47,11 +45,11 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({ numPlaces, renderItem }) => {
                 aspectRatio: itemAspectRatio,
                 transform: [
                   { rotate: `${rotation * idx}rad` },
-                  { translateY: 140 },
+                  { translateY: radius },
                 ],
               }}
             >
-              {renderItem(idx, rotation)}
+              {renderItem(idx, radius)}
             </View>
           );
         })}
