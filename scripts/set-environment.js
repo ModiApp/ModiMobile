@@ -1,6 +1,6 @@
 #!/bin/node
 
-/** A script to set the context of .env.json dynamically */
+/** A script to set the context of src/env.json dynamically */
 
 // https://itnext.io/the-easiest-way-to-setup-multiple-environments-on-react-native-67b33d073390
 
