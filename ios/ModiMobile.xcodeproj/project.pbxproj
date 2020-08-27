@@ -12,6 +12,7 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		40998E7658A83912D20405A6 /* libPods-ModiMobile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BE373344901B280E31889DF /* libPods-ModiMobile.a */; };
+		C621280A24F83D5700F26EEE /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 008F07F21AC5B25A0029DE68 /* main.jsbundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -205,6 +206,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C621280A24F83D5700F26EEE /* main.jsbundle in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 			);
@@ -225,7 +227,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=$(which node)\nexport PROJECT_ROOT=”$PROJECT_DIR/..”\nexport CLI_PATH=”$PROJECT_DIR/../node_modules/react-native/cli.js” \n../node_modules/react-native/scripts/react-native-xcode.sh index.ts\n";
+			shellScript = "export NODE_BINARY=$(which node)\n../node_modules/react-native/scripts/react-native-xcode.sh index.ts\n";
 		};
 		7DA7F8142E5B7879C4D09D43 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
