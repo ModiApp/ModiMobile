@@ -53,7 +53,7 @@ const CardBack: React.FC = () => (
   <Image
     source={CardImgs.back}
     resizeMode="contain"
-    style={{ width: '', aspectRatio: 1.528 }}
+    style={{ width: '100%', height: '100%' }}
   />
 );
 
