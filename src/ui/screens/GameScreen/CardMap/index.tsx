@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { View, StyleSheet, Animated } from 'react-native';
 
 import BaseLayout, { BaseLayoutRenderItem } from './BaseLayout';
@@ -16,6 +16,12 @@ const CardMap: React.FC = () => {
     [],
   );
 
+  const [idxOfTrader, setIdxOfTrader] = useState(0);
+  useEffect(() => {
+    const newIdx = idxOfTrader === numPlayers - 1 ? 0 : idxOfTrader + 1;
+    setTimeout(() => setIdxOfTrader(newIdx), 1000);
+  }, [idxOfTrader]);
+
   const renderCard = useCallback<BaseLayoutRenderItem>(
     (idx: number, radius: number) => {
       const rotationFactor = (2 * Math.PI) / numPlayers;
@@ -23,52 +29,49 @@ const CardMap: React.FC = () => {
       const translateX = new Animated.Value(0);
       const translateY = new Animated.Value(0);
 
-      const idxOfTrader = 7;
       if (idx === idxOfTrader) {
-        Animated.parallel([
-          Animated.timing(rotate, {
-            toValue: rotationFactor,
-            duration: 400,
-            useNativeDriver: true,
-          }),
-          Animated.timing(translateX, {
-            toValue: -(Math.cos(rotationFactor) * radius),
-            duration: 400,
-            useNativeDriver: true,
-          }),
-          Animated.timing(translateY, {
-            toValue: -Math.sin(rotationFactor) * radius * 0.42,
-            duration: 400,
-            useNativeDriver: true,
-          }),
-        ]).start(() => {
-          rotate.setValue(0);
-          translateX.setValue(0);
-          translateY.setValue(0);
-        });
+        Animated.sequence([
+          Animated.parallel([
+            Animated.timing(rotate, {
+              toValue: rotationFactor,
+              duration: 400,
+              useNativeDriver: true,
+            }),
+            Animated.timing(translateX, {
+              toValue: -(Math.cos(rotationFactor) * radius),
+              duration: 400,
+              useNativeDriver: true,
+            }),
+            Animated.timing(translateY, {
+              toValue: -Math.sin(rotationFactor) * radius * 0.42,
+              duration: 400,
+              useNativeDriver: true,
+            }),
+          ]),
+          Animated.delay(200),
+        ]).start();
       }
       if (idx === (idxOfTrader + 1) % numPlayers) {
-        Animated.parallel([
-          Animated.timing(rotate, {
-            toValue: -rotationFactor,
-            duration: 400,
-            useNativeDriver: true,
-          }),
-          Animated.timing(translateX, {
-            toValue: Math.cos(rotationFactor) * radius,
-            duration: 400,
-            useNativeDriver: true,
-          }),
-          Animated.timing(translateY, {
-            toValue: -Math.sin(rotationFactor) * radius * 0.42,
-            duration: 400,
-            useNativeDriver: true,
-          }),
-        ]).start(() => {
-          rotate.setValue(0);
-          translateX.setValue(0);
-          translateY.setValue(0);
-        });
+        Animated.sequence([
+          Animated.delay(200),
+          Animated.parallel([
+            Animated.timing(rotate, {
+              toValue: -rotationFactor,
+              duration: 400,
+              useNativeDriver: true,
+            }),
+            Animated.timing(translateX, {
+              toValue: Math.cos(rotationFactor) * radius,
+              duration: 400,
+              useNativeDriver: true,
+            }),
+            Animated.timing(translateY, {
+              toValue: -Math.sin(rotationFactor) * radius * 0.42,
+              duration: 400,
+              useNativeDriver: true,
+            }),
+          ]),
+        ]).start();
       }
       return (
         <Animated.View
@@ -78,7 +81,7 @@ const CardMap: React.FC = () => {
         </Animated.View>
       );
     },
-    [numPlayers],
+    [numPlayers, idxOfTrader],
   );
 
   return (
@@ -108,7 +111,7 @@ const styles = StyleSheet.create({
   card: {
     flex: 1,
     backgroundColor: 'red',
-    // borderRadius: 10,
+    borderRadius: 6,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.8,
