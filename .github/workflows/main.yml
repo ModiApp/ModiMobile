@@ -33,7 +33,7 @@ jobs:
 
       - name: Set env
         run: |
-          echo ${{ secrets.PROD_ENV_JSON }} > src/env.json
+          echo "${{ secrets.PROD_ENV_JSON }}" > src/env.json
 
       - name: Generate main.jsbundle
         run: yarn run build:ios
