@@ -11,10 +11,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v2.1.1
         id: cache_node_modules
-        path: node_modules
-        key: ${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-${{ hashFiles('yarn.lock') }}
       
       - name: Install node_modules
         if: steps.cache_node_modules.outputs.cache_hit != 'true'
@@ -22,8 +23,9 @@ jobs:
 
       - uses: actions/cache@v2
         id: cache_pods
-        path: ios/Pods
-        key: ${{ runner.os }}-%{{ hashFiles('ios/Podfile.lock') }}
+        with:
+          path: ios/Pods
+          key: ${{ runner.os }}-%{{ hashFiles('ios/Podfile.lock') }}
 
       - name: Install pods
         if: steps.cache_pods.outputs.cache_hit != 'true'
