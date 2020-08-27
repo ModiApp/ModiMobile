@@ -35,6 +35,9 @@ jobs:
         run: |
           echo ${{ secrets.PROD_ENV_JSON }} > src/env.json
 
+      - name: Generate main.jsbundle
+        run: yarn run build:ios
+
       # Allows fastlane match to pull provisioning profiles from other git repo
       - uses: webfactory/ssh-agent@v0.4.0
         with:

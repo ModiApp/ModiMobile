@@ -15,6 +15,7 @@
     "android:dev": "yarn env:dev && yarn android",
     "android:prod": "yarn env:prod && yarn android",
     "deploy:ios": "yarn env:prod && cd ios && fastlane beta",
+    "build:ios": "react-native bundle --entry-file='index.ts' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'",
     "gamescreen-devmode": "ts-node scripts/setup-gamescreen-devmode.ts",
     "test": "jest",
     "lint": "eslint ."
