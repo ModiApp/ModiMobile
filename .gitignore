@@ -56,3 +56,4 @@ buck-out/
 .env.*
 env.json
 env/
+.jest
