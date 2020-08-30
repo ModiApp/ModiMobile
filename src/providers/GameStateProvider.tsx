@@ -8,24 +8,6 @@ import React, {
 import io from 'socket.io-client';
 import env from '@modi/env.json';
 
-type GameStateDispatchAction =
-  | ['MADE_MOVE', PlayerMove]
-  | ['CHOOSE_DEALER', PlayerId]
-  | ['PLAY_AGAIN'];
-
-interface TailoredState {
-  /** The player whose id matches the accessToken on this device */
-  me: ModiPlayer | undefined;
-
-  /** Whether or not it is the authenticated players turn */
-  isMyTurn: boolean;
-
-  isEndOfGame: boolean;
-}
-type GameStateContextType = ModiGameState & {
-  dispatch: (...action: GameStateDispatchAction) => void;
-} & TailoredState;
-
 const createInitialGameState = (): ModiGameState => ({
   round: -1,
   moves: [],
@@ -73,10 +55,13 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
   socket.on('GAME_STATE_UPDATED', setGameState);
   socket.on('PLAY_AGAIN_LOBBY_ID', onPlayAgainLobbyIdRecieved);
 
-  const dispatch = useCallback((...action: GameStateDispatchAction) => {
-    const [event, ...args] = action;
-    socket.emit(event, ...args);
-  }, []);
+  const dispatch = useCallback(
+    (...action: GameStateDispatchAction) => {
+      const [event, ...args] = action;
+      socket.emit(event, ...args);
+    },
+    [socket],
+  );
 
   const tailoredState = useMemo(() => {
     const { players, moves } = gameState;

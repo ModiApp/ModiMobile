@@ -40,3 +40,21 @@ declare type AppContextType = [
   ModiAppState,
   (updates: Partial<ModiAppState>) => Promise<void>
 ];
+
+type GameStateDispatchAction =
+  | ['MADE_MOVE', PlayerMove]
+  | ['CHOOSE_DEALER', PlayerId]
+  | ['PLAY_AGAIN'];
+
+interface TailoredGameState {
+  /** The player whose id matches the accessToken on this device */
+  me: ModiPlayer | undefined;
+
+  /** Whether or not it is the authenticated players turn */
+  isMyTurn: boolean;
+
+  isEndOfGame: boolean;
+}
+type GameStateContextType = ModiGameState & {
+  dispatch: (...action: GameStateDispatchAction) => void;
+} & TailoredGameState;
