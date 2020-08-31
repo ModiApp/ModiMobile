@@ -1,43 +1,21 @@
-import React, { useEffect, useState, useContext, useCallback } from 'react';
-import { NavigationStackScreenComponent } from 'react-navigation-stack';
+import React, { useState, useCallback } from 'react';
 
-import { validateGameId, validateLobbyId, createLobby } from '@modi/util';
-import { useAppState } from '@modi/hooks';
-
+import { createLobby } from '@modi/util';
+import { useAppState, useNavigateToCurrGameOrLobby } from '@modi/hooks';
 import { HomeScreen } from '@modi/ui';
 
-const HomeScreenCreator: NavigationStackScreenComponent = ({ navigation }) => {
-  const [globalState, updateGlobalState] = useAppState();
+interface HomeScreenCreatorProps extends MainStackScreenProps<'Home'> {}
+
+const HomeScreenCreator: React.FC<HomeScreenCreatorProps> = ({
+  navigation,
+}) => {
+  const [{ username }, updateGlobalState] = useAppState();
 
   const [isCreatingGame, setIsCreatingGame] = useState(false);
   const [shouldAskForUsername, setShouldAskForUsername] = useState(false);
 
-  const { username, currLobbyId, currGameId } = globalState;
-  useEffect(() => {
-    if (currLobbyId) {
-      validateLobbyId(currLobbyId).then((isValid) => {
-        if (isValid) {
-          navigation.navigate('Lobby', { lobbyId: currLobbyId });
-        } else {
-          navigation.setParams({ lobbyId: undefined });
-          updateGlobalState({ currLobbyId: undefined });
-        }
-      });
-    }
-    if (currGameId) {
-      validateGameId(currGameId).then((isValid) => {
-        if (isValid) {
-          navigation.navigate('Game', { gameId: currGameId });
-        } else {
-          navigation.setParams({ gameId: undefined });
-          updateGlobalState({
-            currGameId: undefined,
-            gameAccessToken: undefined,
-          });
-        }
-      });
-    }
-  }, [currLobbyId, currGameId]);
+  // Checks if device has an active gameId or lobbyId
+  useNavigateToCurrGameOrLobby();
 
   const onCreateGameButtonPressed = useCallback(() => {
     if (requireUsername()) {

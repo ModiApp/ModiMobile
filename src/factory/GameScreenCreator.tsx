@@ -1,29 +1,21 @@
-import React, { useEffect, useContext, useCallback } from 'react';
-import { NavigationStackScreenComponent } from 'react-navigation-stack';
+import React, { useContext, useCallback } from 'react';
 
-import { validateGameId } from '@modi/util';
 import { GameScreen } from '@modi/ui';
 import { AppStateContext, GameStateProvider } from '@modi/providers';
+import { useGoHomeIfInvalidGameId } from '@modi/hooks';
 
-type NavParams = { gameId: string };
-const GameScreenCreator: NavigationStackScreenComponent<NavParams, {}> = ({
+interface GameScreenCreatorProps extends MainStackScreenProps<'Game'> {}
+
+const GameScreenCreator: React.FC<GameScreenCreatorProps> = ({
   navigation,
+  route,
 }) => {
-  const [globalState, updateGlobalState] = useContext(AppStateContext);
-  const { username, gameAccessToken } = globalState;
-  const gameId = navigation.getParam('gameId');
-  useEffect(() => {
-    gameId &&
-      validateGameId(gameId).then((isValid) => {
-        if (!isValid) {
-          updateGlobalState({
-            gameAccessToken: undefined,
-            currGameId: undefined,
-          });
-          navigation.navigate('Home');
-        }
-      });
-  }, [gameId]);
+  const gameId = route.params.gameId;
+  const [{ username, gameAccessToken }, updateGlobalState] = useContext(
+    AppStateContext,
+  );
+
+  useGoHomeIfInvalidGameId();
 
   const goToNewGame = useCallback((lobbyId: string) => {
     updateGlobalState({
@@ -38,7 +30,7 @@ const GameScreenCreator: NavigationStackScreenComponent<NavParams, {}> = ({
     <GameStateProvider
       username={username!}
       accessToken={gameAccessToken!}
-      gameId={gameId}
+      gameId={gameId!}
       onPlayAgainLobbyIdRecieved={goToNewGame}
     >
       <GameScreen />

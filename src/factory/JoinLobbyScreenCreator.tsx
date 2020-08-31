@@ -1,11 +1,12 @@
 import React, { useState, useCallback } from 'react';
-import { NavigationStackScreenComponent } from 'react-navigation-stack';
 
 import { validateLobbyId } from '@modi/util';
-
 import { JoinLobbyScreen } from '@modi/ui';
 
-const JoinLobbyScreenCreator: NavigationStackScreenComponent = ({
+interface JoinLobbyScreenCreatorProps
+  extends MainStackScreenProps<'JoinLobby'> {}
+
+const JoinLobbyScreenCreator: React.FC<JoinLobbyScreenCreatorProps> = ({
   navigation,
 }) => {
   const [isValidatingLobbyId, setIsValidatingLobbyId] = useState(false);

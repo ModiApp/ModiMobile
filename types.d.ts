@@ -40,3 +40,15 @@ declare type AppContextType = [
   ModiAppState,
   (updates: Partial<ModiAppState>) => Promise<void>
 ];
+
+type MainStackParams = {
+  Home: undefined;
+  Lobby: { lobbyId: string | undefined };
+  Game: { gameId: string | undefined };
+  JoinLobby: undefined;
+};
+
+interface MainStackScreenProps<RouteName> {
+  navigation: import('@react-navigation/stack').StackNavigationProp<MainStackParams, RouteName>;
+  route: import('@react-navigation/native').RouteProp<MainStackParams, RouteName>;
+}

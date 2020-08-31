@@ -1,32 +1,25 @@
-import React, { useEffect, useCallback } from 'react';
-import { NavigationStackScreenComponent } from 'react-navigation-stack';
+import React, { useCallback } from 'react';
 import Share from 'react-native-share';
 
-import { validateLobbyId } from '@modi/util';
-import { useAppState, useLobbyState } from '@modi/hooks';
+import {
+  useAppState,
+  useLobbyState,
+  useGoHomeIfInvalidLobbyId,
+} from '@modi/hooks';
 
 import { LobbyStateProvider } from '@modi/providers';
 import { LobbyScreen } from '@modi/ui';
 
-type NavParams = { lobbyId: string };
-const LobbyScreenCreator: NavigationStackScreenComponent<NavParams> = ({
+interface LobbyScreenCreatorProps extends MainStackScreenProps<'Lobby'> {}
+
+const LobbyScreenCreator: React.FC<LobbyScreenCreatorProps> = ({
   navigation,
+  route,
 }) => {
-  const lobbyId = navigation.getParam('lobbyId');
+  const { lobbyId } = route.params;
   const [{ username }, updateState] = useAppState();
 
-  useEffect(() => {
-    lobbyId &&
-      validateLobbyId(lobbyId).then((isValid) => {
-        if (isValid) {
-          updateState({ currLobbyId: lobbyId });
-        } else {
-          updateState({ currLobbyId: undefined }).then(() =>
-            navigation.navigate('Home'),
-          );
-        }
-      });
-  }, [lobbyId]);
+  useGoHomeIfInvalidLobbyId();
 
   const onInviteFriendsBtnPressed = useCallback(() => {
     Share.open({
@@ -53,9 +46,9 @@ const LobbyScreenCreator: NavigationStackScreenComponent<NavParams> = ({
   }, []);
 
   return (
-    <LobbyStateProvider lobbyId={lobbyId} onEventStarted={onEventStarted}>
+    <LobbyStateProvider lobbyId={lobbyId!} onEventStarted={onEventStarted}>
       <ConnectedLobbyScreen
-        lobbyId={lobbyId}
+        lobbyId={lobbyId!}
         showUsernameInput={!username || username === ''}
         onUsernameSet={onUsernameSet}
         onInviteFriendsBtnPressed={onInviteFriendsBtnPressed}

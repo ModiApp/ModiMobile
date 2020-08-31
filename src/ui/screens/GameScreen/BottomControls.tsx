@@ -1,8 +1,9 @@
 import React, { useCallback, useState, useMemo, useEffect } from 'react';
-import { StackActions } from 'react-navigation';
+import { StackActions, useNavigation } from '@react-navigation/native';
+
 import { Animated, Easing, View, LayoutChangeEvent } from 'react-native';
 
-import { useGameState, useAppState, useNavigation } from '@modi/hooks';
+import { useGameState, useAppState } from '@modi/hooks';
 import { Button, Icon } from '@modi/ui/components';
 
 const BottomControls: React.FC<{}> = () => {
