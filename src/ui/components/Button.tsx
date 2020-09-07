@@ -37,10 +37,10 @@ const Button: React.FC<ButtonProps & TouchableOpacityProps> = ({
 }) => {
   const defaultStyles = useMemo<StyleProp<ViewStyle>>(
     () => ({
-      flex: fullWidth ? 1 : 0,
       backgroundColor: color ? colors[color] : undefined,
-      margin: 8,
-      padding: thin ? 6 : 16,
+      margin: 6,
+      padding: 16,
+      paddingVertical: thin ? 6 : 16,
       borderRadius: 16,
       alignItems: 'center',
       justifyContent: 'center',

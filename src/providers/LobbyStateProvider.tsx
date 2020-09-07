@@ -55,6 +55,9 @@ export const LobbyStateProvider: React.FC<LobbyStateProviderProps> = ({
     if (username && socket.disconnected) {
       socket.open();
     }
+    if (!username && socket.connected) {
+      socket.close();
+    }
     return () => {
       socket.connected && socket.disconnect();
     };

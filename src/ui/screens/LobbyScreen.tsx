@@ -34,10 +34,10 @@ const LobbyScreen: React.FC<LobbyScreenProps> = ({
     <Container flex={1} padding={8} paddingHorizontal={16}>
       <Container flex={2} justifyContent="center" minHeight={52}>
         <Container alignItems="center">
-          <Text fontSize={24}>Game PIN:</Text>
-          <Text fontSize={42}>{lobbyId}</Text>
-          <Button color="red" onPress={onInviteFriendsBtnPressed}>
-            <Text fontSize={14}>Invite Friends</Text>
+          <Text size={24}>Game PIN:</Text>
+          <Text size={42}>{lobbyId}</Text>
+          <Button color="red" onPress={onInviteFriendsBtnPressed} thin>
+            <Text size={14}>Invite Friends</Text>
           </Button>
         </Container>
       </Container>
@@ -52,20 +52,20 @@ const LobbyScreen: React.FC<LobbyScreenProps> = ({
         alignItems="center"
         minHeight={24}
       >
-        <Container flex={1} marginRight={8}>
+        <Container flex={1}>
           <Button color="red" fullWidth onPress={onBackBtnPressed}>
-            <Icon name="back" size={28} />
+            <Icon name="back" size={28} color="white" />
           </Button>
         </Container>
 
         <Container flex={5}>
-          {(attendees[0] || {}).id === currUserId ? (
+          {attendees[0]?.id === currUserId ? (
             <Button color="blue" onPress={onStartGameBtnPressed} fullWidth>
-              <Text fontSize={28}>Start Game</Text>
+              <Text size={28}>Start Game</Text>
             </Button>
           ) : (
-            <Text fontSize={28}>
-              Waiting for {(attendees[0] || {}).username} to start the game...
+            <Text size={28}>
+              Waiting for {attendees[0]?.username} to start the game...
             </Text>
           )}
         </Container>

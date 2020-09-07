@@ -17,31 +17,22 @@ const LobbyScreenCreator: React.FC<LobbyScreenCreatorProps> = ({
   route,
 }) => {
   const { lobbyId } = route.params;
-  const [{ username }, updateState] = useAppState();
-
-  useGoHomeIfInvalidLobbyId();
+  const [{ username }, appStateDispatch] = useAppState();
 
   const onInviteFriendsBtnPressed = useCallback(() => {
     Share.open({
-      message: `Join My Modi Game! modi:/app/lobbies/${lobbyId}`,
+      message: `Join My Modi Game! modi://lobbies/${lobbyId}`,
     });
-  }, []);
-
-  const onUsernameSet = useCallback((newUsername: string) => {
-    updateState({ username: newUsername });
   }, []);
 
   const onEventStarted = useCallback(({ eventId, accessToken }) => {
-    updateState({
-      currGameId: eventId,
-      gameAccessToken: accessToken,
-      currLobbyId: undefined,
+    appStateDispatch.removeLobbyId().then(() => {
+      navigation.navigate('Game', { gameId: eventId, accessToken });
     });
-    navigation.navigate('Game', { gameId: eventId });
   }, []);
 
   const onBackBtnPressed = useCallback(() => {
-    updateState({ currLobbyId: undefined });
+    appStateDispatch.removeLobbyId();
     navigation.goBack();
   }, []);
 
@@ -50,7 +41,7 @@ const LobbyScreenCreator: React.FC<LobbyScreenCreatorProps> = ({
       <ConnectedLobbyScreen
         lobbyId={lobbyId!}
         showUsernameInput={!username || username === ''}
-        onUsernameSet={onUsernameSet}
+        onUsernameSet={appStateDispatch.setUsername}
         onInviteFriendsBtnPressed={onInviteFriendsBtnPressed}
         onBackBtnPressed={onBackBtnPressed}
       />
