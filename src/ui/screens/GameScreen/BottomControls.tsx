@@ -8,7 +8,7 @@ import { Button, Icon } from '@modi/ui/components';
 
 const BottomControls: React.FC<{}> = () => {
   const { dispatch, isMyTurn, isEndOfGame, me } = useGameState();
-  const [_, updateGlobalState] = useAppState();
+  const [_, appStateDispatch] = useAppState();
 
   const onSwapBtnPressed = useCallback(() => {
     dispatch('MADE_MOVE', 'swap');
@@ -25,7 +25,7 @@ const BottomControls: React.FC<{}> = () => {
   const navigation = useNavigation();
 
   const onHomeBtnPressed = useCallback(() => {
-    updateGlobalState({ currGameId: undefined, gameAccessToken: undefined });
+    appStateDispatch.removeGameCredentials();
     navigation.dispatch(StackActions.popToTop());
   }, [navigation]);
 
@@ -41,7 +41,8 @@ const BottomControls: React.FC<{}> = () => {
         duration: 300,
         easing: Easing.ease,
         useNativeDriver: true,
-      }).start(() => setIsShowingControls(true));
+      }).start();
+      setIsShowingControls(true);
     }
     if (!shouldShow && isShowingControls) {
       Animated.timing(translateY, {
@@ -49,7 +50,8 @@ const BottomControls: React.FC<{}> = () => {
         duration: 300,
         easing: Easing.ease,
         useNativeDriver: true,
-      }).start(() => setIsShowingControls(false));
+      }).start();
+      setIsShowingControls(false);
     }
   }, [shouldShow, isShowingControls, height, translateY, me]);
 
@@ -68,7 +70,7 @@ const BottomControls: React.FC<{}> = () => {
               onPress={onHomeBtnPressed}
               style={{ paddingHorizontal: 12, paddingVertical: 8 }}
             >
-              <Icon name="home" size={28} />
+              <Icon name="home" size={28} color="white" />
             </Button>
             <Button
               title="Play Again"

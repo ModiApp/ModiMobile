@@ -23,6 +23,7 @@ const RootStack = createStackNavigator();
 
 const AppNavigator: React.FC = () => {
   const navigationRef = useRef<NavigationContainerRef>(null);
+  const routeNameRef = useRef<string>();
   const [appState, appStateDispatch, restored] = useAppState();
 
   const [isMounted, setIsMounted] = useState(false);
@@ -103,7 +104,10 @@ const AppNavigator: React.FC = () => {
         JoinLobby: () => {},
       };
 
-      routeName && routeMiddlewares[routeName]();
+      if (routeName && routeName !== routeNameRef.current) {
+        routeNameRef.current = routeName;
+        routeMiddlewares[routeName]();
+      }
     },
     [appState, appStateDispatch],
   );

@@ -4,9 +4,11 @@ import React, {
   createContext,
   useCallback,
   useMemo,
+  useRef,
 } from 'react';
 import io from 'socket.io-client';
 import env from '@modi/env.json';
+import { useFocusEffect } from '@react-navigation/native';
 
 type GameStateDispatchAction =
   | ['MADE_MOVE', PlayerMove]
@@ -63,14 +65,38 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
     [gameId, username, accessToken],
   );
 
-  useEffect(() => {
-    socket.disconnected && socket.open();
-    return () => {
-      socket.connected && socket.disconnect();
-    };
-  }, [socket]);
+  useFocusEffect(
+    useCallback(() => {
+      socket.disconnected && socket.open();
+      return () => {
+        socket.connected && socket.disconnect();
+      };
+    }, [socket]),
+  );
 
-  socket.on('GAME_STATE_UPDATED', setGameState);
+  const gameStateQueue = useRef<ModiGameState[]>([]).current;
+  const [hasMoreStates, setHasMoreStates] = useState(false);
+  const updateGameState = useCallback((newGameState: ModiGameState) => {
+    const lastVersion = gameStateQueue.length
+      ? gameStateQueue[gameStateQueue.length - 1]._stateVersion
+      : -2;
+    if (newGameState._stateVersion > lastVersion) {
+      gameStateQueue.push(newGameState);
+      setHasMoreStates(true);
+    }
+  }, []);
+
+  console.log(gameState);
+
+  useEffect(() => {
+    if (hasMoreStates && gameStateQueue.length) {
+      setGameState(gameStateQueue.shift()!);
+    } else {
+      setHasMoreStates(false);
+    }
+  }, [hasMoreStates, gameState]);
+
+  socket.on('GAME_STATE_UPDATED', updateGameState);
   socket.on('PLAY_AGAIN_LOBBY_ID', onPlayAgainLobbyIdRecieved);
 
   const dispatch = useCallback((...action: GameStateDispatchAction) => {
