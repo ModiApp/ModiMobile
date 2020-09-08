@@ -1,10 +1,5 @@
-import React, {
-  useEffect,
-  useMemo,
-  useState,
-  createContext,
-  useCallback,
-} from 'react';
+import React, { useMemo, useState, createContext, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import io from 'socket.io-client';
 
 import { useAppState } from '@modi/hooks';
@@ -51,17 +46,19 @@ export const LobbyStateProvider: React.FC<LobbyStateProviderProps> = ({
     [lobbyId, username],
   );
 
-  useEffect(() => {
-    if (username && socket.disconnected) {
-      socket.open();
-    }
-    if (!username && socket.connected) {
-      socket.close();
-    }
-    return () => {
-      socket.connected && socket.disconnect();
-    };
-  }, [username, socket]);
+  useFocusEffect(
+    useCallback(() => {
+      if (username && socket.disconnected) {
+        socket.open();
+      }
+      if (!username && socket.connected) {
+        socket.close();
+      }
+      return () => {
+        socket.connected && socket.disconnect();
+      };
+    }, [username, socket]),
+  );
 
   socket.on('connect', () => {
     socket.on('LOBBY_STATE_UPDATED', setLobbyState);

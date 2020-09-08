@@ -10,14 +10,15 @@ function createInitialState(): ModiAppState {
   };
 }
 function createMockAppStateDispatch(
-  config?: Partial<AppStateDispatch>,
+  config = {} as Partial<AppStateDispatch>,
 ): AppStateDispatch {
   return {
-    setUsername: config?.setUsername || Promise.resolve,
-    setLobbyId: config?.setLobbyId || Promise.resolve,
-    removeLobbyId: config?.removeLobbyId || Promise.resolve,
-    setGameCredentials: config?.setGameCredentials || Promise.resolve,
-    removeGameCredentials: config?.removeGameCredentials || Promise.resolve,
+    setUsername: Promise.resolve,
+    setLobbyId: Promise.resolve,
+    removeLobbyId: Promise.resolve,
+    setGameCredentials: Promise.resolve,
+    removeGameCredentials: Promise.resolve,
+    ...config,
   };
 }
 
