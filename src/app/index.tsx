@@ -21,6 +21,21 @@ import { validateGameId, validateLobbyId } from '@modi/util';
 const MainStack = createStackNavigator<MainStackParams>();
 const RootStack = createStackNavigator();
 
+function MainStackNavigator() {
+  return (
+    <MainStack.Navigator
+      screenOptions={{
+        headerShown: false,
+        cardStyle: { opacity: 1 },
+      }}
+    >
+      <MainStack.Screen name="Home" component={ControlledHomeScreen} />
+      <MainStack.Screen name="Lobby" component={LobbyScreenCreator} />
+      <MainStack.Screen name="Game" component={GameScreenCreator} />
+    </MainStack.Navigator>
+  );
+}
+
 const AppNavigator: React.FC = () => {
   const navigationRef = useRef<NavigationContainerRef>(null);
   const routeNameRef = useRef<string>();
@@ -130,20 +145,7 @@ const AppNavigator: React.FC = () => {
       onReady={() => setIsMounted(true)}
     >
       <RootStack.Navigator mode="modal" headerMode="none">
-        <RootStack.Screen name="App">
-          {() => (
-            <MainStack.Navigator
-              screenOptions={{
-                headerShown: false,
-                cardStyle: { opacity: 1 },
-              }}
-            >
-              <MainStack.Screen name="Home" component={ControlledHomeScreen} />
-              <MainStack.Screen name="Lobby" component={LobbyScreenCreator} />
-              <MainStack.Screen name="Game" component={GameScreenCreator} />
-            </MainStack.Navigator>
-          )}
-        </RootStack.Screen>
+        <RootStack.Screen name="App" component={MainStackNavigator} />
         <RootStack.Screen
           name="JoinLobby"
           component={ControlledJoinLobbyScreen}
