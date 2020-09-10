@@ -38,7 +38,8 @@ declare type ModiAppState = {
 
 declare type AppContextType = [
   ModiAppState,
-  (updates: Partial<ModiAppState>) => Promise<void>
+  AppStateDispatch,
+  boolean
 ];
 
 type GameStateDispatchAction =
@@ -58,3 +59,29 @@ interface TailoredGameState {
 type GameStateContextType = ModiGameState & {
   dispatch: (...action: GameStateDispatchAction) => void;
 } & TailoredGameState;
+declare type AppStateDispatch = {
+  /** Sets `username` to provided value */
+  setUsername: (username: string) => Promise<void>;
+  /** Sets `currLobbyId` to provided value */
+  setLobbyId: (lobbyId: string) => Promise<void>;
+  /** Sets `currLobbyId` to undefined */
+  removeLobbyId: () => Promise<void>;
+  /** Sets `currGameId` and `gameAccessToken` */
+  setGameCredentials: (gameId: string, accessToken: string) => Promise<void>;
+    /** Sets `currGameId` and `gameAccessToken` to undefined */
+  removeGameCredentials: () => Promise<void>;
+}
+
+type MainStackParams = {
+  Home: undefined;
+  Lobby: { lobbyId: string | undefined };
+  Game: { gameId: string, accessToken: string } | { gameId: undefined, accessToken: undefined };
+  JoinLobby: undefined;
+};
+
+type RouteName = 'Home' | 'JoinLobby' | 'Lobby' | 'Game';
+
+interface MainStackScreenProps<RouteName> {
+  navigation: import('@react-navigation/stack').StackNavigationProp<MainStackParams, RouteName>;
+  route: import('@react-navigation/native').RouteProp<MainStackParams, RouteName>;
+}

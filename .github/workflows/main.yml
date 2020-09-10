@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/cache@v2.1.1
+      - uses: actions/cache@v2
         id: cache_node_modules
         with:
           path: node_modules
@@ -25,14 +25,18 @@ jobs:
         id: cache_pods
         with:
           path: ios/Pods
-          key: ${{ runner.os }}-%{{ hashFiles('ios/Podfile.lock') }}
+          key: ${{ runner.os }}-${{ hashFiles('ios/Podfile.lock') }}
 
       - name: Install pods
         if: steps.cache_pods.outputs.cache_hit != 'true'
         run: cd ios && pod install
 
       - name: Set env
-        run: yarn env:prod
+        run: |
+          echo "${{ secrets.PROD_ENV_JSON }}" > src/env.json
+
+      - name: Generate main.jsbundle
+        run: yarn run build:ios
 
       # Allows fastlane match to pull provisioning profiles from other git repo
       - uses: webfactory/ssh-agent@v0.4.0

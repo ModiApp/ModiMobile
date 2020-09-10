@@ -5,6 +5,10 @@ import {
   Text as RNText,
   TextInput as RNTextInput,
   ActivityIndicator,
+  TextInputProps as RNTextInputProps,
+  StyleProp,
+  TextStyle,
+  ViewStyle,
 } from 'react-native';
 
 import { colors, sizing, fontFamilies } from '../styles';
@@ -72,7 +76,9 @@ const withStylesFromProps = (Component: React.ComponentType, css?) => (
   );
 };
 
-export const Container = withStylesFromProps(View);
+export const Container = withStylesFromProps(View) as React.FC<
+  StyleProp<ViewStyle>
+>;
 
 export const TextInput = withStylesFromProps(
   (props) => <RNTextInput {...props} placeholderTextColor="lightgray" />,
@@ -84,8 +90,8 @@ export const TextInput = withStylesFromProps(
     textAlign: 'center',
     fontFamily: fontFamilies.primary,
   },
-);
-
+) as React.FC<TextInputProps>;
+type TextInputProps = RNTextInputProps & StyleProp<TextStyle>;
 export const ScreenContainer = withStylesFromProps(SafeAreaView, {
   backgroundColor: colors.feltGreen,
   ...sizing.fullScreen,

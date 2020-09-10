@@ -1,8 +1,8 @@
-import { useContext } from 'react';
-import { NavigationContext } from 'react-navigation';
+import {
+  useNavigation as useNavigationHook,
+  NavigationProp,
+} from '@react-navigation/native';
 
-function useNavigation() {
-  return useContext(NavigationContext);
+export default function useNavigation() {
+  return useNavigationHook<NavigationProp<MainStackParams>>();
 }
-
-export default useNavigation;

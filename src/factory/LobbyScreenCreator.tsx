@@ -1,63 +1,47 @@
-import React, { useEffect, useCallback } from 'react';
-import { NavigationStackScreenComponent } from 'react-navigation-stack';
+import React, { useCallback } from 'react';
 import Share from 'react-native-share';
 
-import { validateLobbyId } from '@modi/util';
-import { useAppState, useLobbyState } from '@modi/hooks';
+import {
+  useAppState,
+  useLobbyState,
+  useGoHomeIfInvalidLobbyId,
+} from '@modi/hooks';
 
 import { LobbyStateProvider } from '@modi/providers';
 import { LobbyScreen } from '@modi/ui';
 
-type NavParams = { lobbyId: string };
-const LobbyScreenCreator: NavigationStackScreenComponent<NavParams> = ({
-  navigation,
-}) => {
-  const lobbyId = navigation.getParam('lobbyId');
-  const [{ username }, updateState] = useAppState();
+interface LobbyScreenCreatorProps extends MainStackScreenProps<'Lobby'> {}
 
-  useEffect(() => {
-    lobbyId &&
-      validateLobbyId(lobbyId).then((isValid) => {
-        if (isValid) {
-          updateState({ currLobbyId: lobbyId });
-        } else {
-          updateState({ currLobbyId: undefined }).then(() =>
-            navigation.navigate('Home'),
-          );
-        }
-      });
-  }, [lobbyId]);
+const LobbyScreenCreator: React.FC<LobbyScreenCreatorProps> = ({
+  navigation,
+  route,
+}) => {
+  const { lobbyId } = route.params;
+  const [{ username }, appStateDispatch] = useAppState();
 
   const onInviteFriendsBtnPressed = useCallback(() => {
     Share.open({
-      message: `Join My Modi Game! modi:/app/lobbies/${lobbyId}`,
+      message: `Join My Modi Game! modi://lobbies/${lobbyId}`,
     });
-  }, []);
-
-  const onUsernameSet = useCallback((newUsername: string) => {
-    updateState({ username: newUsername });
   }, []);
 
   const onEventStarted = useCallback(({ eventId, accessToken }) => {
-    updateState({
-      currGameId: eventId,
-      gameAccessToken: accessToken,
-      currLobbyId: undefined,
+    appStateDispatch.removeLobbyId().then(() => {
+      navigation.navigate('Game', { gameId: eventId, accessToken });
     });
-    navigation.navigate('Game', { gameId: eventId });
   }, []);
 
   const onBackBtnPressed = useCallback(() => {
-    updateState({ currLobbyId: undefined });
+    appStateDispatch.removeLobbyId();
     navigation.goBack();
   }, []);
 
   return (
-    <LobbyStateProvider lobbyId={lobbyId} onEventStarted={onEventStarted}>
+    <LobbyStateProvider lobbyId={lobbyId!} onEventStarted={onEventStarted}>
       <ConnectedLobbyScreen
-        lobbyId={lobbyId}
+        lobbyId={lobbyId!}
         showUsernameInput={!username || username === ''}
-        onUsernameSet={onUsernameSet}
+        onUsernameSet={appStateDispatch.setUsername}
         onInviteFriendsBtnPressed={onInviteFriendsBtnPressed}
         onBackBtnPressed={onBackBtnPressed}
       />
