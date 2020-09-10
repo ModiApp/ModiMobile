@@ -1,4 +1,11 @@
-import React, { useMemo, useState, createContext, useCallback } from 'react';
+import React, {
+  useMemo,
+  useState,
+  createContext,
+  useCallback,
+  useEffect,
+  useRef,
+} from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import io from 'socket.io-client';
 
@@ -36,6 +43,14 @@ export const LobbyStateProvider: React.FC<LobbyStateProviderProps> = ({
 }) => {
   const [{ username }] = useAppState();
   const [lobbyState, setLobbyState] = useState(createInitialLobbyState());
+
+  const lastLobbyId = useRef(lobbyId);
+  useEffect(() => {
+    if (lobbyId !== lastLobbyId.current) {
+      lastLobbyId.current = lobbyId;
+      setLobbyState(createInitialLobbyState());
+    }
+  }, [lobbyId, lobbyState]);
 
   const socket = useMemo(
     () =>

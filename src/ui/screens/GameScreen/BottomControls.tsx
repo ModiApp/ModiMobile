@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo, useEffect } from 'react';
+import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { StackActions, useNavigation } from '@react-navigation/native';
 
 import { Animated, Easing, View, LayoutChangeEvent } from 'react-native';
@@ -31,36 +31,36 @@ const BottomControls: React.FC<{}> = () => {
 
   const [height, setHeight] = useState(0);
   const [isShowingControls, setIsShowingControls] = useState(true);
-  const translateY = useMemo(() => new Animated.Value(height), [height]);
+  const translateY = useRef(new Animated.Value(0)).current;
   const shouldShow = isMyTurn || isEndOfGame;
 
-  useEffect(() => {
-    if (shouldShow && !isShowingControls) {
-      Animated.timing(translateY, {
-        toValue: 0,
-        duration: 300,
-        easing: Easing.ease,
-        useNativeDriver: true,
-      }).start();
-      setIsShowingControls(true);
-    }
-    if (!shouldShow && isShowingControls) {
-      Animated.timing(translateY, {
-        toValue: height + 100,
-        duration: 300,
-        easing: Easing.ease,
-        useNativeDriver: true,
-      }).start();
-      setIsShowingControls(false);
-    }
-  }, [shouldShow, isShowingControls, height, translateY, me]);
+  // useEffect(() => {
+  //   if (shouldShow && !isShowingControls) {
+  //     Animated.timing(translateY, {
+  //       toValue: 0,
+  //       duration: 300,
+  //       easing: Easing.ease,
+  //       useNativeDriver: true,
+  //     }).start();
+  //     setIsShowingControls(true);
+  //   }
+  //   if (!shouldShow && isShowingControls) {
+  //     Animated.timing(translateY, {
+  //       toValue: height + 100,
+  //       duration: 300,
+  //       easing: Easing.ease,
+  //       useNativeDriver: true,
+  //     }).start();
+  //     setIsShowingControls(false);
+  //   }
+  // }, [shouldShow, isShowingControls, height, translateY, me]);
 
   const onLayout = useCallback(
     (e: LayoutChangeEvent) => setHeight(e.nativeEvent.layout.height),
     [],
   );
 
-  return (
+  return !shouldShow ? null : (
     <View onLayout={onLayout}>
       <Animated.View style={{ transform: [{ translateY }] }}>
         {isEndOfGame ? (
