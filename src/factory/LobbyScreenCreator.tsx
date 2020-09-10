@@ -1,11 +1,7 @@
 import React, { useCallback } from 'react';
 import Share from 'react-native-share';
 
-import {
-  useAppState,
-  useLobbyState,
-  useGoHomeIfInvalidLobbyId,
-} from '@modi/hooks';
+import { useAppState, useLobbyState } from '@modi/hooks';
 
 import { LobbyStateProvider } from '@modi/providers';
 import { LobbyScreen } from '@modi/ui';
@@ -26,6 +22,7 @@ const LobbyScreenCreator: React.FC<LobbyScreenCreatorProps> = ({
   }, []);
 
   const onEventStarted = useCallback(({ eventId, accessToken }) => {
+    navigation.setParams({ lobbyId: undefined });
     appStateDispatch.removeLobbyId().then(() => {
       navigation.navigate('Game', { gameId: eventId, accessToken });
     });
