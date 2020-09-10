@@ -9,6 +9,7 @@ import {
   Text,
 } from '@modi/ui/components';
 
+import CardMap from './CardMap';
 import BottomControls from './BottomControls';
 
 const GameScreen: React.FC = () => {
@@ -22,38 +23,9 @@ const GameScreen: React.FC = () => {
         <Text size={24}>{me?.username}</Text>
         <Text size={16}>Lives: {me?.lives}</Text>
       </Container>
-      <View
-        style={{
-          flex: 1,
-          position: 'relative',
-        }}
-      >
-        <Animated.View
-          style={{
-            // position: 'absolute',
-            width: '100%',
-            height: '100%',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            // transform: [
-            //   {
-            //     translateX: cardPosAnim.x.interpolate({
-            //       inputRange: [-1, 1],
-            //       outputRange: ['-100%', '100%'],
-            //     }),
-            //   },
-            //   {
-            //     translateY: cardPosAnim.y.interpolate({
-            //       inputRange: [0, 1],
-            //       outputRange: ['0%', '-150%'],
-            //     }),
-            //   },
-            // ],
-          }}
-        >
-          {!!card && <PlayingCard suit={card.suit} rank={card.rank} />}
-        </Animated.View>
-      </View>
+      <Container flex={1}>
+        <CardMap />
+      </Container>
       <BottomControls />
     </ScreenContainer>
   );

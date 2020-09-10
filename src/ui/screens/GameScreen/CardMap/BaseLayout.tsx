@@ -1,11 +1,12 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useMemo, useEffect } from 'react';
 import {
   View,
   StyleSheet,
   LayoutRectangle,
   LayoutChangeEvent,
-  PixelRatio,
+  Animated,
 } from 'react-native';
+import { useGameState } from '@modi/hooks';
 
 export type BaseLayoutRenderItem = (
   /** zero is the card closes to current player, then goes clockwise */
@@ -26,13 +27,27 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({ numPlaces, renderItem }) => {
     setLayout(e.nativeEvent.layout);
   }, []);
 
-  const rotation = (2 * Math.PI) / numPlaces;
-  const itemWidth = (layout?.width || 0) * 0.15;
+  const gameState = useGameState();
+
+  const rotation = (2 * Math.PI) / (gameState.players.length || 1);
+  const itemWidth = (layout?.width || 300) * 0.15;
   const itemAspectRatio = 1 / 1.528;
-  const radius = 140;
+  const radius = (layout?.width || 300) * 0.35;
+
+  const me = gameState.me || { id: undefined };
+  const idxOfMe = gameState.players.findIndex((player) => player.id === me.id);
+  const boardRotation = `${idxOfMe * rotation}rad`;
+
+  if (!gameState.me) {
+    return null;
+  }
 
   return (
-    <View style={styles.container} onLayout={onLayout}>
+    <Animated.View
+      key={boardRotation}
+      onLayout={onLayout}
+      style={[styles.container, { transform: [{ rotate: boardRotation }] }]}
+    >
       {Array(numPlaces)
         .fill(null)
         .map((_, idx) => {
@@ -53,7 +68,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({ numPlaces, renderItem }) => {
             </View>
           );
         })}
-    </View>
+    </Animated.View>
   );
 };
 

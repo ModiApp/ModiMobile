@@ -38,6 +38,10 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
   onPlayAgainLobbyIdRecieved,
 }) => {
   const [gameState, setGameState] = useState(createInitialGameState());
+  useEffect(() => {
+    setGameState(createInitialGameState());
+  }, [gameId, accessToken]);
+
   const socket = useMemo(
     () =>
       io(`${env.API_URL}/games/${gameId}`, {
@@ -56,29 +60,29 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
     }, [socket]),
   );
 
-  const gameStateQueue = useRef<ModiGameState[]>([]).current;
-  const [hasMoreStates, setHasMoreStates] = useState(false);
-  const updateGameState = useCallback((newGameState: ModiGameState) => {
-    const lastVersion = gameStateQueue.length
-      ? gameStateQueue[gameStateQueue.length - 1]._stateVersion
-      : -2;
-    if (newGameState._stateVersion > lastVersion) {
-      gameStateQueue.push(newGameState);
-      setHasMoreStates(true);
-    }
-  }, []);
+  // const gameStateQueue = useRef<ModiGameState[]>([]).current;
+  // const [hasMoreStates, setHasMoreStates] = useState(false);
+  // const updateGameState = useCallback((newGameState: ModiGameState) => {
+  //   const lastVersion = gameStateQueue.length
+  //     ? gameStateQueue[gameStateQueue.length - 1]._stateVersion
+  //     : -2;
+  //   if (newGameState._stateVersion > lastVersion) {
+  //     gameStateQueue.push(newGameState);
+  //     setHasMoreStates(true);
+  //   }
+  // }, []);
 
-  console.log(gameState);
+  // console.log(gameState);
 
-  useEffect(() => {
-    if (hasMoreStates && gameStateQueue.length) {
-      setGameState(gameStateQueue.shift()!);
-    } else {
-      setHasMoreStates(false);
-    }
-  }, [hasMoreStates, gameState]);
+  // useEffect(() => {
+  //   if (hasMoreStates && gameStateQueue.length) {
+  //     setGameState(gameStateQueue.shift()!);
+  //   } else {
+  //     setHasMoreStates(false);
+  //   }
+  // }, [hasMoreStates, gameState]);
 
-  socket.on('GAME_STATE_UPDATED', updateGameState);
+  socket.on('GAME_STATE_UPDATED', setGameState);
   socket.on('PLAY_AGAIN_LOBBY_ID', onPlayAgainLobbyIdRecieved);
 
   const dispatch = useCallback(
@@ -99,6 +103,7 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
     const me = idxOfMe !== -1 ? players[idxOfMe] : undefined;
     const isMyTurn = activeMeIdx !== -1 && moves.length === activeMeIdx;
     const isEndOfGame =
+      players.length > 0 &&
       players.filter((player) => player.lives > 0).length === 1;
 
     return { me, isMyTurn, isEndOfGame };
