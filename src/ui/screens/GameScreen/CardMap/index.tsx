@@ -19,23 +19,7 @@ const CardMap: React.FC = () => {
 
   const renderCard = useCallback<BaseLayoutRenderItem>(
     (idx: number, radius: number) => {
-      const idxOfLastMove = gameState.moves.length - 1;
-      const lastMove = gameState.moves[idxOfLastMove];
-      const idxOfTrader = lastMove === 'swap' ? idxOfLastMove : undefined;
-      // const { rotate, translateX, translateY } = animateTradingCards(
-      //   idx,
-      //   radius,
-      //   idxOfTrader,
-      //   gameState.players.length,
-      // );
-      // const rotate = new Animated.Value(0);
-      // const translateX = new Animated.Value(0);
-      // const translateY = new Animated.Value(0);
-
       return (
-        // <Animated.View
-        //   style={{ flex: 1, transform: [{ translateX }, { translateY }] }}
-        // >
         <View style={{ flex: 1 }}>
           {!!gameState.players[idx].card && (
             <Image
@@ -48,7 +32,6 @@ const CardMap: React.FC = () => {
             />
           )}
         </View>
-        // </Animated.View>
       );
     },
     [gameState.players, gameState.moves],
