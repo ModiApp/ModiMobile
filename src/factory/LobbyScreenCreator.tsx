@@ -21,12 +21,16 @@ const LobbyScreenCreator: React.FC<LobbyScreenCreatorProps> = ({
     });
   }, []);
 
-  const onEventStarted = useCallback(({ eventId, accessToken }) => {
-    navigation.setParams({ lobbyId: undefined });
-    appStateDispatch.removeLobbyId().then(() => {
-      navigation.navigate('Game', { gameId: eventId, accessToken });
-    });
-  }, []);
+  const onEventStarted = useCallback(
+    ({ eventId, accessToken }) => {
+      navigation.setParams({ lobbyId: undefined });
+      appStateDispatch.removeLobbyId().then(() => {
+        console.log('going to game screen with', eventId, accessToken);
+        navigation.navigate('Game', { gameId: eventId, accessToken });
+      });
+    },
+    [lobbyId],
+  );
 
   const onBackBtnPressed = useCallback(() => {
     appStateDispatch.removeLobbyId();
@@ -64,7 +68,7 @@ const ConnectedLobbyScreen: React.FC<ConnectedLobbyScreenProps> = ({
 
   const dispatchStartGame = useCallback(() => {
     dispatch('START_GAME');
-  }, []);
+  }, [dispatch]);
 
   return (
     <LobbyScreen

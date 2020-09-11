@@ -4,6 +4,7 @@ import {
   useFocusEffect,
   NavigationState,
   NavigationContainerRef,
+  StackActions,
 } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -56,7 +57,8 @@ const AppNavigator: React.FC = () => {
       const routeName = navigationRef.current?.getCurrentRoute()
         ?.name as RouteName;
       const routeParams = navigationRef.current?.getCurrentRoute()?.params;
-      console.log('NAV STATE CHANGED', state);
+      const goHome = () =>
+        navigationRef.current?.dispatch(StackActions.popToTop());
       const routeMiddlewares = {
         Home: () => {
           console.log('home middleware hit');
@@ -78,42 +80,70 @@ const AppNavigator: React.FC = () => {
           }
         },
         Lobby: () => {
-          console.log('lobby middleware hit');
           // @ts-ignore
           const lobbyId = routeParams?.lobbyId || appState.currLobbyId;
           if (lobbyId) {
             validateLobbyId(lobbyId).then((isValid) => {
               if (!isValid) {
-                appStateDispatch.removeLobbyId().then(() => {
-                  navigationRef.current?.navigate('Home');
-                });
+                appStateDispatch.removeLobbyId().then(goHome);
               } else if (appState.currLobbyId !== lobbyId) {
                 appStateDispatch.setLobbyId(lobbyId);
               }
             });
           } else {
-            navigationRef.current?.navigate('Home');
+            goHome();
           }
         },
         Game: () => {
           // @ts-ignore
-          const gameId = routeParams?.gameId || appState.currGameId;
+          console.log('route params', routeParams);
+          console.log(appState.currGameId, appState.gameAccessToken);
+          // const gameId = routeParams?.gameId || appState.currGameId;
 
-          const accessToken =
+          // const accessToken =
+          //   // @ts-ignore
+          //   routeParams?.accessToken || appState.gameAccessToken;
+
+          const { gameId, accessToken } = (() => {
             // @ts-ignore
-            routeParams?.accessToken || appState.gameAccessToken;
-
+            if (routeParams?.gameId && routeParams?.accessToken) {
+              return {
+                // @ts-ignore
+                gameId: routeParams.gameId,
+                // @ts-ignore
+                accessToken: routeParams.accessToken,
+              };
+            }
+            return {
+              gameId: appState.currGameId,
+              accessToken: appState.gameAccessToken,
+            };
+          })();
+          console.log('new credentials:', gameId, accessToken);
           if (gameId && accessToken) {
             validateGameId(gameId).then((isValid) => {
               if (isValid) {
-                appStateDispatch.setGameCredentials(gameId, accessToken);
+                appStateDispatch
+                  .setGameCredentials(gameId, accessToken)
+                  .then(() => {
+                    console.log(
+                      'updated app state game credentials',
+                      gameId,
+                      accessToken,
+                    );
+                  });
+                navigationRef.current?.setParams({ gameId, accessToken });
               } else {
+                navigationRef.current?.setParams({
+                  gameId: undefined,
+                  accessToken: undefined,
+                });
                 appStateDispatch.removeGameCredentials();
-                navigationRef.current?.navigate('Home');
+                goHome();
               }
             });
           } else {
-            navigationRef.current?.navigate('Home');
+            goHome();
           }
         },
         JoinLobby: () => {},

@@ -11,6 +11,7 @@ import io from 'socket.io-client';
 
 import { useAppState } from '@modi/hooks';
 import { API_URL } from '@modi/env.json';
+import { acc } from 'react-native-reanimated';
 
 interface LobbyState {
   attendees: LobbyAttendee[];
@@ -64,10 +65,10 @@ export const LobbyStateProvider: React.FC<LobbyStateProviderProps> = ({
   useFocusEffect(
     useCallback(() => {
       if (username && socket.disconnected) {
-        socket.open();
+        socket.connect();
       }
       if (!username && socket.connected) {
-        socket.close();
+        socket.disconnect();
       }
       return () => {
         socket.connected && socket.disconnect();
@@ -75,14 +76,18 @@ export const LobbyStateProvider: React.FC<LobbyStateProviderProps> = ({
     }, [username, socket]),
   );
 
-  socket.on('connect', () => {
-    socket.on('LOBBY_STATE_UPDATED', setLobbyState);
-    socket.on('EVENT_STARTED', onEventStarted);
-  });
+  useEffect(() => {
+    if (socket) {
+      socket.on('connect', () => {
+        socket.on('LOBBY_STATE_UPDATED', setLobbyState);
+        socket.on('EVENT_STARTED', onEventStarted);
+      });
+    }
+  }, [socket, onEventStarted, setLobbyState]);
 
   const dispatch = useCallback(
     (action: LobbySocketAction) => socket.emit(action),
-    [socket],
+    [socket, lobbyId],
   );
 
   const currUserId = socket.id;

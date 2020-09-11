@@ -61,8 +61,18 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
     }, [socket]),
   );
 
-  socket.on('GAME_STATE_UPDATED', setGameState);
-  socket.on('PLAY_AGAIN_LOBBY_ID', onPlayAgainLobbyIdRecieved);
+  useEffect(() => {
+    socket.disconnected && socket.open();
+  }, [socket.disconnected]);
+
+  useEffect(() => {
+    console.log('socket updated', socket.id);
+    socket.on('connect', () => {
+      console.log('socket connected');
+      socket.on('GAME_STATE_UPDATED', setGameState);
+      socket.on('PLAY_AGAIN_LOBBY_ID', onPlayAgainLobbyIdRecieved);
+    });
+  }, [socket]);
 
   const dispatch = useCallback(
     (...action: GameStateDispatchAction) => {

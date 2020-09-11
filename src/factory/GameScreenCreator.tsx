@@ -1,12 +1,14 @@
-import React, { useContext, useCallback } from 'react';
+import React, { useContext, useCallback, useEffect } from 'react';
 
 import { GameScreen } from '@modi/ui';
 import { AppStateContext, GameStateProvider } from '@modi/providers';
 import { useNavigation } from '@modi/hooks';
+import { useFocusEffect } from '@react-navigation/native';
 
-const GameScreenCreator: React.FC = () => {
-  const navigation = useNavigation();
-
+interface ControlledGameScreenProps extends MainStackScreenProps<'Game'> {}
+const GameScreenCreator: React.FC<ControlledGameScreenProps> = ({
+  navigation,
+}) => {
   const [
     { username, currGameId, gameAccessToken },
     appStateDispatch,
@@ -17,6 +19,17 @@ const GameScreenCreator: React.FC = () => {
       navigation.navigate('Lobby', { lobbyId });
     });
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      console.log(
+        'got to gamescreen with',
+        gameAccessToken,
+        currGameId,
+        username,
+      );
+    }, [gameAccessToken, currGameId]),
+  );
 
   return (
     <GameStateProvider
