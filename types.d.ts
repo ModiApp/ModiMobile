@@ -55,6 +55,8 @@ interface TailoredGameState {
   isMyTurn: boolean;
 
   isEndOfGame: boolean;
+
+  activePlayerIdx: number | undefined;
 }
 type GameStateContextType = ModiGameState & {
   dispatch: (...action: GameStateDispatchAction) => void;

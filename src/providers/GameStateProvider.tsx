@@ -22,6 +22,7 @@ const GameStateContext = createContext<GameStateContextType>({
   me: undefined,
   isMyTurn: false,
   isEndOfGame: false,
+  activePlayerIdx: undefined,
 });
 
 interface GameStateProviderProps {
@@ -60,28 +61,6 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
     }, [socket]),
   );
 
-  // const gameStateQueue = useRef<ModiGameState[]>([]).current;
-  // const [hasMoreStates, setHasMoreStates] = useState(false);
-  // const updateGameState = useCallback((newGameState: ModiGameState) => {
-  //   const lastVersion = gameStateQueue.length
-  //     ? gameStateQueue[gameStateQueue.length - 1]._stateVersion
-  //     : -2;
-  //   if (newGameState._stateVersion > lastVersion) {
-  //     gameStateQueue.push(newGameState);
-  //     setHasMoreStates(true);
-  //   }
-  // }, []);
-
-  // console.log(gameState);
-
-  // useEffect(() => {
-  //   if (hasMoreStates && gameStateQueue.length) {
-  //     setGameState(gameStateQueue.shift()!);
-  //   } else {
-  //     setHasMoreStates(false);
-  //   }
-  // }, [hasMoreStates, gameState]);
-
   socket.on('GAME_STATE_UPDATED', setGameState);
   socket.on('PLAY_AGAIN_LOBBY_ID', onPlayAgainLobbyIdRecieved);
 
@@ -105,8 +84,13 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
     const isEndOfGame =
       players.length > 0 &&
       players.filter((player) => player.lives > 0).length === 1;
+    const _activePlayerIdx = players.findIndex(
+      (player) => alivePlayers[moves.length]?.id === player.id,
+    );
+    const activePlayerIdx =
+      _activePlayerIdx === -1 ? undefined : _activePlayerIdx;
 
-    return { me, isMyTurn, isEndOfGame };
+    return { me, isMyTurn, isEndOfGame, activePlayerIdx };
   }, [gameState, accessToken]);
 
   return (

@@ -37,10 +37,25 @@ const CardMap: React.FC = () => {
     [gameState.players, gameState.moves],
   );
 
+  const renderCurrentPlayerBorderHighlight = useCallback(
+    (idx: number) => {
+      return idx === gameState.activePlayerIdx ? (
+        <View style={styles.activeCardBorder} />
+      ) : null;
+    },
+    [gameState.activePlayerIdx],
+  );
+
   return (
     <View style={styles.container}>
       <View style={styles.layer}>
         <BaseLayout numPlaces={numPlayers} renderItem={renderPlaceholder} />
+      </View>
+      <View style={styles.layer}>
+        <BaseLayout
+          numPlaces={numPlayers}
+          renderItem={renderCurrentPlayerBorderHighlight}
+        />
       </View>
       <Animated.View style={styles.layer}>
         <BaseLayout numPlaces={numPlayers} renderItem={renderCard} />
@@ -74,6 +89,18 @@ const styles = StyleSheet.create({
   cardPlaceholder: {
     backgroundColor: colors.feltGreen,
     flex: 1,
+  },
+  activeCardBorder: {
+    flex: 1,
+    backgroundColor: colors.feltGreen,
+    shadowColor: 'yellow',
+    shadowRadius: 6,
+    shadowOpacity: 1,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    elevation: 10,
   },
 });
 

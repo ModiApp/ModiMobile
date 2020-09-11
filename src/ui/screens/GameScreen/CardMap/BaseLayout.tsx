@@ -13,7 +13,7 @@ export type BaseLayoutRenderItem = (
   idx: number,
   /** in case the item needs to rotate to offset the cards rotation */
   radius: number,
-) => JSX.Element;
+) => JSX.Element | null;
 
 interface BaseLayoutProps {
   numPlaces: number;
