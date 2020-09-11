@@ -36,7 +36,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({ numPlaces, renderItem }) => {
 
   const me = gameState.me || { id: undefined };
   const idxOfMe = gameState.players.findIndex((player) => player.id === me.id);
-  const boardRotation = `${idxOfMe * rotation}rad`;
+  const boardRotation = `${-idxOfMe * rotation}rad`;
 
   if (!gameState.me) {
     return null;
