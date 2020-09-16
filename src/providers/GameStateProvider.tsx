@@ -103,6 +103,8 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
     return { me, isMyTurn, isEndOfGame, activePlayerIdx };
   }, [gameState, accessToken]);
 
+  console.log('rerendering gamestate provier!');
+
   return (
     <GameStateContext.Provider
       value={{ ...gameState, ...tailoredState, dispatch }}
