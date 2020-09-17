@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Animated } from 'react-native';
 
 function useDealCardsAnimation(
@@ -6,7 +6,9 @@ function useDealCardsAnimation(
   animatedValues: { position: Animated.ValueXY; rotation: Animated.Value }[],
   boardHeight: number,
   cardHeight: number,
-): [boolean, () => void] {
+  lastCardOrder: (Card | undefined)[],
+  currCardOrder: (Card | undefined)[],
+): boolean {
   const [isAnimating, setIsAnimating] = useState(false);
 
   const dealCards = useCallback(() => {
@@ -39,7 +41,17 @@ function useDealCardsAnimation(
     ).start(() => setIsAnimating(false));
   }, [numCards, animatedValues, boardHeight, cardHeight]);
 
-  return [isAnimating, dealCards];
+  useEffect(() => {
+    if (
+      JSON.stringify(lastCardOrder) !== JSON.stringify(currCardOrder) &&
+      lastCardOrder.every((card) => card === undefined) &&
+      currCardOrder.filter((card) => card !== undefined).length > 0
+    ) {
+      dealCards();
+    }
+  }, [JSON.stringify(currCardOrder), boardHeight]);
+
+  return isAnimating;
 }
 
 export default useDealCardsAnimation;

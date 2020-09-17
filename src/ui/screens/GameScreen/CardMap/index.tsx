@@ -41,11 +41,13 @@ const AnimatingCardMap: React.FC = () => {
     [currOrder.length, layout.height],
   );
 
-  const [isDealingCards, animateCardsBeingDealt] = useDealCardsAnimation(
+  const isDealingCards = useDealCardsAnimation(
     currOrder.length,
     animatedValues,
     layout.height,
     cardHeight,
+    lastOrder,
+    currOrder,
   );
 
   const [isTrashingCards, animateCardsSentToTrash] = useTrashCardsAnimation(
@@ -64,13 +66,6 @@ const AnimatingCardMap: React.FC = () => {
   useEffect(() => {
     if (lastOrder !== currOrder) {
       if (
-        // Cards were just dealt
-        lastOrder.every((card) => card === undefined) &&
-        currOrder.filter((card) => card !== undefined).length > 0
-      ) {
-        animateCardsBeingDealt();
-      }
-      if (
         // Cards were just sent to trash
         lastOrder.filter((card) => card !== undefined).length > 0 &&
         currOrder.every((card) => card === undefined)
@@ -78,14 +73,11 @@ const AnimatingCardMap: React.FC = () => {
         animateCardsSentToTrash();
       }
     }
-    console.log('useeffect was called');
   }, [currOrder, layout]);
 
   const onLayout = useCallback((e: LayoutChangeEvent) => {
     setLayout(e.nativeEvent.layout);
   }, []);
-
-  console.log(currOrder);
 
   const rotation = (2 * Math.PI) / (gamestate.players.length || 1);
   const me = gamestate.me || { id: undefined };
@@ -125,7 +117,7 @@ const AnimatingCardMap: React.FC = () => {
                 transform: [{ rotate: animatedValues[idx].rotation }],
               }}
             >
-              {card ? (
+              {card && idx === idxOfMe ? (
                 <Image
                   source={cardImgs[card?.suit!][card?.rank!]}
                   style={{ width: '100%', height: '100%' }}
