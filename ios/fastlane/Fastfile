@@ -23,6 +23,7 @@ platform :ios do
       build_number: latest_testflight_build_number(version: "1.0") + 1
     )
     build_app(workspace: "ModiMobile.xcworkspace", scheme: "ModiMobile")
+    set_changelog
     upload_to_testflight(
       distribute_external: true,
     )

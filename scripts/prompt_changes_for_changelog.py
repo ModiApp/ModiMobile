@@ -26,8 +26,8 @@ def add_changes_to_changelog(changes: [str]):
 
     with open(changelog_path, 'w') as changelog:
         header = f"### {str(datetime.now()).split('.')[0]}"
-        new_content = '\n - ' + '\n - '.join(changes) + '\n\n'
-        footer = '___' + '\n'
+        new_content = '\n- ' + '\n- '.join(changes) + '\n'
+        footer = '___' + '\n\n'
 
         changelog.write(header)
         changelog.write(new_content)
