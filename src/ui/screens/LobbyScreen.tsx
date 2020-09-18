@@ -56,7 +56,7 @@ const LobbyScreen: React.FC<LobbyScreenProps> = ({
           color="red"
           fullWidth
           onPress={onBackBtnPressed}
-          style={{ height: 64, width: 64, borderRadius: 32 }}
+          style={{ height: 64, width: 64, borderRadius: 32, marginLeft: 0 }}
         >
           <Icon name="back" size={32} color="white" />
         </Button>
@@ -66,7 +66,7 @@ const LobbyScreen: React.FC<LobbyScreenProps> = ({
             <Button
               color="blue"
               onPress={onStartGameBtnPressed}
-              style={{ height: 64 }}
+              style={{ height: 64, marginRight: 0 }}
             >
               <Text size={28}>Start Game</Text>
             </Button>
@@ -100,7 +100,7 @@ const PlayerList: React.FC<PlayerListProps> = ({ players }) => (
   <Container height="100%" padding={16} borderRadius={20} bgColor="lightGreen">
     {players.map(({ username, id }, i) => (
       <Container padding={16} key={id}>
-        <Text fontSize={24}>
+        <Text size={24}>
           {i + 1}) {username}
         </Text>
       </Container>
