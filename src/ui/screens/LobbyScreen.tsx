@@ -52,15 +52,22 @@ const LobbyScreen: React.FC<LobbyScreenProps> = ({
         alignItems="center"
         minHeight={24}
       >
-        <Container flex={1}>
-          <Button color="red" fullWidth onPress={onBackBtnPressed}>
-            <Icon name="back" size={28} color="white" />
-          </Button>
-        </Container>
+        <Button
+          color="red"
+          fullWidth
+          onPress={onBackBtnPressed}
+          style={{ height: 64, width: 64, borderRadius: 32 }}
+        >
+          <Icon name="back" size={32} color="white" />
+        </Button>
 
-        <Container flex={5}>
+        <Container flex={1}>
           {attendees[0]?.id === currUserId ? (
-            <Button color="blue" onPress={onStartGameBtnPressed} fullWidth>
+            <Button
+              color="blue"
+              onPress={onStartGameBtnPressed}
+              style={{ height: 64 }}
+            >
               <Text size={28}>Start Game</Text>
             </Button>
           ) : (

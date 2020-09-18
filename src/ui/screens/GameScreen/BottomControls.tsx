@@ -64,11 +64,15 @@ const BottomControls: React.FC<{}> = () => {
     <View onLayout={onLayout}>
       <Animated.View style={{ transform: [{ translateY }] }}>
         {isEndOfGame ? (
-          <View style={{ flexDirection: 'row' }}>
+          <View style={{ flexDirection: 'row', paddingHorizontal: 4 }}>
             <Button
               color="red"
               onPress={onHomeBtnPressed}
-              style={{ paddingHorizontal: 12, paddingVertical: 8 }}
+              style={{
+                paddingHorizontal: 12,
+                paddingVertical: 8,
+                marginRight: 2,
+              }}
             >
               <Icon name="home" size={28} color="white" />
             </Button>
@@ -76,7 +80,7 @@ const BottomControls: React.FC<{}> = () => {
               title="Play Again"
               color="blue"
               onPress={onPlayAgainBtnPressed}
-              style={{ flex: 1 }}
+              style={{ flexGrow: 1 }}
             />
           </View>
         ) : (

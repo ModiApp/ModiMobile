@@ -51,7 +51,7 @@ const Button: React.FC<ButtonProps & TouchableOpacityProps> = ({
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={[defaultStyles, style]}
+      containerStyle={[defaultStyles, style]}
       {...props}
     >
       {title ? <Text style={titleStyle}>{title}</Text> : children}
