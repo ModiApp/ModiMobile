@@ -25,6 +25,8 @@ platform :ios do
     build_app(workspace: "ModiMobile.xcworkspace", scheme: "ModiMobile")
     upload_to_testflight(
       distribute_external: true,
+      notify_external_testers: true,
+      groups: ["Friends and Family"],
       changelog: File.read('changelog.txt')
     )
   end
