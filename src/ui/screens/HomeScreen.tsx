@@ -50,13 +50,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
         color="blue"
         title="Join Game"
         titleStyle={{ fontSize: 28 }}
-        style={{ borderRadius: 50 }}
+        style={{ height: 72, borderRadius: 36 }}
       />
       <Button
         onPress={onCreateGameBtnPressed}
         color="red"
         disabled={isCreatingGame}
-        style={{ borderRadius: 50 }}
+        style={{ height: 72, borderRadius: 36 }}
       >
         {isCreatingGame ? (
           <LoadingSpinner size="large" color="white" />

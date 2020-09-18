@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
 import {
-  TouchableOpacity,
   StyleProp,
   ViewStyle,
   TextStyle,
   TouchableOpacityProps,
 } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import Text from './Text';
 import { colors } from '../styles';
@@ -51,7 +51,7 @@ const Button: React.FC<ButtonProps & TouchableOpacityProps> = ({
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={[defaultStyles, style]}
+      containerStyle={[defaultStyles, style]}
       {...props}
     >
       {title ? <Text style={titleStyle}>{title}</Text> : children}

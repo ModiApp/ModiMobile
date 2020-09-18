@@ -1,10 +1,6 @@
 import React, { useRef } from 'react';
-import {
-  TouchableOpacity,
-  Image,
-  StyleSheet,
-  ImageSourcePropType,
-} from 'react-native';
+import { Image, StyleSheet, ImageSourcePropType } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import CardFlip from 'react-native-card-flip';
 import CardImgs from '../assets/img/cards';
