@@ -11,7 +11,7 @@ import env from '@modi/env.json';
 import { useFocusEffect } from '@react-navigation/native';
 
 const createInitialGameState = (): ModiGameState => ({
-  round: -1,
+  round: 0,
   moves: [],
   players: [],
   _stateVersion: 0,
