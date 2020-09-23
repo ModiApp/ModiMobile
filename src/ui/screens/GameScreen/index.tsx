@@ -6,6 +6,7 @@ import { ScreenContainer, Container, Text } from '@modi/ui/components';
 
 import CardMap from './CardMap';
 import BottomControls from './BottomControls';
+import AnimationProvider from '@modi/ui/screens/GameScreen/AnimationProvider';
 
 const GameScreen: React.FC = () => {
   const { me } = useGameState();
@@ -23,4 +24,8 @@ const GameScreen: React.FC = () => {
   );
 };
 
-export default GameScreen;
+export default () => (
+  <AnimationProvider>
+    <GameScreen />
+  </AnimationProvider>
+);
