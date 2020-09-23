@@ -9,6 +9,7 @@ import React, {
 import io from 'socket.io-client';
 import env from '@modi/env.json';
 import { useFocusEffect } from '@react-navigation/native';
+import { Hash } from 'crypto';
 
 const createInitialGameState = (): ModiGameState => ({
   round: 0,
@@ -52,13 +53,15 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
     [gameId, username, accessToken],
   );
 
+  const socketHash = socket.toString();
+
   useFocusEffect(
     useCallback(() => {
       socket.disconnected && socket.open();
       return () => {
         socket.connected && socket.disconnect();
       };
-    }, [socket]),
+    }, [socketHash]),
   );
 
   useEffect(() => {
@@ -66,20 +69,18 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
   }, [socket.disconnected]);
 
   useEffect(() => {
-    console.log('socket updated', socket.id);
     socket.on('connect', () => {
-      console.log('socket connected');
       socket.on('GAME_STATE_UPDATED', setGameState);
       socket.on('PLAY_AGAIN_LOBBY_ID', onPlayAgainLobbyIdRecieved);
     });
-  }, [socket]);
+  }, [socketHash]);
 
   const dispatch = useCallback(
     (...action: GameStateDispatchAction) => {
       const [event, ...args] = action;
       socket.emit(event, ...args);
     },
-    [socket],
+    [socketHash],
   );
 
   const tailoredState = useMemo(() => {

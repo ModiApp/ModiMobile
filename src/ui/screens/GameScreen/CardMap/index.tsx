@@ -1,65 +1,137 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import { View, StyleSheet, Animated, Image } from 'react-native';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  View,
+  StyleSheet,
+  Animated,
+  LayoutChangeEvent,
+  LayoutRectangle,
+  Image,
+} from 'react-native';
 
-import BaseLayout, { BaseLayoutRenderItem } from './BaseLayout';
-import { CardBack, Text } from '@modi/ui/components';
-import { useGameState } from '@modi/hooks';
+import { range } from '@modi/ui/util';
+import { useGameState, useStateQueue } from '@modi/hooks';
+
+import useDealCardsAnimation from './animations/dealCards';
+import useTrashCardsAnimation from './animations/trashCards';
 import { colors } from '@modi/ui/styles';
-import animateTradingCards from './animateTradingCards';
 import cardImgs from '@modi/ui/assets/img/cards';
 
-const CardMap: React.FC = () => {
-  const gameState = useGameState();
-  const numPlayers = gameState.players.length;
+const AnimatingCardMap: React.FC = () => {
+  const [layout, setLayout] = useState<LayoutRectangle>({
+    height: 0,
+    width: 0,
+    x: 0,
+    y: 0,
+  });
+  const gamestate = useGameState();
+  const cardOrder = gamestate.players.map((player) => player.card);
 
-  const renderPlaceholder = useCallback<BaseLayoutRenderItem>(
-    () => <View style={styles.cardPlaceholder} />,
-    [],
+  const cardHeight = range(2, 20, 0.32, 0.12, cardOrder.length) * layout.height;
+  const cardWidth = cardHeight / 1.528;
+
+  const [isAnimating, setIsAnimating] = useState(true);
+  const [lastOrder, currOrder] = useStateQueue(cardOrder, !isAnimating);
+
+  const animatedValues = useMemo(
+    () =>
+      currOrder.map(() => ({
+        rotation: new Animated.Value(0),
+        position: new Animated.ValueXY({ x: 0, y: layout.height }),
+      })),
+    [currOrder.length, layout.height],
   );
 
-  const renderCard = useCallback<BaseLayoutRenderItem>(
-    (idx: number, radius: number) => {
-      return (
-        <View style={{ flex: 1 }}>
-          {!!gameState.players[idx].card && (
-            <Image
-              style={{ width: '100%', height: '100%' }}
-              source={
-                gameState.players[idx].id === gameState.me?.id
-                  ? cardImgs[gameState.me.card?.suit!][gameState.me.card?.rank!]
-                  : cardImgs.back
-              }
-            />
-          )}
-        </View>
-      );
-    },
-    [gameState.players, gameState.moves],
+  const isDealingCards = useDealCardsAnimation(
+    currOrder.length,
+    animatedValues,
+    layout.height,
+    cardHeight,
+    lastOrder,
+    currOrder,
   );
 
-  const renderCurrentPlayerBorderHighlight = useCallback(
-    (idx: number) => {
-      return idx === gameState.activePlayerIdx ? (
-        <View style={styles.activeCardBorder} />
-      ) : null;
-    },
-    [gameState.activePlayerIdx],
+  const [isTrashingCards, animateCardsSentToTrash] = useTrashCardsAnimation(
+    animatedValues,
+    layout.height,
   );
+
+  useEffect(() => {
+    setIsAnimating(
+      ![isDealingCards, isTrashingCards].every(
+        (condition) => condition === false,
+      ),
+    );
+  }, [isDealingCards, isTrashingCards]);
+
+  useEffect(() => {
+    if (lastOrder !== currOrder) {
+      if (
+        // Cards were just sent to trash
+        lastOrder.filter((card) => card !== undefined).length > 0 &&
+        currOrder.every((card) => card === undefined)
+      ) {
+        animateCardsSentToTrash();
+      }
+    }
+  }, [currOrder, layout]);
+
+  const onLayout = useCallback((e: LayoutChangeEvent) => {
+    setLayout(e.nativeEvent.layout);
+  }, []);
+
+  const rotation = (2 * Math.PI) / (gamestate.players.length || 1);
+  const me = gamestate.me || { id: undefined };
+  const idxOfMe = gamestate.players.findIndex((player) => player.id === me.id);
+  const boardRotation = `${-idxOfMe * rotation}rad`;
 
   return (
-    <View style={styles.container}>
-      <View style={styles.layer}>
-        <BaseLayout numPlaces={numPlayers} renderItem={renderPlaceholder} />
+    <View style={styles.container} onLayout={onLayout}>
+      <View
+        key={boardRotation}
+        style={[
+          styles.table,
+          {
+            transform: [{ rotate: boardRotation }],
+          },
+        ]}
+      >
+        {currOrder.map((card, idx) => (
+          <Animated.View
+            key={idx}
+            style={[
+              styles.cardContainer,
+              {
+                transform: [
+                  { translateX: -cardWidth / 2 },
+                  { translateY: -cardHeight / 2 },
+                  { translateX: animatedValues[idx].position.x },
+                  { translateY: animatedValues[idx].position.y },
+                ],
+              },
+            ]}
+          >
+            <Animated.View
+              style={{
+                height: cardHeight,
+                width: cardWidth,
+                transform: [{ rotate: animatedValues[idx].rotation }],
+              }}
+            >
+              {card && idx === idxOfMe ? (
+                <Image
+                  source={cardImgs[card?.suit!][card?.rank!]}
+                  style={{ width: '100%', height: '100%' }}
+                />
+              ) : (
+                <Image
+                  source={cardImgs.back}
+                  style={{ width: '100%', height: '100%' }}
+                />
+              )}
+            </Animated.View>
+          </Animated.View>
+        ))}
       </View>
-      <View style={styles.layer}>
-        <BaseLayout
-          numPlaces={numPlayers}
-          renderItem={renderCurrentPlayerBorderHighlight}
-        />
-      </View>
-      <Animated.View style={styles.layer}>
-        <BaseLayout numPlaces={numPlayers} renderItem={renderCard} />
-      </Animated.View>
     </View>
   );
 };
@@ -71,37 +143,18 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     backgroundColor: colors.lightGreen,
   },
-  layer: {
-    position: 'absolute',
+  table: {
     width: '100%',
     height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
   },
-  card: {
-    flex: 1,
-    backgroundColor: 'red',
-    borderRadius: 6,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  cardPlaceholder: {
-    backgroundColor: colors.feltGreen,
-    flex: 1,
-  },
-  activeCardBorder: {
-    flex: 1,
-    backgroundColor: colors.feltGreen,
-    shadowColor: 'yellow',
-    shadowRadius: 6,
-    shadowOpacity: 1,
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    elevation: 10,
+  cardContainer: {
+    position: 'absolute',
+    width: 0,
+    height: 0,
   },
 });
 
-export default CardMap;
+export default AnimatingCardMap;
