@@ -1,17 +1,23 @@
-import React, { useContext, useCallback } from 'react';
+import React, { useCallback } from 'react';
 
 import { GameScreen } from '@modi/ui';
-import { AppStateContext, GameStateProvider } from '@modi/providers';
+import {
+  useAppState,
+  GameStateProvider,
+  GameScreenLayoutProvider,
+  GameScreenAnimationProvider,
+} from '@modi/providers';
 import { StackActions } from '@react-navigation/native';
 
 interface ControlledGameScreenProps extends MainStackScreenProps<'Game'> {}
-const GameScreenCreator: React.FC<ControlledGameScreenProps> = ({
+
+const ControlledGameScreen: React.FC<ControlledGameScreenProps> = ({
   navigation,
 }) => {
   const [
     { username, currGameId, gameAccessToken },
     appStateDispatch,
-  ] = useContext(AppStateContext);
+  ] = useAppState();
 
   const goToNewGame = useCallback((lobbyId: string) => {
     appStateDispatch.removeGameCredentials().then(() => {
@@ -28,9 +34,13 @@ const GameScreenCreator: React.FC<ControlledGameScreenProps> = ({
       gameId={currGameId!}
       onPlayAgainLobbyIdRecieved={goToNewGame}
     >
-      <GameScreen />
+      <GameScreenLayoutProvider>
+        <GameScreenAnimationProvider>
+          <GameScreen />
+        </GameScreenAnimationProvider>
+      </GameScreenLayoutProvider>
     </GameStateProvider>
   );
 };
 
-export default GameScreenCreator;
+export default ControlledGameScreen;

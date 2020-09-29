@@ -1,12 +1,5 @@
-import AppStateContext, { AppStateProvider } from './AppStateProvider';
-import LobbyStateContext, { LobbyStateProvider } from './LobbyStateProvider';
-import GameStateContext, { GameStateProvider } from './GameStateProvider';
+import AppStateProvider, { useAppState } from './AppStateProvider';
+import LobbyStateProvider, { useLobbyState } from './LobbyStateProvider';
+export * from './GameScreen';
 
-export {
-  AppStateProvider,
-  AppStateContext,
-  LobbyStateProvider,
-  LobbyStateContext,
-  GameStateProvider,
-  GameStateContext,
-};
+export { AppStateProvider, useAppState, LobbyStateProvider, useLobbyState };

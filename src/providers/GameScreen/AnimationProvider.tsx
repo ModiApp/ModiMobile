@@ -1,19 +1,26 @@
-import React, { useCallback, useState, useMemo, useEffect } from 'react';
+import React, {
+  useCallback,
+  useState,
+  useMemo,
+  useEffect,
+  useContext,
+} from 'react';
 import { Animated } from 'react-native';
 
-import { useGameState, useStateQueue } from '@modi/hooks';
+import { useStateQueue } from '@modi/hooks';
 import { groupSort } from '@modi/util';
+import { useGameState } from '@modi/providers/GameScreen';
 
 import { useGameScreenLayout } from './LayoutProvider';
 
+type PlaceholderBorderColor = 'red' | 'yellow' | 'green' | 'none';
 interface CardPlaceholder {
+  /** translation from center of card map */
   position: { x: number; y: number };
   width: number;
   height: number;
   rotation: number;
-  showGreenBorder: boolean;
-  showRedBorder: boolean;
-  showYellowBorder: boolean;
+  borderColor: PlaceholderBorderColor;
 }
 
 interface DisplayedCard extends Card {
@@ -37,7 +44,7 @@ function createInitialAnimationContext(): AnimationContextType {
   };
 }
 
-const AnimationContext = React.createContext<AnimationContextType>(
+export const AnimationContext = React.createContext<AnimationContextType>(
   createInitialAnimationContext(),
 );
 
@@ -69,9 +76,7 @@ const AnimationProvider: React.FC = ({ children }) => {
           width: cardWidth,
           height: cardHeight,
           rotation: cardRotation,
-          showGreenBorder: false,
-          showRedBorder: false,
-          showYellowBorder: false,
+          borderColor: 'none',
         };
       }),
     );
@@ -120,9 +125,7 @@ const AnimationProvider: React.FC = ({ children }) => {
       setCardPlaceholders((placeholders) =>
         placeholders.map((placeholder, idx) => ({
           ...placeholder,
-          showRedBorder: color === 'red' && idxs.includes(idx),
-          showGreenBorder: color === 'green' && idxs.includes(idx),
-          showYellowBorder: color === 'yellow' && idxs.includes(idx),
+          borderColor: idxs.includes(idx) ? color : placeholder.borderColor,
         })),
       );
     },
@@ -329,6 +332,10 @@ function useTrashCardsAnimation(
     },
     [cardAnimationVals, boardHeight],
   );
+}
+
+export function useGameScreenAnimations() {
+  return useContext(AnimationContext);
 }
 
 export default AnimationProvider;

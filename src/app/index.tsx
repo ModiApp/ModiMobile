@@ -1,7 +1,6 @@
 import React, { useRef, useCallback, useEffect, useState } from 'react';
 import {
   NavigationContainer,
-  useFocusEffect,
   NavigationState,
   NavigationContainerRef,
   StackActions,
@@ -10,13 +9,12 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import {
   LobbyScreenCreator,
-  GameScreenCreator,
+  ControlledGameScreen,
   ControlledJoinLobbyScreen,
   ControlledHomeScreen,
 } from '@modi/factory';
 
-import { AppStateProvider } from '@modi/providers';
-import { useAppState } from '@modi/hooks';
+import { AppStateProvider, useAppState } from '@modi/providers';
 import { validateGameId, validateLobbyId } from '@modi/util';
 
 const MainStack = createStackNavigator<MainStackParams>();
@@ -32,7 +30,7 @@ function MainStackNavigator() {
     >
       <MainStack.Screen name="Home" component={ControlledHomeScreen} />
       <MainStack.Screen name="Lobby" component={LobbyScreenCreator} />
-      <MainStack.Screen name="Game" component={GameScreenCreator} />
+      <MainStack.Screen name="Game" component={ControlledGameScreen} />
     </MainStack.Navigator>
   );
 }

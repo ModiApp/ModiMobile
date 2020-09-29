@@ -27,8 +27,8 @@ function useStateQueue<T>(state: T, shouldPopQueue: boolean): [T, T] {
       setCurrState(stateQueue.shift()!);
 
       // Alot some time for currState to change so shouldPopQueue
-      // can be recalculated
-      setTimeout(() => setCanPopState(true), 100);
+      // can be recalculated, since setState is async
+      setTimeout(() => setCanPopState(true), 150);
     }
     if (stateQueue.length === 0) {
       setHasMoreInQueue(false);

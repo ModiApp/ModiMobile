@@ -1,21 +1,13 @@
 import React from 'react';
-import { Animated, View } from 'react-native';
 
-import { useGameState } from '@modi/hooks';
-import { ScreenContainer, Container, Text } from '@modi/ui/components';
+import { ScreenContainer, Container } from '@modi/ui/components';
 
 import CardMap from './CardMap';
 import BottomControls from './BottomControls';
-import AnimationProvider from '@modi/ui/screens/GameScreen/AnimationProvider';
 
 const GameScreen: React.FC = () => {
-  const { me } = useGameState();
   return (
     <ScreenContainer>
-      <Container>
-        <Text size={24}>{me?.username}</Text>
-        <Text size={16}>Lives: {me?.lives}</Text>
-      </Container>
       <Container flex={1}>
         <CardMap />
       </Container>
@@ -24,8 +16,4 @@ const GameScreen: React.FC = () => {
   );
 };
 
-export default () => (
-  <AnimationProvider>
-    <GameScreen />
-  </AnimationProvider>
-);
+export default GameScreen;

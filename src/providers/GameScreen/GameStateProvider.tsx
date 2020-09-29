@@ -4,6 +4,7 @@ import React, {
   createContext,
   useCallback,
   useMemo,
+  useContext,
 } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import io from 'socket.io-client';
@@ -30,7 +31,7 @@ interface GameStateProviderProps {
   username: string;
   onPlayAgainLobbyIdRecieved: (lobbyId: string) => void;
 }
-export const GameStateProvider: React.FC<GameStateProviderProps> = ({
+const GameStateProvider: React.FC<GameStateProviderProps> = ({
   children,
   gameId,
   username,
@@ -111,4 +112,8 @@ export const GameStateProvider: React.FC<GameStateProviderProps> = ({
   );
 };
 
-export default GameStateContext;
+export function useGameState() {
+  return useContext(GameStateContext);
+}
+
+export default GameStateProvider;

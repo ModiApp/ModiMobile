@@ -2,6 +2,7 @@ import React, {
   useMemo,
   useState,
   createContext,
+  useContext,
   useCallback,
   useEffect,
   useRef,
@@ -9,9 +10,8 @@ import React, {
 import { useFocusEffect } from '@react-navigation/native';
 import io from 'socket.io-client';
 
-import { useAppState } from '@modi/hooks';
+import { useAppState } from '@modi/providers';
 import { API_URL } from '@modi/env.json';
-import { acc } from 'react-native-reanimated';
 
 interface LobbyState {
   attendees: LobbyAttendee[];
@@ -37,7 +37,7 @@ interface LobbyStateProviderProps {
   lobbyId: string;
   onEventStarted: (evtData: { eventId: string; accessToken: string }) => void;
 }
-export const LobbyStateProvider: React.FC<LobbyStateProviderProps> = ({
+const LobbyStateProvider: React.FC<LobbyStateProviderProps> = ({
   lobbyId,
   children,
   onEventStarted,
@@ -99,4 +99,8 @@ export const LobbyStateProvider: React.FC<LobbyStateProviderProps> = ({
   );
 };
 
-export default LobbyStateContext;
+export function useLobbyState() {
+  return useContext(LobbyStateContext);
+}
+
+export default LobbyStateProvider;

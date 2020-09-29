@@ -1,4 +1,4 @@
-import React, { createContext, useMemo } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
 import { usePersistStorage } from 'react-native-use-persist-storage';
 
 function createInitialState(): ModiAppState {
@@ -22,13 +22,13 @@ function createMockAppStateDispatch(
   };
 }
 
-const AppContext = createContext<AppContextType>([
+const AppStateContext = createContext<AppContextType>([
   createInitialState(),
   createMockAppStateDispatch(),
   false,
 ]);
 
-export const AppStateProvider: React.FC = ({ children, ...props }) => {
+const AppStateProvider: React.FC = ({ children }) => {
   const [state, setState, restored] = usePersistStorage(
     '@modi',
     createInitialState,
@@ -52,10 +52,14 @@ export const AppStateProvider: React.FC = ({ children, ...props }) => {
   };
 
   return (
-    <AppContext.Provider {...props} value={[state, appStateDispatch, restored]}>
+    <AppStateContext.Provider value={[state, appStateDispatch, restored]}>
       {children}
-    </AppContext.Provider>
+    </AppStateContext.Provider>
   );
 };
 
-export default AppContext;
+export function useAppState() {
+  return useContext(AppStateContext);
+}
+
+export default AppStateProvider;
