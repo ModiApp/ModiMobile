@@ -30,7 +30,6 @@ function useStateQueue<T>(state: T, shouldPopQueue: boolean): [T, T] {
       // can be recalculated
       setTimeout(() => setCanPopState(true), 100);
     }
-    console.log(stateQueue.length);
     if (stateQueue.length === 0) {
       setHasMoreInQueue(false);
     }

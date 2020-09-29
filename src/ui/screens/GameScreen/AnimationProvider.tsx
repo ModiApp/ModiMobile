@@ -2,26 +2,38 @@ import React, { useCallback, useState, useMemo, useEffect } from 'react';
 import { Animated } from 'react-native';
 
 import { useGameState, useStateQueue } from '@modi/hooks';
+import { groupSort } from '@modi/util';
 
-interface AnimatedCard extends Card {
+import { useGameScreenLayout } from './LayoutProvider';
+
+interface CardPlaceholder {
+  position: { x: number; y: number };
+  width: number;
+  height: number;
+  rotation: number;
+  showGreenBorder: boolean;
+  showRedBorder: boolean;
+  showYellowBorder: boolean;
+}
+
+interface DisplayedCard extends Card {
+  faceUp: boolean;
+}
+interface AnimatedCard extends DisplayedCard {
   position: Animated.ValueXY;
   rotation: Animated.Value;
 }
 interface AnimationContextType {
-  cards: (AnimatedCard | undefined)[];
-  hitCard: AnimatedCard | undefined;
-  /** Positions and rotations of the player name labels */
-  labels: {
-    position: Animated.ValueXY;
-    rotation: Animated.Value;
-  }[];
+  cards: (AnimatedCard | null)[];
+  placeholders: CardPlaceholder[];
+  hitCard: AnimatedCard | null;
 }
 
 function createInitialAnimationContext(): AnimationContextType {
   return {
     cards: [],
-    hitCard: undefined,
-    labels: [],
+    placeholders: [],
+    hitCard: null,
   };
 }
 
@@ -31,70 +43,183 @@ const AnimationContext = React.createContext<AnimationContextType>(
 
 const AnimationProvider: React.FC = ({ children }) => {
   const gamestate = useGameState();
+  const [{ boardHeight, cardHeight, cardWidth }] = useGameScreenLayout();
 
   const [isAnimating, setIsAnimating] = useState(false);
   const [lastState, currState] = useStateQueue(gamestate, !isAnimating);
   const stateDiff = useGameStateDiffReader(lastState, currState);
 
-  const animatedValues = useMemo<AnimationContextType>(
-    () => ({
-      cards: gamestate.players.map((player, idx) =>
-        player.card
-          ? {
-              position: new Animated.ValueXY({ x: 0, y: 0 }),
-              rotation: new Animated.Value(0),
-              ...player.card,
-            }
-          : undefined,
-      ),
-      hitCard: undefined,
-      labels: gamestate.players.map((player, idx) => ({
-        position: new Animated.ValueXY({ x: 0, y: 0 }),
-        rotation: new Animated.Value(0),
-      })),
-    }),
-    [gamestate.players.length],
-  );
-  const [showAllCards, setShowAllCards] = useState(true);
-  const [cardsDisplayed, setCardsDisplayed] = useState<(Card | undefined)[]>(
+  const [hitCard, setHitCard] = useState<AnimatedCard | null>(null);
+  const [cardPlaceholders, setCardPlaceholders] = useState<CardPlaceholder[]>(
     [],
   );
 
-  const runDealCardsAnimation = useCallback(() => {
-    setIsAnimating(true);
-    Animated.parallel(
-      animatedValues.cards.map((cardAnimVals, idx) => {
-        return !cardAnimVals
-          ? Animated.delay(0)
-          : Animated.timing(cardAnimVals.position, {
-              delay: idx * 200,
-              toValue: { x: 0, y: 0 },
-              duration: 400,
-              useNativeDriver: true,
-            });
+  useEffect(() => {
+    const rotateFactor = (2 * Math.PI) / gamestate.players.length;
+    const radiusFromMidCard = (boardHeight - cardHeight - 20) / 2;
+
+    setCardPlaceholders(
+      gamestate.players.map((_, idx) => {
+        const cardRotation = rotateFactor * idx + Math.PI / 2;
+        return {
+          position: {
+            x: Math.cos(cardRotation) * radiusFromMidCard,
+            y: Math.sin(cardRotation) * radiusFromMidCard,
+          },
+          width: cardWidth,
+          height: cardHeight,
+          rotation: cardRotation,
+          showGreenBorder: false,
+          showRedBorder: false,
+          showYellowBorder: false,
+        };
       }),
-    ).start(() => setIsAnimating(false));
-  }, [lastState, currState]);
+    );
+    setCardsOnScreen(Array(gamestate.players.length).fill(null));
+  }, [gamestate.players.length]);
+
+  const cardAnimationVals = useMemo(() => {
+    return gamestate.players.map(() => ({
+      position: new Animated.ValueXY({ x: 0, y: 0 }),
+      rotation: new Animated.Value(0),
+    }));
+  }, [gamestate.players.length]);
+
+  const [cardsOnScreen, setCardsOnScreen] = useState<(DisplayedCard | null)[]>(
+    [],
+  );
+
+  const animatedCards = useMemo<(AnimatedCard | null)[]>(() => {
+    return cardsOnScreen.map((card, idx) =>
+      !card ? null : { ...cardAnimationVals[idx], ...card },
+    );
+  }, [cardsOnScreen, cardAnimationVals]);
+
+  const animationContextValue = useMemo(
+    () => ({
+      cards: animatedCards,
+      hitCard: hitCard,
+      placeholders: cardPlaceholders,
+    }),
+    [animatedCards, hitCard, cardPlaceholders],
+  );
+
+  const animateDealingCards = useDealCardsAnimation(
+    cardAnimationVals,
+    boardHeight,
+    cardHeight,
+  );
+
+  const animateSendCardsToTrash = useTrashCardsAnimation(
+    cardAnimationVals,
+    boardHeight,
+  );
+
+  const changePlaceholderBorderColors = useCallback(
+    (idxs: number[], color: 'red' | 'yellow' | 'green' | 'none') => {
+      setCardPlaceholders((placeholders) =>
+        placeholders.map((placeholder, idx) => ({
+          ...placeholder,
+          showRedBorder: color === 'red' && idxs.includes(idx),
+          showGreenBorder: color === 'green' && idxs.includes(idx),
+          showYellowBorder: color === 'yellow' && idxs.includes(idx),
+        })),
+      );
+    },
+    [],
+  );
+
+  const handleEndOfHighcardRound = useCallback(
+    (state: ModiGameState, onComplete?: () => void) => {
+      const players = state.players;
+      const rankedPlayers = groupSort(players, (player) => player.card!.rank);
+      const winners = rankedPlayers[rankedPlayers.length - 1];
+      const winenerIdxs = winners.map((winner) => players.indexOf(winner));
+      changePlaceholderBorderColors(winenerIdxs, 'green');
+      setTimeout(() => {
+        changePlaceholderBorderColors(winenerIdxs, 'none');
+        animateSendCardsToTrash(onComplete);
+      }, 3000);
+    },
+    [],
+  );
+
+  const handleEndOfRound = useCallback(
+    (state: ModiGameState, onComplete?: () => void) => {
+      const players = state.players;
+      const [losers] = groupSort(players, (player) => player.card?.rank || 14);
+      const idxsOfLosers = losers.map((loser) => players.indexOf(loser));
+      changePlaceholderBorderColors(idxsOfLosers, 'red');
+      setTimeout(() => {
+        changePlaceholderBorderColors(idxsOfLosers, 'none');
+        animateSendCardsToTrash(onComplete);
+      }, 3000);
+    },
+    [changePlaceholderBorderColors, animateSendCardsToTrash],
+  );
+
+  const handleDealerHitCard = useCallback(
+    (card: Card, onComplete?: () => void) => {
+      const newHitCard = {
+        position: new Animated.ValueXY({ x: 0, y: -boardHeight }),
+        rotation: new Animated.Value(0),
+        faceUp: true,
+        ...card,
+      };
+      setHitCard(newHitCard);
+      const boardRadius = (boardHeight - cardHeight - 20) / 2;
+      Animated.timing(newHitCard.position, {
+        toValue: {
+          x: -16,
+          y: boardRadius + 8,
+        },
+        duration: 500,
+        useNativeDriver: true,
+      }).start(onComplete);
+    },
+    [gamestate.players.length, boardHeight, cardHeight],
+  );
 
   useEffect(() => {
     if (stateDiff.cardsWereJustDealt) {
-      runDealCardsAnimation();
+      setIsAnimating(true);
+      setCardsOnScreen(
+        stateDiff.currState.players.map((player) => ({
+          ...player.card!,
+          faceUp:
+            stateDiff.isPlayingHighcard ||
+            player.id === stateDiff.currState.me!.id,
+        })),
+      );
+      animateDealingCards(() => {
+        if (stateDiff.isPlayingHighcard) {
+          handleEndOfHighcardRound(stateDiff.currState, () =>
+            setIsAnimating(false),
+          );
+        } else {
+          setIsAnimating(false);
+        }
+      });
     }
     if (stateDiff.cardsWereJustTrashed) {
-      console.log('cards were just trashed');
-    }
-    if (stateDiff.isPlayingHighcard) {
-      !showAllCards && setShowAllCards(true);
+      setIsAnimating(true);
+      handleEndOfRound(stateDiff.lastState, () => {
+        setCardsOnScreen((cards) => Array(cards.length).fill(null));
+        setIsAnimating(false);
+      });
     }
     if (stateDiff.dealerJustHitDeck) {
-      console.log('dealer just hit deck');
-      // last card is lastState.players[lastState.players.length - 1].card
-      // new card is currState.players[currState.players.length - 1].card
+      setIsAnimating(true);
+      const playersWithCards = stateDiff.currState.players.filter(
+        (player) => !!player.card,
+      );
+      const dealer = playersWithCards[playersWithCards.length - 1];
+      handleDealerHitCard(dealer.card!, () => setIsAnimating(false));
     }
   }, [stateDiff]);
 
   return (
-    <AnimationContext.Provider value={animatedValues}>
+    <AnimationContext.Provider value={animationContextValue}>
       {children}
     </AnimationContext.Provider>
   );
@@ -115,29 +240,95 @@ function useGameStateDiffReader(
       state.players.filter((player) => player.lives > 0);
 
     return {
+      /** lastState players didn't have cards, currState players have cards */
       cardsWereJustDealt:
         cardsOnTable(lastState).length === 0 &&
         cardsOnTable(currState).length > 0,
+      /** lastState players had cards, currState noone has cards */
       cardsWereJustTrashed:
         cardsOnTable(lastState).length > 0 &&
         cardsOnTable(currState).length === 0,
+
+      /** only true in begining of game, round = 0 */
       isPlayingHighcard: currState.round === 0,
+
+      /** dealers card at lastState is different from currState */
       dealerJustHitDeck:
         lastState.moves.length === alivePlayers(lastState).length &&
         lastState.moves[lastState.moves.length - 1] === 'swap',
+
+      // For convenience
+      currState,
+      lastState,
     };
   }, [JSON.stringify(lastState), JSON.stringify(currState)]);
 }
 
 // ========== ANIMATIONS ==========
-function useDealCardsAnimation(cardAnimationVals: AnimatedCard[]) {
-  const [isAnimating, setIsAnimating] = useState(false);
-  const runAnimation = useCallback(() => {
-    const rotationFactor = (2 * Math.PI) / cardAnimationVals.length;
-    const boardRadius = 
-  }, [cardAnimationVals]);
+function useDealCardsAnimation(
+  cardAnimationVals: { position: Animated.ValueXY; rotation: Animated.Value }[],
+  boardHeight: number,
+  cardHeight: number,
+) {
+  return useCallback(
+    (onComplete?: () => void) => {
+      const rotationFactor = (2 * Math.PI) / cardAnimationVals.length;
+      const boardRadius = (boardHeight - cardHeight - 20) / 2;
 
-  return [isAnimating, runAnimation];
-};
+      Animated.parallel(
+        cardAnimationVals.map((cardVal, idx) => {
+          const cardRotation = rotationFactor * idx + Math.PI / 2;
+          return Animated.parallel([
+            Animated.timing(cardVal.position, {
+              delay: 200 * idx,
+              duration: 400,
+              toValue: {
+                x: Math.cos(cardRotation) * boardRadius,
+                y: Math.sin(cardRotation) * boardRadius,
+              },
+              useNativeDriver: true,
+            }),
+            Animated.timing(cardVal.rotation, {
+              delay: 200 * idx,
+              duration: 400,
+              toValue: cardRotation,
+              useNativeDriver: true,
+            }),
+          ]);
+        }),
+      ).start(onComplete);
+    },
+    [cardAnimationVals, boardHeight, cardHeight],
+  );
+}
+
+function useTrashCardsAnimation(
+  cardAnimationVals: { position: Animated.ValueXY; rotation: Animated.Value }[],
+  boardHeight: number,
+) {
+  return useCallback(
+    (onComplete?: () => void) => {
+      Animated.parallel(
+        cardAnimationVals.map(({ position, rotation }, idx) => {
+          return Animated.parallel([
+            Animated.timing(position, {
+              delay: 150 * idx,
+              toValue: { x: 0, y: -boardHeight },
+              duration: 500,
+              useNativeDriver: true,
+            }),
+            Animated.timing(rotation, {
+              delay: 150 * idx,
+              toValue: 0,
+              duration: 500,
+              useNativeDriver: true,
+            }),
+          ]);
+        }),
+      ).start(onComplete);
+    },
+    [cardAnimationVals, boardHeight],
+  );
+}
 
 export default AnimationProvider;

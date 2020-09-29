@@ -4,12 +4,10 @@ import React, {
   createContext,
   useCallback,
   useMemo,
-  useRef,
 } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import io from 'socket.io-client';
 import env from '@modi/env.json';
-import { useFocusEffect } from '@react-navigation/native';
-import { Hash } from 'crypto';
 
 const createInitialGameState = (): ModiGameState => ({
   round: 0,
