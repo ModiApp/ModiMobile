@@ -30,7 +30,7 @@ const AnimatingCardMap: React.FC = () => {
         style={[
           styles.table,
           {
-            rotation: layout.boardRotation,
+            transform: [{ rotate: `${layout.boardRotation}rad` }],
           },
         ]}
       >
@@ -43,8 +43,8 @@ const AnimatingCardMap: React.FC = () => {
                 height: layout.cardHeight,
                 translateX: placeholder.position.x,
                 translateY: placeholder.position.y,
-                rotation: placeholder.rotation,
                 borderColor: placeholder.borderColor,
+                transform: [{ rotate: `${placeholder.rotation}rad` }],
               },
             ]}
           />
@@ -70,7 +70,7 @@ const AnimatingCardMap: React.FC = () => {
                 style={{
                   height: layout.cardHeight,
                   width: layout.cardWidth,
-                  rotation: card!.rotation,
+                  transform: [{ rotate: `${card!.rotation}rad` }],
                 }}
               >
                 {card!.faceUp ? (

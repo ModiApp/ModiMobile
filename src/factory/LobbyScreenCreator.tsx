@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import Share from 'react-native-share';
 
-import { useAppState, useLobbyState } from '@modi/hooks';
+import { useAppState, useLobbyState } from '@modi/providers';
 
 import { LobbyStateProvider } from '@modi/providers';
 import { LobbyScreen } from '@modi/ui';

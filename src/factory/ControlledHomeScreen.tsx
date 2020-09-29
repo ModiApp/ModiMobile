@@ -1,7 +1,8 @@
 import React, { useState, useCallback } from 'react';
 
 import { createLobby } from '@modi/util';
-import { useAppState, useNavigation } from '@modi/hooks';
+import { useNavigation } from '@modi/hooks';
+import { useAppState } from '@modi/providers';
 import { HomeScreen } from '@modi/ui';
 
 const ControlledHomeScreen: React.FC = () => {

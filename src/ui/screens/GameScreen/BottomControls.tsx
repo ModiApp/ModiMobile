@@ -3,7 +3,7 @@ import { StackActions, useNavigation } from '@react-navigation/native';
 
 import { Animated, Easing, View, LayoutChangeEvent } from 'react-native';
 
-import { useGameState, useAppState } from '@modi/hooks';
+import { useGameState, useAppState } from '@modi/providers';
 import { Button, Icon } from '@modi/ui/components';
 
 const BottomControls: React.FC<{}> = () => {

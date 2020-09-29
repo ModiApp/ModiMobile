@@ -15,7 +15,6 @@ import { colors, sizing, fontFamilies } from '../styles';
 
 import PlayingCard, { CardBack } from './PlayingCard';
 import Button from './Button';
-import CardMiniMap from './CardMiniMap';
 import Icon from './Icon';
 import Text from './Text';
 
@@ -99,12 +98,4 @@ export const ScreenContainer = withStylesFromProps(SafeAreaView, {
 
 const LoadingSpinner = ActivityIndicator;
 
-export {
-  Button,
-  CardBack,
-  CardMiniMap,
-  Icon,
-  LoadingSpinner,
-  PlayingCard,
-  Text,
-};
+export { Button, CardBack, Icon, LoadingSpinner, PlayingCard, Text };
