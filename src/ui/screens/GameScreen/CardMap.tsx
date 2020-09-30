@@ -9,6 +9,7 @@ import {
 
 import { useGameScreenAnimations, useGameScreenLayout } from '@modi/providers';
 
+import { Text } from '@modi/ui/components';
 import { colors } from '@modi/ui/styles';
 import cardImgs from '@modi/ui/assets/img/cards';
 
@@ -36,18 +37,36 @@ const AnimatingCardMap: React.FC = () => {
       >
         {placeholders.map((placeholder, idx) => (
           <Animated.View
+            key={idx}
             style={[
-              styles.placeholder,
+              styles.cardContainer,
               {
-                width: layout.cardWidth,
-                height: layout.cardHeight,
-                translateX: placeholder.position.x,
-                translateY: placeholder.position.y,
-                borderColor: placeholder.borderColor,
-                transform: [{ rotate: `${placeholder.rotation}rad` }],
+                transform: [
+                  {
+                    translateX: placeholder.position.x - placeholder.width / 2,
+                  },
+                  {
+                    translateY: placeholder.position.y - placeholder.height / 2,
+                  },
+                ],
               },
             ]}
-          />
+          >
+            <Animated.View
+              style={[
+                styles.placeholder,
+                {
+                  width: placeholder.width,
+                  height: placeholder.height,
+                  borderColor: placeholder.borderColor,
+                  borderWidth: placeholder.borderColor === 'none' ? 0 : 4,
+                  transform: [{ rotate: `${placeholder.rotation}rad` }],
+                },
+              ]}
+            >
+              <Text>{idx} What's up cunts!</Text>
+            </Animated.View>
+          </Animated.View>
         ))}
         {cards
           .filter((card) => card !== null)
@@ -67,15 +86,16 @@ const AnimatingCardMap: React.FC = () => {
               ]}
             >
               <Animated.View
+                key={`inner-${idx}`}
                 style={{
                   height: layout.cardHeight,
                   width: layout.cardWidth,
-                  transform: [{ rotate: `${card!.rotation}rad` }],
+                  transform: [{ rotate: card!.rotation }],
                 }}
               >
                 {card!.faceUp ? (
                   <Image
-                    source={cardImgs[card?.suit!][card?.rank!]}
+                    source={cardImgs[card!.suit][card!.rank]}
                     style={{ width: '100%', height: '100%' }}
                   />
                 ) : (
@@ -98,13 +118,13 @@ const styles = StyleSheet.create({
     maxHeight: '100%',
     aspectRatio: 1,
     backgroundColor: colors.lightGreen,
+    overflow: 'hidden',
   },
   table: {
     width: '100%',
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    overflow: 'hidden',
   },
   cardContainer: {
     position: 'absolute',

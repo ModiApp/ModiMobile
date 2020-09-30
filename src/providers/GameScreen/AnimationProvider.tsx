@@ -12,6 +12,7 @@ import { groupSort } from '@modi/util';
 import { useGameState } from '@modi/providers/GameScreen';
 
 import { useGameScreenLayout } from './LayoutProvider';
+import { every } from 'lodash';
 
 type PlaceholderBorderColor = 'red' | 'yellow' | 'green' | 'none';
 interface CardPlaceholder {
@@ -22,14 +23,15 @@ interface CardPlaceholder {
   rotation: number;
   borderColor: PlaceholderBorderColor;
 }
+interface AnimatedObject {
+  position: Animated.ValueXY;
+  rotation: Animated.Value;
+}
 
 interface DisplayedCard extends Card {
   faceUp: boolean;
 }
-interface AnimatedCard extends DisplayedCard {
-  position: Animated.ValueXY;
-  rotation: Animated.Value;
-}
+interface AnimatedCard extends DisplayedCard, AnimatedObject {}
 interface AnimationContextType {
   cards: (AnimatedCard | null)[];
   placeholders: CardPlaceholder[];
@@ -75,13 +77,13 @@ const AnimationProvider: React.FC = ({ children }) => {
           },
           width: cardWidth,
           height: cardHeight,
-          rotation: cardRotation,
+          rotation: cardRotation - Math.PI / 2,
           borderColor: 'none',
         };
       }),
     );
     setCardsOnScreen(Array(gamestate.players.length).fill(null));
-  }, [gamestate.players.length]);
+  }, [gamestate.players.length, cardHeight, boardHeight]);
 
   const cardAnimationVals = useMemo(() => {
     return gamestate.players.map(() => ({
@@ -118,6 +120,12 @@ const AnimationProvider: React.FC = ({ children }) => {
   const animateSendCardsToTrash = useTrashCardsAnimation(
     cardAnimationVals,
     boardHeight,
+  );
+
+  const animateCardsTrading = useTradePlacesAnimation(
+    cardAnimationVals,
+    boardHeight,
+    cardHeight,
   );
 
   const changePlaceholderBorderColors = useCallback(
@@ -204,6 +212,32 @@ const AnimationProvider: React.FC = ({ children }) => {
         }
       });
     }
+    if (stateDiff.playersTradedCards) {
+      setIsAnimating(true);
+      const [fromIdx, toIdx] = stateDiff.tradeIdxs.sort();
+      animateCardsTrading(
+        fromIdx!,
+        toIdx!,
+        () => {
+          setCardsOnScreen((cards) =>
+            cards.map((card, idx) => {
+              const prevCard = cards[fromIdx!]!;
+              const nextCard = cards[toIdx!]!;
+              if (idx === fromIdx) {
+                return { ...nextCard, faceUp: prevCard.faceUp };
+              }
+              if (idx === toIdx) {
+                return { ...prevCard, faceUp: nextCard.faceUp };
+              }
+              return card;
+            }),
+          );
+        },
+        () => {
+          setIsAnimating(false);
+        },
+      );
+    }
     if (stateDiff.cardsWereJustTrashed) {
       setIsAnimating(true);
       handleEndOfRound(stateDiff.lastState, () => {
@@ -242,6 +276,43 @@ function useGameStateDiffReader(
     const alivePlayers = (state: GameStateContextType) =>
       state.players.filter((player) => player.lives > 0);
 
+    const lastStatePlayers = alivePlayers(lastState);
+    const currStatePlayers = alivePlayers(currState);
+
+    const tradeCardsInfo = () => {
+      const playersOgCards = lastState.players
+        .map((player) => player.card)
+        .filter((card) => !!card);
+      const playersNewCards = currState.players
+        .map((player) => player.card)
+        .filter((card) => !!card);
+      if (!playersOgCards.length || !playersNewCards.length) {
+        return {
+          playersTradedCards: false,
+          tradeIdxs: [],
+        };
+      }
+      const diffs = playersOgCards
+        .map((card, idx) => {
+          if (JSON.stringify(playersNewCards[idx]) !== JSON.stringify(card)) {
+            return idx;
+          }
+          return undefined;
+        })
+        .filter((idx) => idx !== undefined);
+
+      if (diffs.length === 2) {
+        return {
+          playersTradedCards: true,
+          tradeIdxs: diffs,
+        };
+      }
+      return {
+        playersTradedCards: false,
+        tradeIdxs: [],
+      };
+    };
+
     return {
       /** lastState players didn't have cards, currState players have cards */
       cardsWereJustDealt:
@@ -257,9 +328,12 @@ function useGameStateDiffReader(
 
       /** dealers card at lastState is different from currState */
       dealerJustHitDeck:
-        lastState.moves.length === alivePlayers(lastState).length &&
-        lastState.moves[lastState.moves.length - 1] === 'swap',
+        lastState.moves.length === lastStatePlayers.length &&
+        lastState.moves[lastState.moves.length - 1] === 'swap' &&
+        lastStatePlayers[lastStatePlayers.length - 1].card! !==
+          currStatePlayers[currStatePlayers.length - 1].card,
 
+      ...tradeCardsInfo(),
       // For convenience
       currState,
       lastState,
@@ -278,23 +352,33 @@ function useDealCardsAnimation(
       const rotationFactor = (2 * Math.PI) / cardAnimationVals.length;
       const boardRadius = (boardHeight - cardHeight - 20) / 2;
 
+      // Start cards off coming from dealers locaion on table
+      const dealerRotation = rotationFactor * (cardAnimationVals.length - 1);
+      cardAnimationVals.forEach(({ position, rotation }) => {
+        position.setValue({
+          x: Math.cos(dealerRotation + Math.PI / 2) * boardRadius * 3,
+          y: Math.sin(dealerRotation + Math.PI / 2) * boardRadius * 3,
+        });
+        rotation.setValue(normalizeAngle(dealerRotation));
+      });
+
       Animated.parallel(
         cardAnimationVals.map((cardVal, idx) => {
-          const cardRotation = rotationFactor * idx + Math.PI / 2;
+          const cardRotation = rotationFactor * idx;
           return Animated.parallel([
             Animated.timing(cardVal.position, {
-              delay: 200 * idx,
-              duration: 400,
+              delay: 400 * idx,
+              duration: 1000,
               toValue: {
-                x: Math.cos(cardRotation) * boardRadius,
-                y: Math.sin(cardRotation) * boardRadius,
+                x: Math.cos(cardRotation + Math.PI / 2) * boardRadius,
+                y: Math.sin(cardRotation + Math.PI / 2) * boardRadius,
               },
               useNativeDriver: true,
             }),
             Animated.timing(cardVal.rotation, {
-              delay: 200 * idx,
-              duration: 400,
-              toValue: cardRotation,
+              delay: 400 * idx,
+              duration: 1000,
+              toValue: normalizeAngle(cardRotation),
               useNativeDriver: true,
             }),
           ]);
@@ -332,6 +416,107 @@ function useTrashCardsAnimation(
     },
     [cardAnimationVals, boardHeight],
   );
+}
+function useTradePlacesAnimation(
+  animationVals: AnimatedObject[],
+  boardHeight: number,
+  cardHeight: number,
+) {
+  return useCallback(
+    (
+      fromIdx: number,
+      toIdx: number,
+      onSwap?: () => void,
+      onComplete?: () => void,
+    ) => {
+      const rotationFactor = (2 * Math.PI) / animationVals.length;
+      const boardRadius = (boardHeight - cardHeight - 20) / 2;
+      const fromVal = {
+        position: {
+          x: Math.cos(rotationFactor * fromIdx + Math.PI / 2) * boardRadius,
+          y: Math.sin(rotationFactor * fromIdx + Math.PI / 2) * boardRadius,
+        },
+        rotation: normalizeAngle(rotationFactor * fromIdx),
+      };
+      const toVal = {
+        position: {
+          x: Math.cos(rotationFactor * toIdx + Math.PI / 2) * boardRadius,
+          y: Math.sin(rotationFactor * toIdx + Math.PI / 2) * boardRadius,
+        },
+        rotation: normalizeAngle(rotationFactor * toIdx),
+      };
+      const meetPoint = {
+        position: {
+          x: (toVal.position.x - fromVal.position.x) * 0.7 + fromVal.position.x,
+          y: (toVal.position.y - fromVal.position.y) * 0.7 + fromVal.position.y,
+        },
+        rotation: (toVal.rotation - fromVal.rotation) * 0.7 + fromVal.rotation,
+      };
+
+      Animated.parallel([
+        Animated.timing(animationVals[fromIdx].position, {
+          duration: 300,
+          toValue: meetPoint.position,
+          useNativeDriver: true,
+        }),
+        Animated.timing(animationVals[fromIdx].rotation, {
+          duration: 300,
+          toValue: meetPoint.rotation,
+          useNativeDriver: true,
+        }),
+        Animated.timing(animationVals[toIdx].position, {
+          delay: 200,
+          duration: 100,
+          toValue: meetPoint.position,
+          useNativeDriver: true,
+        }),
+        Animated.timing(animationVals[toIdx].rotation, {
+          delay: 200,
+          duration: 100,
+          toValue: meetPoint.rotation,
+          useNativeDriver: true,
+        }),
+      ]).start(() => {
+        onSwap && onSwap();
+        Animated.parallel([
+          Animated.timing(animationVals[fromIdx].position, {
+            duration: 300,
+            toValue: fromVal.position,
+            useNativeDriver: true,
+          }),
+          Animated.timing(animationVals[fromIdx].rotation, {
+            duration: 300,
+            toValue: fromVal.rotation,
+            useNativeDriver: true,
+          }),
+          Animated.timing(animationVals[toIdx].position, {
+            duration: 100,
+            toValue: toVal.position,
+            useNativeDriver: true,
+          }),
+          Animated.timing(animationVals[toIdx].rotation, {
+            duration: 100,
+            toValue: toVal.rotation,
+            useNativeDriver: true,
+          }),
+        ]).start(onComplete);
+      });
+    },
+    [animationVals, boardHeight, cardHeight],
+  );
+}
+
+/** Takes a fromRotation radians value, this is like the zero
+ * Takes a toRotation raidans value,
+ */
+
+function normalizeAngle(angle: number) {
+  let newAngle = angle % Math.PI;
+
+  newAngle = (newAngle + Math.PI * 2) % (Math.PI * 2);
+  if (newAngle > Math.PI) newAngle -= Math.PI * 2;
+
+  return newAngle;
 }
 
 export function useGameScreenAnimations() {
