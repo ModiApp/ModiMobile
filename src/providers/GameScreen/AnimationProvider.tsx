@@ -6,24 +6,22 @@ import React, {
   useContext,
 } from 'react';
 import { Animated } from 'react-native';
+import log4js from 'log4js';
 
 import { useStateQueue } from '@modi/hooks';
 import { groupSort } from '@modi/util';
 import { useGameState } from '@modi/providers/GameScreen';
 
 import { useGameScreenLayout } from './LayoutProvider';
-import { every } from 'lodash';
 
 type PlaceholderBorderColor = 'red' | 'yellow' | 'green' | 'none';
-interface CardPlaceholder {
-  /** translation from center of card map */
-  position: { x: number; y: number };
+interface CardPlaceholder extends AnimatedObject {
   width: number;
   height: number;
-  rotation: number;
   borderColor: PlaceholderBorderColor;
 }
 interface AnimatedObject {
+  /** Translates from midpoint of CardMap */
   position: Animated.ValueXY;
   rotation: Animated.Value;
 }
@@ -45,6 +43,8 @@ function createInitialAnimationContext(): AnimationContextType {
     hitCard: null,
   };
 }
+
+const log = log4js.configure('state-diff.log').getLogger();
 
 export const AnimationContext = React.createContext<AnimationContextType>(
   createInitialAnimationContext(),
@@ -71,13 +71,13 @@ const AnimationProvider: React.FC = ({ children }) => {
       gamestate.players.map((_, idx) => {
         const cardRotation = rotateFactor * idx + Math.PI / 2;
         return {
-          position: {
+          position: new Animated.ValueXY({
             x: Math.cos(cardRotation) * radiusFromMidCard,
             y: Math.sin(cardRotation) * radiusFromMidCard,
-          },
+          }),
           width: cardWidth,
           height: cardHeight,
-          rotation: cardRotation - Math.PI / 2,
+          rotation: new Animated.Value(cardRotation - Math.PI / 2),
           borderColor: 'none',
         };
       }),
@@ -195,12 +195,16 @@ const AnimationProvider: React.FC = ({ children }) => {
     if (stateDiff.cardsWereJustDealt) {
       setIsAnimating(true);
       setCardsOnScreen(
-        stateDiff.currState.players.map((player) => ({
-          ...player.card!,
-          faceUp:
-            stateDiff.isPlayingHighcard ||
-            player.id === stateDiff.currState.me!.id,
-        })),
+        stateDiff.currState.players.map((player) => {
+          return player.card
+            ? {
+                ...player.card,
+                faceUp:
+                  stateDiff.isPlayingHighcard ||
+                  player.id === stateDiff.currState.me!.id,
+              }
+            : null;
+        }),
       );
       animateDealingCards(() => {
         if (stateDiff.isPlayingHighcard) {
@@ -218,7 +222,7 @@ const AnimationProvider: React.FC = ({ children }) => {
       animateCardsTrading(
         fromIdx!,
         toIdx!,
-        () => {
+        () =>
           setCardsOnScreen((cards) =>
             cards.map((card, idx) => {
               const prevCard = cards[fromIdx!]!;
@@ -231,11 +235,8 @@ const AnimationProvider: React.FC = ({ children }) => {
               }
               return card;
             }),
-          );
-        },
-        () => {
-          setIsAnimating(false);
-        },
+          ),
+        () => setIsAnimating(false),
       );
     }
     if (stateDiff.cardsWereJustTrashed) {
@@ -268,7 +269,7 @@ function useGameStateDiffReader(
   lastState: GameStateContextType,
   currState: GameStateContextType,
 ) {
-  return useMemo(() => {
+  const gameStateDiff = useMemo(() => {
     const cardsOnTable = (state: GameStateContextType) =>
       state.players
         .map((player) => player.card)
@@ -339,6 +340,9 @@ function useGameStateDiffReader(
       lastState,
     };
   }, [JSON.stringify(lastState), JSON.stringify(currState)]);
+
+  log.info('New GameState Diff:', gameStateDiff);
+  return gameStateDiff;
 }
 
 // ========== ANIMATIONS ==========
@@ -447,32 +451,37 @@ function useTradePlacesAnimation(
       };
       const meetPoint = {
         position: {
-          x: (toVal.position.x - fromVal.position.x) * 0.7 + fromVal.position.x,
-          y: (toVal.position.y - fromVal.position.y) * 0.7 + fromVal.position.y,
+          x:
+            ((toVal.position.x - fromVal.position.x) * 2) / 3 +
+            fromVal.position.x,
+          y:
+            ((toVal.position.y - fromVal.position.y) * 2) / 3 +
+            fromVal.position.y,
         },
-        rotation: (toVal.rotation - fromVal.rotation) * 0.7 + fromVal.rotation,
+        rotation:
+          ((toVal.rotation - fromVal.rotation) * 2) / 3 + fromVal.rotation,
       };
 
       Animated.parallel([
         Animated.timing(animationVals[fromIdx].position, {
-          duration: 300,
+          duration: 600,
           toValue: meetPoint.position,
           useNativeDriver: true,
         }),
         Animated.timing(animationVals[fromIdx].rotation, {
-          duration: 300,
+          duration: 600,
           toValue: meetPoint.rotation,
           useNativeDriver: true,
         }),
         Animated.timing(animationVals[toIdx].position, {
-          delay: 200,
-          duration: 100,
+          delay: 400,
+          duration: 200,
           toValue: meetPoint.position,
           useNativeDriver: true,
         }),
         Animated.timing(animationVals[toIdx].rotation, {
-          delay: 200,
-          duration: 100,
+          delay: 400,
+          duration: 200,
           toValue: meetPoint.rotation,
           useNativeDriver: true,
         }),

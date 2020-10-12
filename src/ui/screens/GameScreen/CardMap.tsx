@@ -42,12 +42,10 @@ const AnimatingCardMap: React.FC = () => {
               styles.cardContainer,
               {
                 transform: [
-                  {
-                    translateX: placeholder.position.x - placeholder.width / 2,
-                  },
-                  {
-                    translateY: placeholder.position.y - placeholder.height / 2,
-                  },
+                  { translateX: -placeholder.width / 2 },
+                  { translateX: placeholder.position.x },
+                  { translateY: -placeholder.height / 2 },
+                  { translateY: placeholder.position.y },
                 ],
               },
             ]}
@@ -60,7 +58,7 @@ const AnimatingCardMap: React.FC = () => {
                   height: placeholder.height,
                   borderColor: placeholder.borderColor,
                   borderWidth: placeholder.borderColor === 'none' ? 0 : 4,
-                  transform: [{ rotate: `${placeholder.rotation}rad` }],
+                  transform: [{ rotate: placeholder.rotation }],
                 },
               ]}
             >

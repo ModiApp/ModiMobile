@@ -35,6 +35,7 @@
     "@types/socket.io-client": "^1.4.32",
     "axios": "^0.19.2",
     "babel-plugin-root-import": "^6.5.0",
+    "fs": "^0.0.1-security",
     "lodash": "^4.17.19",
     "prop-types": "^15.7.2",
     "react": "16.13.1",
@@ -67,11 +68,12 @@
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-prettier": "^3.1.4",
     "jest": "^26.4.2",
+    "log4js": "^6.3.0",
     "metro-react-native-babel-preset": "^0.59.0",
     "prettier": "^2.0.5",
     "react-test-renderer": "16.13.1",
     "ts-node": "^8.10.2",
-    "typescript": "^3.8.3"
+    "typescript": "^4.0.3"
   },
   "eslintConfig": {
     "extends": [
@@ -97,11 +99,6 @@
       "valid-jsdoc": "off",
       "indent": "off",
       "operator-linebreak": "off"
-    },
-    "settings": {
-      "import/resolver": {
-        "babel-module": {}
-      }
     }
   },
   "prettier": {
