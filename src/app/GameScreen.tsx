@@ -1,14 +1,13 @@
 import React, {
   useImperativeHandle,
   useRef,
-  useMemo,
   useState,
   useEffect,
   useCallback,
 } from 'react';
 import { View, StyleSheet, Animated, Image } from 'react-native';
-import { ScreenContainer, Text } from '@modi/ui/components';
-import { range, generateRandomCardMap } from '@modi/ui/util';
+import { ScreenContainer } from '@modi/ui/components';
+import { generateRandomCardMap } from '@modi/ui/util';
 import { colors } from '@modi/ui/styles';
 
 import { useOnContainerLayout } from '@modi/hooks';
@@ -25,7 +24,7 @@ const App: React.FC = () => {
         gameScreen.current?.trashCards(() => {
           setTimeout(() => runDealTrashCycle(), 1000);
         });
-      }, 3000);
+      }, 1000);
     });
   }, []);
 
@@ -71,30 +70,34 @@ const GameScreen: React.FC<GameScreenProps> = ({ controller }) => {
 
   return (
     <ScreenContainer>
-      <View style={styles.cardTable} onLayout={setCardTableLayout}>
-        {animatedCards.map(({ position, rotation, value, dimensions }, idx) => (
-          <Animated.View
-            key={`${idx}${value}`}
-            style={{
-              position: 'absolute',
-              ...dimensions,
-              transform: [
-                { translateY: position.y },
-                { translateX: position.x },
-              ],
-            }}
-          >
-            <Animated.View
-              style={{
-                position: 'absolute',
-                ...dimensions,
-                transform: [{ rotate: rotation }],
-              }}
-            >
-              <Card value={value} {...dimensions} />
-            </Animated.View>
-          </Animated.View>
-        ))}
+      <View style={styles.container}>
+        <View style={styles.cardTable} onLayout={setCardTableLayout}>
+          {animatedCards.map(
+            ({ position, rotation, value, dimensions }, idx) => (
+              <Animated.View
+                key={`${idx}${value}`}
+                style={{
+                  position: 'absolute',
+                  ...dimensions,
+                  transform: [
+                    { translateY: position.y },
+                    { translateX: position.x },
+                  ],
+                }}
+              >
+                <Animated.View
+                  style={{
+                    position: 'absolute',
+                    ...dimensions,
+                    transform: [{ rotate: rotation }],
+                  }}
+                >
+                  <Card value={value} {...dimensions} />
+                </Animated.View>
+              </Animated.View>
+            ),
+          )}
+        </View>
       </View>
     </ScreenContainer>
   );
@@ -122,12 +125,20 @@ const Card: React.FC<CardProps> = ({ value, width, height }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   cardTable: {
     backgroundColor: colors.lightGreen,
     borderRadius: 1000,
-    aspectRatio: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    maxHeight: '100%',
+    width: '100%',
+    aspectRatio: 1,
     overflow: 'hidden',
   },
   card: {

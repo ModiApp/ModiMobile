@@ -13,7 +13,7 @@ function useTrashCardsAnimation(
           return Animated.parallel([
             Animated.timing(position, {
               delay: 150 * idx,
-              toValue: { x: 0, y: -boardHeight },
+              toValue: { x: 0, y: boardHeight },
               duration: 500,
               useNativeDriver: true,
             }),

@@ -19,12 +19,12 @@ export const range = (
 ) => lerp(x2, y2, invlerp(x1, y1, a));
 
 export const generateRandomCardMap = (): CardMap =>
-  Array(Math.floor(Math.random() * 12) + 6)
+  Array(Math.floor(Math.random() * 14) + 6)
     .fill(null)
     .map(() => {
       switch (Math.floor(Math.random() * 3)) {
         case 0:
-          return false;
+          return true;
         case 1:
           return true;
         case 2:

@@ -18,13 +18,13 @@ function useDealCardsAnimation(
 
       const dealerRotation = rotationFactor * (cards.length - 1);
       const initialDeckPos = {
-        x: Math.cos(dealerRotation + Math.PI / 2) * boardRadius * 3,
-        y: Math.sin(dealerRotation + Math.PI / 2) * boardRadius * 3,
+        x: Math.cos(dealerRotation + Math.PI / 2) * boardRadius + cardHeight,
+        y: Math.sin(dealerRotation + Math.PI / 2) * boardRadius + cardHeight,
       };
 
       const animatedCards = cards.map((value) => ({
         position: new Animated.ValueXY(initialDeckPos),
-        rotation: new Animated.Value(0),
+        rotation: new Animated.Value(normalizeAngle(dealerRotation)),
         dimensions: {
           width: cardWidth,
           height: cardHeight,
