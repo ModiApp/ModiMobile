@@ -3,13 +3,16 @@ import { Animated } from 'react-native';
 
 import { normalizeAngle } from './util';
 
+type CardMap = (Card | boolean)[];
+
 function useDealCardsAnimation(
+  setCards: React.Dispatch<React.SetStateAction<CardMap>>,
   cardAnimationVals: { position: Animated.ValueXY; rotation: Animated.Value }[],
   boardHeight: number,
   cardHeight: number,
 ) {
   return useCallback(
-    (onComplete?: () => void) => {
+    (cards: CardMap, onComplete?: () => void) => {
       const rotationFactor = (2 * Math.PI) / cardAnimationVals.length;
       const boardRadius = (boardHeight - cardHeight - 20) / 2;
 
@@ -22,6 +25,9 @@ function useDealCardsAnimation(
         });
         rotation.setValue(normalizeAngle(dealerRotation));
       });
+
+      // Set cards while they're off the table
+      setCards(cards);
 
       Animated.parallel(
         cardAnimationVals.map((cardVal, idx) => {
