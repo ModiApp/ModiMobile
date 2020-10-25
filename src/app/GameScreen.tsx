@@ -17,16 +17,31 @@ import cardImgs from '@modi/ui/assets/img/cards';
 const App: React.FC = () => {
   const gameScreen = useRef<GameScreenController>(null);
 
-  useEffect(() => {
-    gameScreen.current?.dealCards([
-      true,
-      true,
-      { suit: 'spades', rank: 13 },
-      true,
-    ]);
-  }, []);
+  const randomCards: CardMap = Array(Math.floor(Math.random() * 12) + 6)
+    .fill(null)
+    .map(() => {
+      switch (Math.floor(Math.random() * 3)) {
+        case 0:
+          return true;
+        case 1:
+          return true;
+        case 2:
+          return {
+            rank: Math.floor(Math.random() * 13) + 1,
+            suit: ['spades', 'hearts', 'clubs', 'diamonds'][
+              Math.floor(Math.random() * 4)
+            ],
+          } as Card;
+        default:
+          return true;
+      }
+    });
 
-  return <GameScreen controller={gameScreen} numPlayers={4} />;
+  useEffect(() => {
+    gameScreen.current?.dealCards(randomCards);
+  }, [randomCards]);
+
+  return <GameScreen controller={gameScreen} numPlayers={randomCards.length} />;
 };
 
 type CardMap = (Card | boolean)[];
@@ -75,6 +90,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ controller, numPlayers }) => {
       <View style={styles.cardTable} onLayout={setCardTableLayout}>
         {cardAnimationVals.map(({ position, rotation }, idx) => (
           <Animated.View
+            key={`${idx}${cards[idx]}`}
             style={{
               position: 'absolute',
               width: cardWidth,
@@ -86,12 +102,14 @@ const GameScreen: React.FC<GameScreenProps> = ({ controller, numPlayers }) => {
             }}
           >
             <Animated.View
-              style={[
-                { transform: [{ rotate: `${rotation}rad` }] },
-                styles.card,
-              ]}
+              style={{
+                position: 'absolute',
+                width: cardWidth,
+                height: cardHeight,
+                transform: [{ rotate: rotation }],
+              }}
             >
-              <Card value={cards[idx]} />
+              <Card value={cards[idx]} width={cardWidth} height={cardHeight} />
             </Animated.View>
           </Animated.View>
         ))}
@@ -100,22 +118,24 @@ const GameScreen: React.FC<GameScreenProps> = ({ controller, numPlayers }) => {
   );
 };
 
-const Card: React.FC<{ value: Card | boolean }> = ({ value }) => {
+interface CardProps {
+  value: Card | boolean;
+  width: number;
+  height: number;
+}
+const Card: React.FC<CardProps> = ({ value, width, height }) => {
   if (!value) {
     return null;
   }
+
+  const style = [styles.card, { width, height }];
+
   if (typeof value === 'boolean') {
-    return (
-      <Image source={cardImgs.back} style={styles.card} resizeMode="contain" />
-    );
+    return <Image source={cardImgs.back} style={style} resizeMode="contain" />;
   }
   const { suit, rank } = value;
   return (
-    <Image
-      source={cardImgs[suit][rank]}
-      style={styles.card}
-      resizeMode="contain"
-    />
+    <Image source={cardImgs[suit][rank]} style={style} resizeMode="contain" />
   );
 };
 
@@ -128,10 +148,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   card: {
-    borderRadius: 12,
+    // borderRadius: 12,
     flex: 1,
-    width: 100,
-    height: 150,
   },
 });
 
