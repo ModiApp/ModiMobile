@@ -4,97 +4,80 @@ import React, {
   useMemo,
   useState,
   useEffect,
+  useCallback,
 } from 'react';
 import { View, StyleSheet, Animated, Image } from 'react-native';
 import { ScreenContainer, Text } from '@modi/ui/components';
-import { range } from '@modi/ui/util';
+import { range, generateRandomCardMap } from '@modi/ui/util';
 import { colors } from '@modi/ui/styles';
 
 import { useOnContainerLayout } from '@modi/hooks';
 import useDealCardsAnimation from './animations/DealCards';
+import useTrashCardsAnimation from './animations/TrashCards';
+
 import cardImgs from '@modi/ui/assets/img/cards';
 
 const App: React.FC = () => {
   const gameScreen = useRef<GameScreenController>(null);
-
-  const randomCards: CardMap = Array(Math.floor(Math.random() * 12) + 6)
-    .fill(null)
-    .map(() => {
-      switch (Math.floor(Math.random() * 3)) {
-        case 0:
-          return true;
-        case 1:
-          return true;
-        case 2:
-          return {
-            rank: Math.floor(Math.random() * 13) + 1,
-            suit: ['spades', 'hearts', 'clubs', 'diamonds'][
-              Math.floor(Math.random() * 4)
-            ],
-          } as Card;
-        default:
-          return true;
-      }
+  const runDealTrashCycle = useCallback(() => {
+    gameScreen.current?.dealCards(generateRandomCardMap(), () => {
+      setTimeout(() => {
+        gameScreen.current?.trashCards(() => {
+          setTimeout(() => runDealTrashCycle(), 1000);
+        });
+      }, 3000);
     });
+  }, []);
 
   useEffect(() => {
-    gameScreen.current?.dealCards(randomCards);
-  }, [randomCards]);
+    runDealTrashCycle();
+  }, []);
 
-  return <GameScreen controller={gameScreen} numPlayers={randomCards.length} />;
+  return <GameScreen controller={gameScreen} />;
 };
 
-type CardMap = (Card | boolean)[];
 interface GameScreenController {
   dealCards(cardMap: CardMap, onComplete?: () => void): void;
+  trashCards(onComplete?: () => void): void;
 }
 
 interface GameScreenProps {
   controller: React.RefObject<GameScreenController>;
-  numPlayers: number;
 }
-const GameScreen: React.FC<GameScreenProps> = ({ controller, numPlayers }) => {
+const GameScreen: React.FC<GameScreenProps> = ({ controller }) => {
   const [cardTableLayout, setCardTableLayout] = useOnContainerLayout();
-  const cardAnimationVals = useMemo(
-    () =>
-      Array(numPlayers)
-        .fill(null)
-        .map(() => ({
-          position: new Animated.ValueXY({ x: 0, y: 0 }),
-          rotation: new Animated.Value(0),
-        })),
-    [cardTableLayout, numPlayers],
-  );
+  const [animatedCards, setAnimatedCards] = useState<AnimatedCard[]>([]);
 
-  const cardHeight = useMemo(
-    () => range(2, 20, 0.32, 0.12, numPlayers) * cardTableLayout.height,
-    [cardTableLayout, numPlayers],
-  );
-  const cardWidth = cardHeight / 1.528;
-
-  const [cards, setCards] = useState<CardMap>(Array(numPlayers).fill(false));
   const dealCards = useDealCardsAnimation(
-    setCards,
-    cardAnimationVals,
+    setAnimatedCards,
     cardTableLayout.height,
-    cardHeight,
   );
 
-  useImperativeHandle(controller, () => ({
-    dealCards,
-  }));
+  const trashCards = useTrashCardsAnimation(
+    animatedCards,
+    setAnimatedCards,
+    cardTableLayout.height,
+  );
 
-  // const animationVals;
+  useImperativeHandle(
+    controller,
+    () => ({
+      dealCards,
+      trashCards,
+    }),
+
+    [dealCards, trashCards],
+  );
+
   return (
     <ScreenContainer>
       <View style={styles.cardTable} onLayout={setCardTableLayout}>
-        {cardAnimationVals.map(({ position, rotation }, idx) => (
+        {animatedCards.map(({ position, rotation, value, dimensions }, idx) => (
           <Animated.View
-            key={`${idx}${cards[idx]}`}
+            key={`${idx}${value}`}
             style={{
               position: 'absolute',
-              width: cardWidth,
-              height: cardHeight,
+              ...dimensions,
               transform: [
                 { translateY: position.y },
                 { translateX: position.x },
@@ -104,12 +87,11 @@ const GameScreen: React.FC<GameScreenProps> = ({ controller, numPlayers }) => {
             <Animated.View
               style={{
                 position: 'absolute',
-                width: cardWidth,
-                height: cardHeight,
+                ...dimensions,
                 transform: [{ rotate: rotation }],
               }}
             >
-              <Card value={cards[idx]} width={cardWidth} height={cardHeight} />
+              <Card value={value} {...dimensions} />
             </Animated.View>
           </Animated.View>
         ))}
@@ -146,6 +128,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden',
   },
   card: {
     // borderRadius: 12,

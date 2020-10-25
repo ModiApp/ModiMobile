@@ -6,8 +6,13 @@ declare interface Card {
 }
 declare type PlayerId = string;
 
-/** Value will be a boolean for all players except yourself */
-declare type CardMap = { [playerId: string]: boolean | Card };
+declare type CardMap = (Card | boolean)[];
+declare type AnimatedCard = {
+  position: import('react-native').Animated.ValueXY;
+  rotation: import('react-native').Animated.Value;
+  dimensions: { width: number; height: number };
+  value: Card | boolean;
+}
 
 /** When the adjacent player has a king, this player's swap will be an attempted-swap */
 declare type PlayerMove = 'stick' | 'swap' | 'attempted-swap';

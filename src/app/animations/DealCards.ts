@@ -1,36 +1,41 @@
 import React, { useCallback } from 'react';
 import { Animated } from 'react-native';
 
-import { normalizeAngle } from './util';
+import { normalizeAngle, calcCardHeight } from './util';
 
 type CardMap = (Card | boolean)[];
 
 function useDealCardsAnimation(
-  setCards: React.Dispatch<React.SetStateAction<CardMap>>,
-  cardAnimationVals: { position: Animated.ValueXY; rotation: Animated.Value }[],
+  setAnimatedCards: React.Dispatch<React.SetStateAction<AnimatedCard[]>>,
   boardHeight: number,
-  cardHeight: number,
 ) {
   return useCallback(
     (cards: CardMap, onComplete?: () => void) => {
-      const rotationFactor = (2 * Math.PI) / cardAnimationVals.length;
+      const cardHeight = calcCardHeight(cards.length, boardHeight);
+      const cardWidth = cardHeight / 1.528;
+      const rotationFactor = (2 * Math.PI) / cards.length;
       const boardRadius = (boardHeight - cardHeight - 20) / 2;
 
-      // Start cards off coming from dealers locaion on table
-      const dealerRotation = rotationFactor * (cardAnimationVals.length - 1);
-      cardAnimationVals.forEach(({ position, rotation }) => {
-        position.setValue({
-          x: Math.cos(dealerRotation + Math.PI / 2) * boardRadius * 3,
-          y: Math.sin(dealerRotation + Math.PI / 2) * boardRadius * 3,
-        });
-        rotation.setValue(normalizeAngle(dealerRotation));
-      });
+      const dealerRotation = rotationFactor * (cards.length - 1);
+      const initialDeckPos = {
+        x: Math.cos(dealerRotation + Math.PI / 2) * boardRadius * 3,
+        y: Math.sin(dealerRotation + Math.PI / 2) * boardRadius * 3,
+      };
 
-      // Set cards while they're off the table
-      setCards(cards);
+      const animatedCards = cards.map((value) => ({
+        position: new Animated.ValueXY(initialDeckPos),
+        rotation: new Animated.Value(0),
+        dimensions: {
+          width: cardWidth,
+          height: cardHeight,
+        },
+        value,
+      }));
+
+      setAnimatedCards(animatedCards);
 
       Animated.parallel(
-        cardAnimationVals.map((cardVal, idx) => {
+        animatedCards.map((cardVal, idx) => {
           const cardRotation = rotationFactor * idx;
           return Animated.parallel([
             Animated.timing(cardVal.position, {
@@ -52,7 +57,7 @@ function useDealCardsAnimation(
         }),
       ).start(onComplete);
     },
-    [cardAnimationVals, boardHeight, cardHeight],
+    [setAnimatedCards, boardHeight],
   );
 }
 

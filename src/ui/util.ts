@@ -17,3 +17,24 @@ export const range = (
   y2: number,
   a: number,
 ) => lerp(x2, y2, invlerp(x1, y1, a));
+
+export const generateRandomCardMap = (): CardMap =>
+  Array(Math.floor(Math.random() * 12) + 6)
+    .fill(null)
+    .map(() => {
+      switch (Math.floor(Math.random() * 3)) {
+        case 0:
+          return false;
+        case 1:
+          return true;
+        case 2:
+          return {
+            rank: Math.floor(Math.random() * 13) + 1,
+            suit: ['spades', 'hearts', 'clubs', 'diamonds'][
+              Math.floor(Math.random() * 4)
+            ],
+          } as Card;
+        default:
+          return true;
+      }
+    });

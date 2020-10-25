@@ -2,13 +2,14 @@ import { useCallback } from 'react';
 import { Animated } from 'react-native';
 
 function useTrashCardsAnimation(
-  cardAnimationVals: { position: Animated.ValueXY; rotation: Animated.Value }[],
+  animatedCards: AnimatedCard[],
+  setAnimatedCards: React.Dispatch<React.SetStateAction<AnimatedCard[]>>,
   boardHeight: number,
 ) {
   return useCallback(
     (onComplete?: () => void) => {
       Animated.parallel(
-        cardAnimationVals.map(({ position, rotation }, idx) => {
+        animatedCards.map(({ position, rotation }, idx) => {
           return Animated.parallel([
             Animated.timing(position, {
               delay: 150 * idx,
@@ -24,9 +25,12 @@ function useTrashCardsAnimation(
             }),
           ]);
         }),
-      ).start(onComplete);
+      ).start(() => {
+        setAnimatedCards([]);
+        onComplete && onComplete();
+      });
     },
-    [cardAnimationVals, boardHeight],
+    [animatedCards, boardHeight],
   );
 }
 
