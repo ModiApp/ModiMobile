@@ -1,10 +1,19 @@
 import { useCallback } from 'react';
-import { Animated } from 'react-native';
 
 function useFlipCardsAnimation(
-  setCards: React.Dispatch<React.SetStateAction<AnimatedCard[]>>,
+  setAnimatedCards: React.Dispatch<React.SetStateAction<AnimatedCard[]>>,
 ) {
-  return useCallback((idxs: number[]) => {}, []);
+  return useCallback(
+    (newCardMap: CardMap) => {
+      setAnimatedCards((cards) =>
+        cards.map((card, idx) => ({
+          ...card,
+          value: newCardMap[idx],
+        })),
+      );
+    },
+    [setAnimatedCards],
+  );
 }
 
 export default useFlipCardsAnimation;

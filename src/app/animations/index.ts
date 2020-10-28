@@ -1,3 +1,8 @@
+import useFlipCardsAnimation from './FlipCards';
+import useDealCardsAnimation from './DealCards';
+import useTrashCardsAnimation from './TrashCards';
+import useHighlightCardsAnimation from './HighlightCards';
+
 export default function animateFromAction(
   controller: GameScreenController,
   initialState: GameState,
@@ -38,3 +43,10 @@ function generateCardMapFromDealtCards(
   dealtCards.forEach(([card, playerId]) => (playerCards[playerId] = card));
   return playerOrder.map((playerId) => playerCards[playerId] || false);
 }
+
+export {
+  useFlipCardsAnimation,
+  useDealCardsAnimation,
+  useTrashCardsAnimation,
+  useHighlightCardsAnimation,
+};

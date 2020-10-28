@@ -44,14 +44,8 @@ const AnimatingCard: React.FC<CardProps> = ({ value, width, height }) => {
     [scaleX, setCurrValue],
   );
 
-  const firstLoad = useRef(true);
   useEffect(() => {
-    if (!firstLoad.current) {
-      flipTo(value);
-    } else {
-      setCurrValue(value);
-      firstLoad.current = false;
-    }
+    flipTo(value);
   }, [value]);
 
   return (

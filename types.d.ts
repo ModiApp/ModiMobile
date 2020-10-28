@@ -6,7 +6,8 @@ declare interface Card {
 }
 declare type PlayerId = string;
 
-interface GameScreenController {
+interface GameScreenController extends CardTableController {}
+interface CardTableController {
   dealCards(cardMap: CardMap, onComplete?: () => void): void;
   trashCards(onComplete?: () => void): void;
   highlightCards(indexes: number[], color: string, onComplete?: () => void): void;
