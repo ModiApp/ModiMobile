@@ -56,7 +56,7 @@ function useDealCardsAnimation(
             }),
           ]);
         }),
-      ).start(() => setTimeout(onComplete, 2000));
+      ).start(() => onComplete && setTimeout(onComplete, 2000));
     },
     [setAnimatedCards, boardHeight],
   );
