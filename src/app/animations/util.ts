@@ -18,19 +18,21 @@ export function calcCardHeight(numCards: number, tableHeight: number) {
   return range(2, 20, 0.32, 0.12, numCards) * tableHeight;
 }
 
-export function generateRandomCardMap(): CardMap {
-  const numCards = Math.floor(Math.random() * 16) + 4;
+export function generateRandomCardMap(length?: number): CardMap {
+  const numCards = length || Math.floor(Math.random() * 18) + 2;
   return Array(numCards)
     .fill(null)
-    .map((_, idx) => {
-      if (idx === 0) {
-        return {
-          suit: ['spades', 'hearts', 'clubs', 'diamonds'][
-            Math.floor(Math.random() * 4)
-          ],
-          rank: Math.floor(Math.random() * 13) + 1,
-        } as Card;
+    .map(() => {
+      switch (Math.floor(Math.random() * 2)) {
+        case 0:
+          return {
+            suit: ['spades', 'hearts', 'clubs', 'diamonds'][
+              Math.floor(Math.random() * 4)
+            ],
+            rank: Math.floor(Math.random() * 13) + 1,
+          } as Card;
+        default:
+          return true;
       }
-      return true;
     });
 }

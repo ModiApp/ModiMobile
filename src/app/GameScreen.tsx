@@ -1,4 +1,10 @@
-import React, { useImperativeHandle, useRef, useState, useEffect } from 'react';
+import React, {
+  useImperativeHandle,
+  useRef,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
 import { View, StyleSheet, Animated, Image } from 'react-native';
 import { ScreenContainer } from '@modi/ui/components';
 
@@ -12,24 +18,18 @@ import animateFromStateChange from './animations';
 import { generateRandomCardMap } from './animations/util';
 import GameHistory from '@modi/app/animations/mockStateHistory.json';
 
-import cardImgs from '@modi/ui/assets/img/cards';
-
+import AnimatingCard from './AnimatingCard';
 const App: React.FC = () => {
   const gameScreen = useRef<GameScreenController>(null);
   useEffect(() => {
-    // setTimeout(async () => {
-    //   const changeActions = GameHistory.changeActions as StateChangeAction[];
-    //   for (const stateChange of changeActions) {
-    //     await animateFromStateChange(
-    //       gameScreen.current!,
-    //       GameHistory.initialState,
-    //       stateChange,
-    //     );
-    //   }
-    // }, 1000);
     setTimeout(() => {
-      gameScreen.current?.dealCards(generateRandomCardMap());
-    }, 100);
+      const numCards = 10;
+      gameScreen.current?.dealCards(generateRandomCardMap(numCards), () => {
+        setInterval(() => {
+          gameScreen.current?.setCards(generateRandomCardMap(numCards));
+        }, 4000);
+      });
+    }, 1000);
   }, []);
 
   return <GameScreen controller={gameScreen} />;
@@ -53,6 +53,17 @@ const GameScreen: React.FC<GameScreenProps> = ({ controller }) => {
   );
 
   const highlightCards = useHighlightCardsAnimation(setAnimatedCards);
+  const setCards = useCallback(
+    (newCardMap: CardMap) => {
+      setAnimatedCards((cards) =>
+        cards.map((card, idx) => ({
+          ...card,
+          value: newCardMap[idx],
+        })),
+      );
+    },
+    [setAnimatedCards],
+  );
 
   useImperativeHandle(
     controller,
@@ -60,8 +71,9 @@ const GameScreen: React.FC<GameScreenProps> = ({ controller }) => {
       dealCards,
       trashCards,
       highlightCards,
+      setCards,
     }),
-    [dealCards, trashCards, highlightCards],
+    [dealCards, trashCards, highlightCards, setCards],
   );
 
   return (
@@ -71,7 +83,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ controller }) => {
           {animatedCards.map(
             ({ position, rotation, value, dimensions, borderColor }, idx) => (
               <Animated.View
-                key={`${idx}${value}`}
+                key={`${idx}`}
                 style={{
                   position: 'absolute',
                   ...dimensions,
@@ -91,7 +103,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ controller }) => {
                     shadowOpacity: 0.9,
                   }}
                 >
-                  <Card value={value} {...dimensions} />
+                  <AnimatingCard value={value} {...dimensions} />
                 </Animated.View>
               </Animated.View>
             ),
@@ -100,25 +112,6 @@ const GameScreen: React.FC<GameScreenProps> = ({ controller }) => {
       </View>
     </ScreenContainer>
   );
-};
-
-interface CardProps {
-  value: Card | boolean;
-  width: number;
-  height: number;
-}
-const Card: React.FC<CardProps> = ({ value, width, height }) => {
-  if (!value) {
-    return null;
-  }
-
-  const style = [styles.card, { width, height }];
-  const source =
-    typeof value === 'boolean'
-      ? cardImgs.back
-      : cardImgs[value.suit][value.rank];
-
-  return <Image source={source} style={style} resizeMode="contain" />;
 };
 
 const styles = StyleSheet.create({

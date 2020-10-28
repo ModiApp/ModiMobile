@@ -10,6 +10,7 @@ interface GameScreenController {
   dealCards(cardMap: CardMap, onComplete?: () => void): void;
   trashCards(onComplete?: () => void): void;
   highlightCards(indexes: number[], color: string, onComplete?: () => void): void;
+  setCards(newCardMap: CardMap): void;
 }
 
 declare type CardMap = (Card | boolean)[];
