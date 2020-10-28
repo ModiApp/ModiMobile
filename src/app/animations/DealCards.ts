@@ -3,8 +3,6 @@ import { Animated } from 'react-native';
 
 import { normalizeAngle, calcCardHeight } from './util';
 
-type CardMap = (Card | boolean)[];
-
 function useDealCardsAnimation(
   setAnimatedCards: React.Dispatch<React.SetStateAction<AnimatedCard[]>>,
   boardHeight: number,
