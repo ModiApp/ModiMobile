@@ -6,34 +6,56 @@ declare interface Card {
 }
 declare type PlayerId = string;
 
+interface GameScreenController {
+  dealCards(cardMap: CardMap, onComplete?: () => void): void;
+  trashCards(onComplete?: () => void): void;
+  highlightCards(indexes: number[], color: string, onComplete?: () => void): void;
+}
+
 declare type CardMap = (Card | boolean)[];
 declare type AnimatedCard = {
   position: import('react-native').Animated.ValueXY;
   rotation: import('react-native').Animated.Value;
   dimensions: { width: number; height: number };
   value: Card | boolean;
+  borderColor: string | null;
 }
 
-/** When the adjacent player has a king, this player's swap will be an attempted-swap */
-declare type PlayerMove = 'stick' | 'swap' | 'attempted-swap';
+type PlayerMove = 'swap' | 'stick' | 'hit deck';
+type AdjustedPlayerMove = PlayerMove | 'attempted-swap';
 
-declare type ModiGameState = {
-  round: number;
-
-  moves: PlayerMove[];
-
-  players: ModiPlayer[];
-
-  _stateVersion: number;
-
+declare type GameState = {
+  players: { [playerId: string]: Player };
+  orderedPlayerIds: string[];
+  dealerId: string | null;
+  activePlayerId: string | null;
+  version: number;
 };
 
-declare type ModiPlayer = {
+interface Player {
   id: string;
-  username: string;
   lives: number;
-  card?: Card;
-};
+  card: Card | null;
+  move: AdjustedPlayerMove | null;
+}
+
+type StateChangeCallback = (action: StateChangeAction, version: number) => void;
+
+declare type StateChangeAction =
+  | { type: 'HIGHCARD_WINNERS'; payload: { playerIds: string[] } }
+  | {
+      type: 'START_ROUND';
+      payload: { dealerId: string; activePlayerId: string };
+    }
+  | { type: 'DEALT_CARDS'; payload: { cards: [Card, string][] } }
+  | { type: 'REMOVE_CARDS' }
+  | { type: 'PLAYER_HIT_DECK'; payload: { playerId: string; card: Card } }
+  | {
+      type: 'PLAYERS_TRADED';
+      payload: { fromPlayerId: string; toPlayerId: string };
+    };
+
+
 declare type ModiAppState = {
   username: string | undefined;
   currLobbyId: string | undefined;
@@ -54,7 +76,7 @@ type GameStateDispatchAction =
 
 interface TailoredGameState {
   /** The player whose id matches the accessToken on this device */
-  me: ModiPlayer | undefined;
+  me: Player | undefined;
 
   /** Whether or not it is the authenticated players turn */
   isMyTurn: boolean;
@@ -63,7 +85,7 @@ interface TailoredGameState {
 
   activePlayerIdx: number | undefined;
 }
-type GameStateContextType = ModiGameState & {
+type GameStateContextType = GameState & {
   dispatch: (...action: GameStateDispatchAction) => void;
 } & TailoredGameState;
 declare type AppStateDispatch = {

@@ -1,45 +1,35 @@
-import React, {
-  useImperativeHandle,
-  useRef,
-  useState,
-  useEffect,
-  useCallback,
-} from 'react';
+import React, { useImperativeHandle, useRef, useState, useEffect } from 'react';
 import { View, StyleSheet, Animated, Image } from 'react-native';
 import { ScreenContainer } from '@modi/ui/components';
-import { generateRandomCardMap } from '@modi/ui/util';
+
 import { colors } from '@modi/ui/styles';
 
 import { useOnContainerLayout } from '@modi/hooks';
 import useDealCardsAnimation from './animations/DealCards';
 import useTrashCardsAnimation from './animations/TrashCards';
+import useHighlightCardsAnimation from './animations/HighlightCards';
+import animateFromStateChange from './animations';
+import GameHistory from '@modi/app/animations/mockStateHistory.json';
 
 import cardImgs from '@modi/ui/assets/img/cards';
 
 const App: React.FC = () => {
   const gameScreen = useRef<GameScreenController>(null);
-  const runDealTrashCycle = useCallback(() => {
-    gameScreen.current?.dealCards(generateRandomCardMap(), () => {
-      setTimeout(() => {
-        gameScreen.current?.trashCards(() => {
-          setTimeout(() => runDealTrashCycle(), 1000);
-        });
-      }, 1000);
-    });
-  }, []);
-
   useEffect(() => {
-    runDealTrashCycle();
+    setTimeout(async () => {
+      const changeActions = GameHistory.changeActions as StateChangeAction[];
+      for (const stateChange of changeActions) {
+        await animateFromStateChange(
+          gameScreen.current!,
+          GameHistory.initialState,
+          stateChange,
+        );
+      }
+    }, 1000);
   }, []);
 
   return <GameScreen controller={gameScreen} />;
 };
-
-interface GameScreenController {
-  dealCards(cardMap: CardMap, onComplete?: () => void): void;
-  trashCards(onComplete?: () => void): void;
-}
-
 interface GameScreenProps {
   controller: React.RefObject<GameScreenController>;
 }
@@ -58,14 +48,16 @@ const GameScreen: React.FC<GameScreenProps> = ({ controller }) => {
     cardTableLayout.height,
   );
 
+  const highlightCards = useHighlightCardsAnimation(setAnimatedCards);
+
   useImperativeHandle(
     controller,
     () => ({
       dealCards,
       trashCards,
+      highlightCards,
     }),
-
-    [dealCards, trashCards],
+    [dealCards, trashCards, highlightCards],
   );
 
   return (
@@ -73,7 +65,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ controller }) => {
       <View style={styles.container}>
         <View style={styles.cardTable} onLayout={setCardTableLayout}>
           {animatedCards.map(
-            ({ position, rotation, value, dimensions }, idx) => (
+            ({ position, rotation, value, dimensions, borderColor }, idx) => (
               <Animated.View
                 key={`${idx}${value}`}
                 style={{
@@ -90,6 +82,9 @@ const GameScreen: React.FC<GameScreenProps> = ({ controller }) => {
                     position: 'absolute',
                     ...dimensions,
                     transform: [{ rotate: rotation }],
+                    shadowRadius: 10,
+                    shadowColor: borderColor,
+                    shadowOpacity: 0.9,
                   }}
                 >
                   <Card value={value} {...dimensions} />
@@ -114,14 +109,12 @@ const Card: React.FC<CardProps> = ({ value, width, height }) => {
   }
 
   const style = [styles.card, { width, height }];
+  const source =
+    typeof value === 'boolean'
+      ? cardImgs.back
+      : cardImgs[value.suit][value.rank];
 
-  if (typeof value === 'boolean') {
-    return <Image source={cardImgs.back} style={style} resizeMode="contain" />;
-  }
-  const { suit, rank } = value;
-  return (
-    <Image source={cardImgs[suit][rank]} style={style} resizeMode="contain" />
-  );
+  return <Image source={source} style={style} resizeMode="contain" />;
 };
 
 const styles = StyleSheet.create({

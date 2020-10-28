@@ -30,6 +30,7 @@ function useDealCardsAnimation(
           height: cardHeight,
         },
         value,
+        borderColor: null,
       }));
 
       setAnimatedCards(animatedCards);
@@ -55,7 +56,7 @@ function useDealCardsAnimation(
             }),
           ]);
         }),
-      ).start(onComplete);
+      ).start(() => setTimeout(onComplete, 2000));
     },
     [setAnimatedCards, boardHeight],
   );

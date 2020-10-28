@@ -49,24 +49,15 @@
             "1"
           ],
           [
-            {
-              "suit": "diamonds",
-              "rank": 12
-            },
+            true,
             "2"
           ],
           [
-            {
-              "suit": "diamonds",
-              "rank": 11
-            },
+            true,
             "3"
           ],
           [
-            {
-              "suit": "diamonds",
-              "rank": 10
-            },
+            true,
             "4"
           ]
         ]
