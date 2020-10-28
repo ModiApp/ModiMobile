@@ -12,7 +12,7 @@ function useDealCardsAnimation(
       const cardHeight = calcCardHeight(cards.length, boardHeight);
       const cardWidth = cardHeight / 1.528;
       const rotationFactor = (2 * Math.PI) / cards.length;
-      const boardRadius = (boardHeight - cardHeight - 20) / 2;
+      const boardRadius = (boardHeight - cardHeight - 40) / 2;
 
       const dealerRotation = rotationFactor * (cards.length - 1);
       const initialDeckPos = {

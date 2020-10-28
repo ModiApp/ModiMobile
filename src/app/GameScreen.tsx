@@ -4,7 +4,7 @@ import { ScreenContainer, Text } from '@modi/ui/components';
 
 import { generateRandomCardMap } from './animations/util';
 import CardTable from './CardTable';
-import { useOnContainerLayout } from '@modi/hooks';
+import PlayerCirlce from './PlayerCirlce';
 
 const App: React.FC = () => {
   const gameScreen = useRef<GameScreenController>(null);
@@ -43,38 +43,14 @@ const fakeNames = [
   'kube',
 ];
 const GameScreen: React.FC<GameScreenProps> = ({ controller }) => {
-  const [boardLayout, onBoardLayout] = useOnContainerLayout();
   return (
     <ScreenContainer>
       <View style={styles.content}>
-        <View style={styles.circleOfNames} onLayout={onBoardLayout}>
-          <View style={styles.tableContainer}>
-            <CardTable controller={controller} />
-          </View>
-          {fakeNames.map((name, idx) => {
-            const rotate =
-              ((Math.PI * 2) / fakeNames.length) * idx + Math.PI / 2;
-            return (
-              <Text
-                key={`${idx}`}
-                style={{
-                  position: 'absolute',
-                  transform: [
-                    {
-                      translateX: (Math.cos(rotate) * boardLayout.width) / 2,
-                    },
-                    {
-                      translateY: (Math.sin(rotate) * boardLayout.width) / 2,
-                    },
-                    { rotate: `${(rotate % Math.PI) - Math.PI / 2}rad` },
-                  ],
-                }}
-              >
-                {name}
-              </Text>
-            );
-          })}
-        </View>
+        <PlayerCirlce
+          players={fakeNames.map((username) => ({ username, connected: true }))}
+        >
+          <CardTable controller={controller} />
+        </PlayerCirlce>
       </View>
     </ScreenContainer>
   );
@@ -84,12 +60,15 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   circleOfNames: {
-    width: '90%',
+    maxHeight: '100%',
+    width: '100%',
     aspectRatio: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'blue',
   },
   tableContainer: {
     width: '90%',
