@@ -9,6 +9,7 @@ import useDealCardsAnimation from './animations/DealCards';
 import useTrashCardsAnimation from './animations/TrashCards';
 import useHighlightCardsAnimation from './animations/HighlightCards';
 import animateFromStateChange from './animations';
+import { generateRandomCardMap } from './animations/util';
 import GameHistory from '@modi/app/animations/mockStateHistory.json';
 
 import cardImgs from '@modi/ui/assets/img/cards';
@@ -16,16 +17,19 @@ import cardImgs from '@modi/ui/assets/img/cards';
 const App: React.FC = () => {
   const gameScreen = useRef<GameScreenController>(null);
   useEffect(() => {
-    setTimeout(async () => {
-      const changeActions = GameHistory.changeActions as StateChangeAction[];
-      for (const stateChange of changeActions) {
-        await animateFromStateChange(
-          gameScreen.current!,
-          GameHistory.initialState,
-          stateChange,
-        );
-      }
-    }, 1000);
+    // setTimeout(async () => {
+    //   const changeActions = GameHistory.changeActions as StateChangeAction[];
+    //   for (const stateChange of changeActions) {
+    //     await animateFromStateChange(
+    //       gameScreen.current!,
+    //       GameHistory.initialState,
+    //       stateChange,
+    //     );
+    //   }
+    // }, 1000);
+    setTimeout(() => {
+      gameScreen.current?.dealCards(generateRandomCardMap());
+    }, 100);
   }, []);
 
   return <GameScreen controller={gameScreen} />;
