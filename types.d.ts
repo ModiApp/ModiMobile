@@ -4,31 +4,24 @@ declare interface Card {
   suit: CardSuit;
   rank: CardRank;
 }
-declare type PlayerId = string;
 
-/** Value will be a boolean for all players except yourself */
-declare type CardMap = { [playerId: string]: boolean | Card };
+interface GameScreenController extends CardTableController {}
+interface CardTableController {
+  dealCards(cardMap: CardMap, onComplete?: () => void): void;
+  trashCards(onComplete?: () => void): void;
+  highlightCards(indexes: number[], color: string, onComplete?: () => void): void;
+  setCards(newCardMap: CardMap): void;
+}
 
-/** When the adjacent player has a king, this player's swap will be an attempted-swap */
-declare type PlayerMove = 'stick' | 'swap' | 'attempted-swap';
+declare type CardMap = (Card | boolean)[];
+declare type AnimatedCard = {
+  position: import('react-native').Animated.ValueXY;
+  rotation: import('react-native').Animated.Value;
+  dimensions: { width: number; height: number };
+  value: Card | boolean;
+  borderColor: string | null;
+}
 
-declare type ModiGameState = {
-  round: number;
-
-  moves: PlayerMove[];
-
-  players: ModiPlayer[];
-
-  _stateVersion: number;
-
-};
-
-declare type ModiPlayer = {
-  id: string;
-  username: string;
-  lives: number;
-  card?: Card;
-};
 declare type ModiAppState = {
   username: string | undefined;
   currLobbyId: string | undefined;
@@ -44,12 +37,12 @@ declare type AppContextType = [
 
 type GameStateDispatchAction =
   | ['MADE_MOVE', PlayerMove]
-  | ['CHOOSE_DEALER', PlayerId]
+  | ['CHOOSE_DEALER', string]
   | ['PLAY_AGAIN'];
 
 interface TailoredGameState {
   /** The player whose id matches the accessToken on this device */
-  me: ModiPlayer | undefined;
+  me: Player | undefined;
 
   /** Whether or not it is the authenticated players turn */
   isMyTurn: boolean;
@@ -58,7 +51,7 @@ interface TailoredGameState {
 
   activePlayerIdx: number | undefined;
 }
-type GameStateContextType = ModiGameState & {
+type GameStateContextType = GameState & {
   dispatch: (...action: GameStateDispatchAction) => void;
 } & TailoredGameState;
 declare type AppStateDispatch = {

@@ -2,16 +2,16 @@ import React from 'react';
 import {
   SafeAreaView,
   View,
-  Text as RNText,
   TextInput as RNTextInput,
   ActivityIndicator,
   TextInputProps as RNTextInputProps,
   StyleProp,
   TextStyle,
   ViewStyle,
+  StyleSheet,
 } from 'react-native';
 
-import { colors, sizing, fontFamilies } from '../styles';
+import { colors, fontFamilies } from '../styles';
 
 import PlayingCard, { CardBack } from './PlayingCard';
 import Button from './Button';
@@ -92,9 +92,16 @@ export const TextInput = withStylesFromProps(
   },
 ) as React.FC<TextInputProps>;
 type TextInputProps = RNTextInputProps & StyleProp<TextStyle>;
-export const ScreenContainer = withStylesFromProps(SafeAreaView, {
-  backgroundColor: colors.feltGreen,
-  ...sizing.fullScreen,
+
+export const ScreenContainer: React.FC = ({ children }) => (
+  <SafeAreaView style={styles.screen}>{children}</SafeAreaView>
+);
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: colors.feltGreen,
+  },
 });
 
 const LoadingSpinner = ActivityIndicator;

@@ -1,26 +1,44 @@
 import React from 'react';
-import { Animated, View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { ScreenContainer } from '@modi/ui/components';
 
-import { useGameState } from '@modi/hooks';
-import { ScreenContainer, Container, Text } from '@modi/ui/components';
+import CardTable from './CardTable';
+import PlayerCirlce from './PlayerCirlce';
 
-import CardMap from './CardMap';
-import BottomControls from './BottomControls';
-
-const GameScreen: React.FC = () => {
-  const { me } = useGameState();
+interface GameScreenProps {
+  controller: React.RefObject<GameScreenController>;
+  connections: { username: string; connected: boolean }[];
+}
+const GameScreen: React.FC<GameScreenProps> = ({ controller, connections }) => {
   return (
     <ScreenContainer>
-      <Container>
-        <Text size={24}>{me?.username}</Text>
-        <Text size={16}>Lives: {me?.lives}</Text>
-      </Container>
-      <Container flex={1}>
-        <CardMap />
-      </Container>
-      <BottomControls />
+      <View style={styles.content}>
+        <PlayerCirlce players={connections}>
+          <CardTable controller={controller} />
+        </PlayerCirlce>
+      </View>
     </ScreenContainer>
   );
 };
+
+const styles = StyleSheet.create({
+  content: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  circleOfNames: {
+    maxHeight: '100%',
+    width: '100%',
+    aspectRatio: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'blue',
+  },
+  tableContainer: {
+    width: '90%',
+    position: 'absolute',
+  },
+});
 
 export default GameScreen;

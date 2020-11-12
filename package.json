@@ -21,6 +21,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@modiapp/client": "^0.7.0",
     "@react-native-community/async-storage": "^1.12.0",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-navigation/native": "^5.7.3",
@@ -95,10 +96,7 @@
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": "off",
       "valid-jsdoc": "off",
-      "indent": [
-        "error",
-        2
-      ],
+      "indent": "off",
       "operator-linebreak": "off"
     },
     "settings": {
