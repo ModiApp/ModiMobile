@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'brown',
+    // backgroundColor: 'brown',
   },
   childrenContainer: {
     position: 'absolute',

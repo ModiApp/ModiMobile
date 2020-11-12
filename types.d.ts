@@ -4,7 +4,6 @@ declare interface Card {
   suit: CardSuit;
   rank: CardRank;
 }
-declare type PlayerId = string;
 
 interface GameScreenController extends CardTableController {}
 interface CardTableController {
@@ -23,41 +22,6 @@ declare type AnimatedCard = {
   borderColor: string | null;
 }
 
-type PlayerMove = 'swap' | 'stick' | 'hit deck';
-type AdjustedPlayerMove = PlayerMove | 'attempted-swap';
-
-declare type GameState = {
-  players: { [playerId: string]: Player };
-  orderedPlayerIds: string[];
-  dealerId: string | null;
-  activePlayerId: string | null;
-  version: number;
-};
-
-interface Player {
-  id: string;
-  lives: number;
-  card: Card | null;
-  move: AdjustedPlayerMove | null;
-}
-
-type StateChangeCallback = (action: StateChangeAction, version: number) => void;
-
-declare type StateChangeAction =
-  | { type: 'HIGHCARD_WINNERS'; payload: { playerIds: string[] } }
-  | {
-      type: 'START_ROUND';
-      payload: { dealerId: string; activePlayerId: string };
-    }
-  | { type: 'DEALT_CARDS'; payload: { cards: [Card, string][] } }
-  | { type: 'REMOVE_CARDS' }
-  | { type: 'PLAYER_HIT_DECK'; payload: { playerId: string; card: Card } }
-  | {
-      type: 'PLAYERS_TRADED';
-      payload: { fromPlayerId: string; toPlayerId: string };
-    };
-
-
 declare type ModiAppState = {
   username: string | undefined;
   currLobbyId: string | undefined;
@@ -73,7 +37,7 @@ declare type AppContextType = [
 
 type GameStateDispatchAction =
   | ['MADE_MOVE', PlayerMove]
-  | ['CHOOSE_DEALER', PlayerId]
+  | ['CHOOSE_DEALER', string]
   | ['PLAY_AGAIN'];
 
 interface TailoredGameState {
