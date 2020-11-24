@@ -1,8 +1,8 @@
 import React from 'react';
 import { NavigationStackScreenComponent } from 'react-navigation-stack';
 
-import { useAppState } from '@modi/hooks';
-import { ScreenContainer } from '@modi/ui/components';
+import { useAppState } from '@modimobile/hooks';
+import { ScreenContainer } from '@modimobile/ui/components';
 
 const TestGameScreenLoadingScreen: NavigationStackScreenComponent<{
   gameId: string;

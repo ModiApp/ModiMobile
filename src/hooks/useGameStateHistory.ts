@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Queue } from '@modi/util';
+import { Queue } from '@modimobile/util';
 
 function useGameStateHistory(gameState: ModiGameState) {
   const gameStateHistory = useRef<Queue<ModiGameState>>(new Queue()).current;

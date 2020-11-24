@@ -4,7 +4,7 @@ module.exports = {
     [
       'babel-plugin-root-import',
       {
-        rootPathPrefix: '@modi',
+        rootPathPrefix: '@modimobile',
         rootPathSuffix: 'src',
       },
     ],

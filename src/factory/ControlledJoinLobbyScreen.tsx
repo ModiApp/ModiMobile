@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 
-import { validateLobbyId } from '@modi/util';
-import { JoinLobbyScreen } from '@modi/ui';
+import { validateLobbyId } from '@modimobile/util';
+import { JoinLobbyScreen } from '@modimobile/ui';
 
 interface ControlledJoinLobbyScreenProps
   extends MainStackScreenProps<'JoinLobby'> {}

@@ -8,7 +8,7 @@ import {
   LoadingSpinner,
   Icon,
   Button,
-} from '@modi/ui/components';
+} from '@modimobile/ui/components';
 
 interface JoinLobbyScreenProps {
   isValidatingLobbyId: boolean;

@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
-import { validateGameId, validateLobbyId } from '@modi/util';
-import { useAppState } from '@modi/hooks';
+import { validateGameId, validateLobbyId } from '@modimobile/util';
+import { useAppState } from '@modimobile/hooks';
 
 function useNavigateToCurrGameOrLobby() {
   const [{ currGameId, currLobbyId }, updateGlobalState] = useAppState();

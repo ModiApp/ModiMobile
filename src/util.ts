@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { API_URL } from '@modi/env.json';
+import { API_URL } from '@modimobile/env.json';
 
 export async function validateLobbyId(lobbyId: string): Promise<boolean> {
   try {

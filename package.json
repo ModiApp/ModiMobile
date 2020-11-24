@@ -1,6 +1,6 @@
 {
-  "name": "ModiMobile",
-  "version": "0.0.1",
+  "name": "modimobile",
+  "version": "0.7.2",
   "private": true,
   "scripts": {
     "start": "react-native start",
@@ -21,7 +21,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@modiapp/client": "^0.7.0",
+    "@modiapp/client": "^0.7.5",
     "@react-native-community/async-storage": "^1.12.0",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-navigation/native": "^5.7.3",
@@ -61,6 +61,7 @@
     "@typescript-eslint/eslint-plugin": "^3.8.0",
     "@typescript-eslint/parser": "^3.8.0",
     "babel-jest": "24.9.0",
+    "babel-plugin-module-resolver": "^4.0.0",
     "dotenv": "^8.2.0",
     "eslint": "^7.6.0",
     "eslint-config-google": "^0.14.0",

@@ -4,13 +4,32 @@ declare interface Card {
   suit: CardSuit;
   rank: CardRank;
 }
-
-interface GameScreenController extends CardTableController {}
+interface BottomButtonsController {
+  showControls(type: ControlsType): void;
+  hideControls(): void;
+}
+interface BottomButtonsCallbacks {
+  onStartHighcardBtnPressed(): void;
+  onDealCardsBtnPressed(): void;
+  onPlayAgainBtnPressed(): void;
+  onStickBtnPressed(): void;
+  onSwapBtnPressed(): void;
+  onHomeBtnPressed(): void;
+}
 interface CardTableController {
-  dealCards(cardMap: CardMap, onComplete?: () => void): void;
+  
+  dealCards(
+    /** comes in with every card except current players as True, false for no card */
+    cardMap: TailoredCardMap,
+    /** decide which position on the table the cards come from */
+    dealerIdx: number,
+    
+    onComplete?: () => void,
+  ): void;
+  
   trashCards(onComplete?: () => void): void;
   highlightCards(indexes: number[], color: string, onComplete?: () => void): void;
-  setCards(newCardMap: CardMap): void;
+  setCards(newCardMap: TailoredCardMap): void;
 }
 
 declare type CardMap = (Card | boolean)[];
@@ -35,25 +54,6 @@ declare type AppContextType = [
   boolean
 ];
 
-type GameStateDispatchAction =
-  | ['MADE_MOVE', PlayerMove]
-  | ['CHOOSE_DEALER', string]
-  | ['PLAY_AGAIN'];
-
-interface TailoredGameState {
-  /** The player whose id matches the accessToken on this device */
-  me: Player | undefined;
-
-  /** Whether or not it is the authenticated players turn */
-  isMyTurn: boolean;
-
-  isEndOfGame: boolean;
-
-  activePlayerIdx: number | undefined;
-}
-type GameStateContextType = GameState & {
-  dispatch: (...action: GameStateDispatchAction) => void;
-} & TailoredGameState;
 declare type AppStateDispatch = {
   /** Sets `username` to provided value */
   setUsername: (username: string) => Promise<void>;
@@ -72,9 +72,10 @@ type MainStackParams = {
   Lobby: { lobbyId: string | undefined };
   Game: { gameId: string, accessToken: string } | { gameId: undefined, accessToken: undefined };
   JoinLobby: undefined;
+  JoinGame: undefined
 };
 
-type RouteName = 'Home' | 'JoinLobby' | 'Lobby' | 'Game';
+type RouteName = 'Home' | 'JoinLobby' | 'Lobby' | 'JoinGame' | 'Game';
 
 interface MainStackScreenProps<RouteName> {
   navigation: import('@react-navigation/stack').StackNavigationProp<MainStackParams, RouteName>;

@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from 'react';
 
-import { createLobby } from '@modi/util';
-import { useAppState, useNavigation } from '@modi/hooks';
-import { HomeScreen } from '@modi/ui';
+import { createLobby } from '@modimobile/util';
+import { useAppState, useNavigation } from '@modimobile/hooks';
+import { HomeScreen } from '@modimobile/ui';
 
 const ControlledHomeScreen: React.FC = () => {
   const [{ username }, appStateDispatch] = useAppState();

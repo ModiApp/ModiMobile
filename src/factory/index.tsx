@@ -1,7 +1,8 @@
 import ControlledHomeScreen from './ControlledHomeScreen';
 import LobbyScreenCreator from './LobbyScreenCreator';
 import ControlledJoinLobbyScreen from './ControlledJoinLobbyScreen';
-import GameScreenCreator from './GameScreenCreator';
+import ControlledJoinGameScreen from './ControlledJoinGameScreen';
+import ControlledGameScreen from './ControlledGameScreen';
 
 // Only enabled in dev mode:
 import TestGameScreenLoading from './TestGameScreenLoading';
@@ -11,7 +12,8 @@ export {
   ControlledHomeScreen,
   LobbyScreenCreator,
   ControlledJoinLobbyScreen,
-  GameScreenCreator,
+  ControlledJoinGameScreen,
+  ControlledGameScreen,
   TestGameScreenLoading,
   SandboxScreen,
 };

@@ -7,7 +7,7 @@ import React, {
   useRef,
 } from 'react';
 import io from 'socket.io-client';
-import env from '@modi/env.json';
+import env from '@modimobile/env.json';
 import { useFocusEffect } from '@react-navigation/native';
 
 const createInitialGameState = (): ModiGameState => ({

@@ -9,8 +9,8 @@ import React, {
 import { useFocusEffect } from '@react-navigation/native';
 import io from 'socket.io-client';
 
-import { useAppState } from '@modi/hooks';
-import { API_URL } from '@modi/env.json';
+import { useAppState } from '@modimobile/hooks';
+import { API_URL } from '@modimobile/env.json';
 import { acc } from 'react-native-reanimated';
 
 interface LobbyState {

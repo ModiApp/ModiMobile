@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react';
 import Share from 'react-native-share';
 
-import { useAppState, useLobbyState } from '@modi/hooks';
+import { useAppState, useLobbyState } from '@modimobile/hooks';
 
-import { LobbyStateProvider } from '@modi/providers';
-import { LobbyScreen } from '@modi/ui';
+import { LobbyStateProvider } from '@modimobile/providers';
+import { LobbyScreen } from '@modimobile/ui';
 
 interface LobbyScreenCreatorProps extends MainStackScreenProps<'Lobby'> {}
 

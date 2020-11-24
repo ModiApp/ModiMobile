@@ -1,16 +1,14 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text } from '@modi/ui/components';
-import { useOnContainerLayout } from '@modi/hooks';
+import { Text } from '@modimobile/ui/components';
+import { useOnContainerLayout } from '@modimobile/hooks';
 
 interface PlayerCirlceProps {
-  players: {
-    username: string;
-    connected: boolean;
-  }[];
+  players: ConnectionResponseDto;
 }
 const PlayerCircle: React.FC<PlayerCirlceProps> = ({ players, children }) => {
   const [layout, onLayout] = useOnContainerLayout();
+  console.log(players);
   return (
     <View style={styles.container} onLayout={onLayout}>
       <View style={styles.childrenContainer}>{children}</View>
@@ -22,6 +20,7 @@ const PlayerCircle: React.FC<PlayerCirlceProps> = ({ players, children }) => {
             key={`${idx}`}
             style={{
               position: 'absolute',
+              color: player.connected ? 'white' : 'lightgrey',
               transform: [
                 {
                   translateX: (Math.cos(rotate) * radius) / 2,

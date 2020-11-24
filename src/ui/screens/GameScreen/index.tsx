@@ -1,21 +1,32 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { ScreenContainer } from '@modi/ui/components';
+import { ScreenContainer } from '@modimobile/ui/components';
 
 import CardTable from './CardTable';
 import PlayerCirlce from './PlayerCirlce';
+import BottomButtons from './BottomButtons';
 
 interface GameScreenProps {
-  controller: React.RefObject<GameScreenController>;
-  connections: { username: string; connected: boolean }[];
+  cardMapRef: React.RefObject<CardTableController>;
+  buttonsRef: React.RefObject<BottomButtonController>;
+  buttonCallbacks: BottomButtonCallbacks;
+  connections: ConnectionResponseDto;
 }
-const GameScreen: React.FC<GameScreenProps> = ({ controller, connections }) => {
+const GameScreen: React.FC<GameScreenProps> = ({
+  cardMapRef,
+  buttonsRef,
+  connections,
+  buttonCallbacks,
+}) => {
   return (
     <ScreenContainer>
       <View style={styles.content}>
         <PlayerCirlce players={connections}>
-          <CardTable controller={controller} />
+          <CardTable controller={cardMapRef} />
         </PlayerCirlce>
+      </View>
+      <View style={styles.bottomButtonContainer}>
+        <BottomButtons controller={buttonsRef} callbacks={buttonCallbacks} />
       </View>
     </ScreenContainer>
   );
@@ -38,6 +49,12 @@ const styles = StyleSheet.create({
   tableContainer: {
     width: '90%',
     position: 'absolute',
+  },
+  bottomButtonContainer: {
+    height: 200,
+    width: '100%',
+    justifyContent: 'flex-end',
+    paddingBottom: 16,
   },
 });
 

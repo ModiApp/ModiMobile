@@ -1,4 +1,4 @@
-import { range } from '@modi/ui/util';
+import { range } from '@modimobile/ui/util';
 
 /** Takes a fromRotation radians value, this is like the zero
  * Takes a toRotation raidans value,

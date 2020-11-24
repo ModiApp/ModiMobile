@@ -1,7 +1,7 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet } from 'react-native';
 
-import { colors, fontFamilies } from '@modi/ui/styles';
+import { colors, fontFamilies } from '@modimobile/ui/styles';
 
 const ScreenContainer: React.FC = ({ children }) => (
   <SafeAreaView style={styles.screen}>{children}</SafeAreaView>

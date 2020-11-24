@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback, useState, useRef } from 'react';
 import { Animated, StyleSheet, Image } from 'react-native';
 
-import cardImgs from '@modi/ui/assets/img/cards';
+import cardImgs from '@modimobile/ui/assets/img/cards';
 
 interface CardProps {
   value: Card | boolean;
@@ -46,7 +46,7 @@ const AnimatingCard: React.FC<CardProps> = ({ value, width, height }) => {
 
   useEffect(() => {
     flipTo(value);
-  }, [value]);
+  }, [value, flipTo]);
 
   return (
     <Animated.View

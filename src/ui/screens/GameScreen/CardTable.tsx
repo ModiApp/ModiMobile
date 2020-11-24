@@ -1,8 +1,8 @@
 import React from 'react';
 import { Animated, View, StyleSheet } from 'react-native';
 
-import { colors } from '@modi/ui/styles';
-import { useOnContainerLayout } from '@modi/hooks';
+import { colors } from '@modimobile/ui/styles';
+import { useOnContainerLayout } from '@modimobile/hooks';
 
 import {
   useFlipCardsAnimation,

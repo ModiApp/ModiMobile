@@ -8,7 +8,7 @@ import {
   ScreenContainer,
   Text,
   TextInput,
-} from '@modi/ui/components';
+} from '@modimobile/ui/components';
 
 interface HomeScreenProps {
   isCreatingGame: boolean;

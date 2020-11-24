@@ -4,7 +4,7 @@ import {
   AppStateContext,
   GameStateContext,
   LobbyStateContext,
-} from '@modi/providers';
+} from '@modimobile/providers';
 
 export function useAppState() {
   return useContext(AppStateContext);

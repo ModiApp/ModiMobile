@@ -1,7 +1,7 @@
 import React, { useContext, useCallback } from 'react';
 
-import { GameScreen } from '@modi/ui';
-import { AppStateContext, GameStateProvider } from '@modi/providers';
+import { GameScreen } from '@modimobile/ui';
+import { AppStateContext, GameStateProvider } from '@modimobile/providers';
 import { StackActions } from '@react-navigation/native';
 
 interface ControlledGameScreenProps extends MainStackScreenProps<'Game'> {}

@@ -10,14 +10,14 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import {
   LobbyScreenCreator,
-  GameScreenCreator,
+  ControlledGameScreen,
   ControlledJoinLobbyScreen,
   ControlledHomeScreen,
-} from '@modi/factory';
+} from '@modimobile/factory';
 
-import { AppStateProvider } from '@modi/providers';
-import { useAppState } from '@modi/hooks';
-import { validateGameId, validateLobbyId } from '@modi/util';
+import { AppStateProvider } from '@modimobile/providers';
+import { useAppState } from '@modimobile/hooks';
+import { validateGameId, validateLobbyId } from '@modimobile/util';
 
 const MainStack = createStackNavigator<MainStackParams>();
 const RootStack = createStackNavigator();
@@ -32,7 +32,7 @@ function MainStackNavigator() {
     >
       <MainStack.Screen name="Home" component={ControlledHomeScreen} />
       <MainStack.Screen name="Lobby" component={LobbyScreenCreator} />
-      <MainStack.Screen name="Game" component={GameScreenCreator} />
+      <MainStack.Screen name="Game" component={ControlledGameScreen} />
     </MainStack.Navigator>
   );
 }
@@ -59,7 +59,7 @@ const AppNavigator: React.FC = () => {
       const routeParams = navigationRef.current?.getCurrentRoute()?.params;
       const goHome = () =>
         navigationRef.current?.dispatch(StackActions.popToTop());
-      const routeMiddlewares = {
+      const routeMiddlewares: { [key in RouteName]: () => any } = {
         Home: () => {
           console.log('home middleware hit');
           if (appState.currGameId && appState.gameAccessToken) {
@@ -147,6 +147,7 @@ const AppNavigator: React.FC = () => {
           }
         },
         JoinLobby: () => {},
+        JoinGame: () => {},
       };
 
       if (routeName && routeName !== routeNameRef.current) {
