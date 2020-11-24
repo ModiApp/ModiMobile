@@ -15,8 +15,12 @@ type ControlledGameScreenProps = MainStackScreenProps<'Game'>;
 const ControlledGameScreen: React.FC<ControlledGameScreenProps> = ({
   navigation,
 }) => {
-  const cardMapRef = useRef<CardTableController>(null);
-  const buttonsRef = useRef<BottomButtonsController>(null);
+  const [cardMapController, setCardMapController] = useState<
+    CardTableController
+  >();
+  const [buttonsController, setButtonsController] = useState<
+    BottomButtonsController
+  >();
 
   const [connections, setConnections] = useState<ConnectionResponseDto>([]);
   const [{ gameAccessToken }] = useAppState();
@@ -28,8 +32,8 @@ const ControlledGameScreen: React.FC<ControlledGameScreenProps> = ({
   const animateFromGameEvent = useAnimationHandler(
     gameAccessToken!,
     orderedPlayerIds,
-    cardMapRef.current!,
-    buttonsRef.current!,
+    cardMapController,
+    buttonsController,
   );
 
   const onGameEvent: StateChangeCallback = useCallback(
@@ -60,7 +64,7 @@ const ControlledGameScreen: React.FC<ControlledGameScreenProps> = ({
       onPlayAgainBtnPressed: () => {},
       onStickBtnPressed: () => gameRoomClient!.makeMove('stick'),
       onSwapBtnPressed: () => gameRoomClient!.makeMove('swap'),
-      onHomeBtnPressed() {},
+      onHomeBtnPressed: () => navigation.popToTop(),
     }),
     [gameRoomClient],
   );
@@ -71,8 +75,8 @@ const ControlledGameScreen: React.FC<ControlledGameScreenProps> = ({
 
   return (
     <GameScreen
-      cardMapRef={cardMapRef}
-      buttonsRef={buttonsRef}
+      onCardMapController={setCardMapController}
+      onButtonsController={setButtonsController}
       connections={connections}
       buttonCallbacks={buttonCallbacks}
     />
@@ -102,35 +106,38 @@ function useGameRoomClient(config: GameSocketConfig) {
     connectToGameSocket(config).then(setGameRoomClient);
   }, []);
 
+  useEffect(() => {
+    return () => {
+      gameRoomClient && gameRoomClient.disconnect();
+    };
+  }, [gameRoomClient]);
+
   return gameRoomClient;
 }
 
 function useAnimationHandler(
   currPlayerId: string,
   orderedPlayerIds: string[],
-  cardTable: CardTableController,
-  bottomButtons: BottomButtonsController,
+  cardTable: CardTableController | undefined,
+  bottomButtons: BottomButtonsController | undefined,
 ) {
   const runAnimation = useCallback(
     (action: StateChangeAction, onComplete?: () => void) => {
-      console.log('run animation was called with action!!', action);
       switch (action.type) {
         case 'PLAYERS_TURN': {
-          console.log('we are animating the players turn event!!');
           const { playerId, controls } = action.payload;
           if (playerId === currPlayerId) {
-            console.log('showing controls fro playerId', currPlayerId);
-            bottomButtons.showControls(controls);
+            bottomButtons!.showControls(controls);
           }
           const playerIdx = orderedPlayerIds.findIndex((id) => id === playerId);
-          return cardTable.highlightCards([playerIdx], 'yellow', onComplete);
+          return cardTable!.highlightCards([playerIdx], 'yellow', onComplete);
         }
         case 'DEALT_CARDS': {
           const { cards, dealerId } = action.payload;
           const dealerIdx = orderedPlayerIds.findIndex(
             (playerId) => playerId === dealerId,
           );
-          return cardTable.dealCards(cards, dealerIdx, onComplete);
+          return cardTable!.dealCards(cards, dealerIdx, onComplete);
         }
         case 'HIGHCARD_WINNERS':
           const { playerIds } = action.payload;
@@ -139,10 +146,10 @@ function useAnimationHandler(
               (playerId) => playerId === playerIdToFind,
             ),
           );
-          return cardTable.highlightCards(playerIndices, 'green', onComplete);
+          return cardTable!.highlightCards(playerIndices, 'green', onComplete);
 
         case 'REMOVE_CARDS':
-          return cardTable.trashCards(onComplete);
+          return cardTable!.trashCards(onComplete);
 
         default:
           return onComplete && onComplete();
@@ -154,6 +161,7 @@ function useAnimationHandler(
   const eventQueue = useRef<StateChangeAction[]>([]).current;
   const [isAnimating, setIsAnimating] = useState(false);
   const [hasMoreInQueue, setHasMoreInQueue] = useState(false);
+
   useEffect(() => {
     if (
       eventQueue.length > 0 &&
@@ -164,14 +172,14 @@ function useAnimationHandler(
       setIsAnimating(true);
       runAnimation(eventQueue.shift()!, () => setIsAnimating(false));
     } else {
-      setHasMoreInQueue(false);
+      !!cardTable && !!bottomButtons && setHasMoreInQueue(false);
     }
   }, [hasMoreInQueue, isAnimating, cardTable, bottomButtons]);
 
   const enqueGameEvent = useCallback(
     (event: StateChangeAction) => {
-      !hasMoreInQueue && setHasMoreInQueue(true);
       eventQueue.push(event);
+      !hasMoreInQueue && setHasMoreInQueue(true);
     },
     [hasMoreInQueue],
   );

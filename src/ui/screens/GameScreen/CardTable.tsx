@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Animated, View, StyleSheet } from 'react-native';
 
 import { colors } from '@modimobile/ui/styles';
@@ -14,9 +14,9 @@ import {
 import AnimatingCard from './AnimatingCard';
 
 interface CardTableProps {
-  controller: React.RefObject<CardTableController>;
+  getController(handle: CardTableController): void;
 }
-const CardTable: React.FC<CardTableProps> = ({ controller }) => {
+const CardTable: React.FC<CardTableProps> = ({ getController }) => {
   const [cardTableLayout, setCardTableLayout] = useOnContainerLayout();
   const [animatedCards, setAnimatedCards] = React.useState<AnimatedCard[]>([]);
 
@@ -34,16 +34,14 @@ const CardTable: React.FC<CardTableProps> = ({ controller }) => {
   const highlightCards = useHighlightCardsAnimation(setAnimatedCards);
   const setCards = useFlipCardsAnimation(setAnimatedCards);
 
-  React.useImperativeHandle(
-    controller,
-    () => ({
+  useEffect(() => {
+    getController({
       dealCards,
       trashCards,
       highlightCards,
       setCards,
-    }),
-    [dealCards, trashCards, highlightCards, setCards],
-  );
+    });
+  }, [getController, dealCards, trashCards, highlightCards, setCards]);
 
   return (
     <View style={styles.cardTable} onLayout={setCardTableLayout}>

@@ -1,13 +1,13 @@
-import React, { useImperativeHandle, useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Button, Icon } from '@modimobile/ui/components';
 
 interface BottomButtonProps {
-  controller: React.RefObject<BottomButtonController>;
-  callbacks: BottomButtonCallbacks;
+  getController(handle: BottomButtonsController): void;
+  callbacks: BottomButtonsCallbacks;
 }
 const BottomButtons: React.FC<BottomButtonProps> = ({
-  controller,
+  getController,
   callbacks,
 }) => {
   const [controls, setControls] = useState<ControlsType | undefined>();
@@ -18,10 +18,13 @@ const BottomButtons: React.FC<BottomButtonProps> = ({
 
   const hideControls = useCallback(() => setControls(undefined), []);
 
-  useImperativeHandle(controller, () => ({ showControls, hideControls }), [
-    showControls,
-    hideControls,
-  ]);
+  useEffect(() => {
+    getController({
+      showControls,
+      hideControls,
+    });
+  }, [showControls, hideControls]);
+
   return (
     <View>
       {controls === 'Start Highcard' && (

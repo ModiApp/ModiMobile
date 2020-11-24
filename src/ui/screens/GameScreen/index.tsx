@@ -7,14 +7,14 @@ import PlayerCirlce from './PlayerCirlce';
 import BottomButtons from './BottomButtons';
 
 interface GameScreenProps {
-  cardMapRef: React.RefObject<CardTableController>;
-  buttonsRef: React.RefObject<BottomButtonController>;
-  buttonCallbacks: BottomButtonCallbacks;
+  onCardMapController: (handle: CardTableController) => void;
+  onButtonsController: (handle: BottomButtonsController) => void;
+  buttonCallbacks: BottomButtonsCallbacks;
   connections: ConnectionResponseDto;
 }
 const GameScreen: React.FC<GameScreenProps> = ({
-  cardMapRef,
-  buttonsRef,
+  onCardMapController,
+  onButtonsController,
   connections,
   buttonCallbacks,
 }) => {
@@ -22,11 +22,14 @@ const GameScreen: React.FC<GameScreenProps> = ({
     <ScreenContainer>
       <View style={styles.content}>
         <PlayerCirlce players={connections}>
-          <CardTable controller={cardMapRef} />
+          <CardTable getController={onCardMapController} />
         </PlayerCirlce>
       </View>
       <View style={styles.bottomButtonContainer}>
-        <BottomButtons controller={buttonsRef} callbacks={buttonCallbacks} />
+        <BottomButtons
+          getController={onButtonsController}
+          callbacks={buttonCallbacks}
+        />
       </View>
     </ScreenContainer>
   );
